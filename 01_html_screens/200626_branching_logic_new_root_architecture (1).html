@@ -1,0 +1,1170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ABI World — Branching Logic / New Root Architecture</title>
+<style>
+:root{--blue:#0756a8;--green:#3f8c44;--ink:#183247;--line:rgba(28,93,160,.14);--card:rgba(255,255,255,.74)}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%;background:#eaf4fb;font-family:Inter,Arial,sans-serif;color:var(--ink)}
+body{display:grid;place-items:center}
+.frame{position:relative;width:min(100vw,1600px);aspect-ratio:16/9;overflow:hidden;border-radius:28px;background:radial-gradient(circle at 50% 5%,#fff,rgba(255,255,255,.45) 34%,transparent 60%),linear-gradient(180deg,#fbfdff,#edf7fd);box-shadow:0 30px 100px rgba(35,78,120,.18)}
+.frame:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(15,86,168,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(15,86,168,.035) 1px,transparent 1px);background-size:38px 38px;opacity:.45}
+header{position:absolute;left:40px;right:40px;top:24px;z-index:30;display:grid;grid-template-columns:320px 1fr 230px;align-items:start}
+.brand{text-transform:uppercase;color:var(--blue);font-weight:950;letter-spacing:.18em;font-size:13px}.brand span{color:var(--green)}
+.title{text-align:center}.title h1{margin:0;color:var(--blue);text-transform:uppercase;letter-spacing:.055em;font-size:34px;line-height:1}.title p{margin:8px auto 0;max-width:740px;color:#315d84;line-height:1.34;font-size:13px}
+.status{justify-self:end;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.72);box-shadow:0 12px 30px rgba(35,78,120,.08);color:var(--green);text-transform:uppercase;font-size:11px;font-weight:950;letter-spacing:.13em}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 7px rgba(63,140,68,.12),0 0 18px rgba(63,140,68,.42);animation:pulse 2.2s ease-in-out infinite}
+.layout{position:absolute;left:36px;right:36px;top:112px;bottom:145px;display:grid;grid-template-columns:290px 190px 1fr 360px;gap:22px;z-index:4}
+.panel{border:1px solid var(--line);background:var(--card);border-radius:24px;box-shadow:0 18px 48px rgba(35,78,120,.08),inset 0 1px 0 rgba(255,255,255,.86);backdrop-filter:blur(10px)}
+.left{padding:18px 16px;display:flex;flex-direction:column;gap:13px}
+.info{min-height:116px;display:grid;grid-template-columns:58px 1fr;gap:13px;align-items:start;padding:16px 14px;border-radius:22px;background:rgba(255,255,255,.62);border:1px solid rgba(25,92,165,.10)}
+.info.big{min-height:154px}.icon{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#f8fcff,#e9f4ff);border:1px solid rgba(20,91,168,.13);box-shadow:0 10px 22px rgba(25,92,165,.08);color:var(--blue);font-size:24px}
+.info h3{margin:0 0 8px;color:var(--blue);text-transform:uppercase;font-size:12px;letter-spacing:.12em}.info p,.info li{color:#365a78;font-size:12px;line-height:1.42}.info p{margin:0}.info ul{margin:8px 0 0 16px;padding:0}.info b{color:var(--green)}
+.process{padding:16px 12px;display:flex;flex-direction:column;justify-content:space-between;gap:8px}.step{position:relative;min-height:76px;display:grid;grid-template-columns:50px 1fr;gap:12px;align-items:center}
+.step:not(:last-child)::after{content:"";position:absolute;left:25px;bottom:-10px;width:1px;height:22px;background:linear-gradient(180deg,rgba(14,116,215,.24),rgba(63,140,68,.36))}
+.step-dot{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.70);border:1px solid rgba(25,92,165,.13);color:var(--blue);box-shadow:0 10px 24px rgba(35,78,120,.07);font-weight:950}.step-dot.final{color:var(--green);background:rgba(238,250,237,.76);border-color:rgba(63,140,68,.30);box-shadow:0 0 0 11px rgba(119,205,101,.13),0 0 34px rgba(119,205,101,.30);animation:softPulse 2.4s ease-in-out infinite}
+.step strong{display:block;color:var(--blue);font-size:11.5px;line-height:1.12;text-transform:uppercase;letter-spacing:.07em}.step.final-step strong{color:var(--green)}.step span{display:block;color:#48677e;font-size:10px;line-height:1.25;margin-top:5px}
+.stage{position:relative;overflow:hidden;padding:24px 28px}.stage h2{position:relative;z-index:30;margin:0;color:var(--blue);font-size:14px;letter-spacing:.13em;text-transform:uppercase;text-align:center}.stage .sub{position:relative;z-index:30;color:#40637d;font-size:12px;margin-top:6px;text-align:center}
+.circle-field{position:absolute;z-index:1;left:50%;top:47%;width:640px;height:640px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(119,205,101,.08),transparent 40%),repeating-radial-gradient(circle,rgba(20,91,168,.055) 0 1px,transparent 1px 38px);opacity:.85}
+.radar{position:absolute;z-index:10;left:50%;top:48%;width:520px;height:520px;transform:translate(-50%,-50%);pointer-events:none}.radar i{position:absolute;left:50%;top:50%;width:80px;height:80px;border-radius:50%;border:1px solid rgba(119,205,101,.34);transform:translate(-50%,-50%) scale(.18);opacity:0;animation:radarWave 4.8s ease-out infinite}.radar i:nth-child(2){animation-delay:1.1s}.radar i:nth-child(3){animation-delay:2.2s}.radar i:nth-child(4){animation-delay:3.3s}
+.soil{position:absolute;z-index:4;left:28px;right:28px;top:334px;height:220px;border-radius:0 0 220px 220px / 0 0 80px 80px;background:radial-gradient(circle at 20% 22%,rgba(90,70,48,.18) 0 3px,transparent 4px),radial-gradient(circle at 47% 18%,rgba(90,70,48,.14) 0 3px,transparent 4px),radial-gradient(circle at 77% 24%,rgba(90,70,48,.16) 0 3px,transparent 4px),linear-gradient(180deg,#b89b76,#a48661 52%,#927754);opacity:.82;box-shadow:inset 0 10px 30px rgba(64,46,30,.10)}.soil:before{content:"";position:absolute;left:0;right:0;top:-12px;height:28px;background:linear-gradient(180deg,transparent 0 44%,#b89b76 45% 100%);border-radius:50% 50% 0 0;opacity:.96}
+.sun-ray{position:absolute;z-index:15;left:51%;top:138px;width:360px;height:280px;transform:translateX(-20%);pointer-events:none;background:radial-gradient(ellipse at 62% 26%,rgba(255,252,205,.45),rgba(255,252,205,.12) 25%,transparent 58%);opacity:.68;mix-blend-mode:multiply;animation:sunGlow 4.6s ease-in-out infinite}
+.plant{position:absolute;z-index:18;left:50%;top:84px;width:270px;height:410px;transform:translateX(-50%);pointer-events:none}.plant svg{width:100%;height:100%;overflow:visible}.stem,.root{fill:none;stroke-linecap:round;stroke-linejoin:round}.stem{stroke:#5c9f31;stroke-width:7;filter:drop-shadow(0 1px 1px rgba(0,0,0,.10))}.leaf{fill:#6aad3d;stroke:#4f8d2e;stroke-width:1.6;filter:drop-shadow(0 2px 3px rgba(0,0,0,.12))}.leaf-vein{fill:none;stroke:#447a2d;stroke-width:1.6;stroke-linecap:round;opacity:.75}
+.leaf-right-top{transform-origin:148px 52px;animation:leafSway 3.2s ease-in-out infinite;filter:drop-shadow(0 0 8px rgba(255,255,210,.50)) drop-shadow(0 4px 4px rgba(0,0,0,.12))}.leaf-right-top .leaf{fill:#72b944}.leaf-right-top .sun-vein{fill:none;stroke:rgba(255,255,245,.95);stroke-width:1.15;stroke-linecap:round;opacity:.9;stroke-dasharray:16 10;animation:veinLight 2.8s ease-in-out infinite}
+.root{stroke:#dfc087;stroke-width:6;filter:drop-shadow(0 2px 3px rgba(55,40,23,.18));animation:rootBreath 6s ease-in-out infinite}.root-thin{stroke:#e4cc9e;stroke-width:3.3}.root-mini{stroke:#ead9b8;stroke-width:2.2}.root-glow{fill:none;stroke:rgba(255,244,190,.88);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:2 26;animation:rootSpark 3.6s ease-in-out infinite;filter:drop-shadow(0 0 8px rgba(255,226,120,.75))}
+.light-dot{fill:#fff5aa;opacity:0;filter:drop-shadow(0 0 7px #ffe47a);animation:lightDown 4s linear infinite}.root-node{fill:#fff0a6;opacity:0;filter:drop-shadow(0 0 10px #ffe16a);animation:nodeFlash 4s ease-in-out infinite}.node-a{animation-delay:2.35s}.node-b{animation-delay:2.55s}.node-c{animation-delay:2.8s}.node-d{animation-delay:3.05s}
+.surface{position:absolute;z-index:21;left:28px;right:28px;top:323px;height:2px;background:rgba(255,255,255,.55);box-shadow:0 0 12px rgba(255,255,255,.38)}
+.node{position:absolute;z-index:24;display:grid;place-items:center}.node .num{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-weight:950;color:#fff;font-size:22px;background:linear-gradient(180deg,#1474d8,#064eaa);border:4px solid rgba(255,255,255,.92);box-shadow:0 10px 28px rgba(14,85,168,.20)}.node.seed .num{color:var(--green);background:rgba(255,255,255,.85);box-shadow:0 0 0 11px rgba(119,205,101,.12),0 0 26px rgba(119,205,101,.22)}.node.final .num{background:linear-gradient(180deg,#7acc4f,#3e8d38);box-shadow:0 0 0 12px rgba(119,205,101,.16),0 0 34px rgba(119,205,101,.32);animation:softPulse 2.6s ease-in-out infinite}.n1{left:8px;top:292px}.n2{left:150px;top:110px}.n3{right:98px;top:140px}.n4{right:20px;top:285px}
+.label{position:absolute;z-index:28;min-width:142px;padding:13px 15px;border-radius:15px;background:rgba(255,255,255,.76);border:1px solid rgba(25,92,165,.12);box-shadow:0 14px 32px rgba(35,78,120,.08),inset 0 1px 0 rgba(255,255,255,.85);text-align:center}.label strong{display:block;color:var(--blue);text-transform:uppercase;letter-spacing:.07em;font-size:12px;line-height:1.18}.label span{display:block;margin-top:8px;color:#40637d;font-size:10px}.l1{left:4px;top:335px}.l2{left:120px;top:148px}.l3{right:96px;top:165px}.l4{right:10px;top:356px;min-width:150px;background:rgba(247,255,245,.88);border-color:rgba(63,140,68,.33)}.l4 strong,.l5 strong{color:var(--green)}.l5{right:10px;top:430px;min-width:150px;background:rgba(247,255,245,.82);border-color:rgba(63,140,68,.28)}.micro-tag{position:absolute;z-index:29;right:14px;top:214px;min-width:136px;padding:9px 12px;border-radius:14px;background:rgba(255,255,255,.82);border:1px solid rgba(25,92,165,.12);box-shadow:0 12px 28px rgba(35,78,120,.08),inset 0 1px 0 rgba(255,255,255,.88);text-align:center}.micro-tag strong{display:block;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;font-size:10.5px;line-height:1.18}.micro-tag span{display:block;margin-top:5px;color:#40637d;font-size:9.4px;line-height:1.2}
+.ref{position:absolute;z-index:29;left:42px;right:42px;bottom:32px;height:100px;border:1px solid rgba(25,92,165,.10);background:rgba(255,255,255,.66);border-radius:22px;box-shadow:0 10px 24px rgba(35,78,120,.04);padding:12px 32px;backdrop-filter:blur(5px)}.ref-title{text-align:center;text-transform:uppercase;color:#2e74ce;font-size:9.8px;letter-spacing:.13em;font-weight:950}.ref-line{position:absolute;left:84px;right:84px;top:60px;border-top:2px dashed rgba(91,153,222,.35)}.ref-item{position:absolute;top:36px;transform:translateX(-50%);text-align:center;width:112px}.ref-item b{display:block;color:var(--blue);font-size:9.5px}.ref-item span{display:block;margin-top:3px;color:#5d7790;font-size:8px}.ref-dot{margin:6px auto 0;width:32px;height:32px;border-radius:50%;border:2px dashed #2e86e5;background:rgba(255,255,255,.65)}.ref-dot.final{width:40px;height:40px;border-color:var(--green);animation:softPulse 2.2s ease-in-out infinite}.r51{left:14%}.r76{left:38%}.r108{left:62%}.r146{left:86%;top:30px}
+.right{padding:20px 20px 18px;display:flex;flex-direction:column;gap:13px}.right h2{margin:0;color:var(--blue);text-transform:uppercase;font-size:14px;letter-spacing:.10em}.right p{margin:0;color:#42627c;font-size:11.5px;line-height:1.38}.scale-row{display:grid;grid-template-columns:82px 90px 1fr;gap:12px;align-items:center;padding:10px 12px;border-radius:15px;border:1px solid rgba(25,92,165,.10);background:rgba(255,255,255,.54)}.scale-row.next{border-color:rgba(63,140,68,.30);background:rgba(246,255,245,.76);box-shadow:0 0 0 1px rgba(63,140,68,.05),0 12px 26px rgba(63,140,68,.06)}.scale-name{color:var(--blue);font-size:12px;font-weight:950;line-height:1.16;text-transform:uppercase}.scale-row.next .scale-name{color:var(--green)}.cylinder{width:82px;height:58px}.cylinder svg{width:100%;height:100%;overflow:visible}.cylinder path,.cylinder ellipse,.cylinder line{fill:none;stroke:#2e86e5;stroke-width:2;stroke-dasharray:6 5}.scale-row.next .cylinder path,.scale-row.next .cylinder ellipse,.scale-row.next .cylinder line{stroke:var(--green)}.scale-data{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.scale-data b{display:block;color:var(--blue);font-size:10px;margin-bottom:6px}.scale-row.next .scale-data b{color:var(--green)}.scale-data span{color:#48677e;font-size:9.5px;white-space:nowrap}
+.matrix-card{margin-top:auto;padding:16px;border-radius:20px;background:rgba(255,255,255,.62);border:1px solid rgba(25,92,165,.11);display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:center;transform:translateY(-16px)}.matrix-icon{width:48px;height:48px;border-radius:13px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:9px;background:rgba(244,252,243,.9);border:1px solid rgba(63,140,68,.16)}.matrix-icon i{border-radius:50%;background:var(--green);animation:matrixBlink 2.4s ease-in-out infinite}.matrix-icon i:nth-child(2n){animation-delay:.45s}.matrix-icon i:nth-child(3n){animation-delay:.9s}.matrix-card strong{display:block;color:var(--green);text-transform:uppercase;letter-spacing:.08em;font-size:12px}.matrix-card span{display:block;margin-top:6px;color:#40637d;font-size:11px;line-height:1.34}
+.bottom{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);width:auto;max-width:calc(100% - 420px);height:44px;z-index:40;border-radius:18px;background:rgba(255,255,255,.78);border:1px solid rgba(28,93,160,.13);box-shadow:0 14px 38px rgba(35,78,120,.07),inset 0 1px 0 rgba(255,255,255,.86);display:flex;align-items:center;justify-content:center;gap:10px;padding:0 12px;backdrop-filter:blur(10px) saturate(1.04)}.chip{flex:0 0 auto;height:30px;display:flex;align-items:center;justify-content:center;gap:7px;padding:0 14px;border-radius:999px;border:1px solid rgba(25,92,165,.12);background:rgba(255,255,255,.72);color:var(--blue);font-size:9.6px;font-weight:950;letter-spacing:.045em;text-transform:uppercase;white-space:nowrap}.chip.active{color:#fff;background:linear-gradient(180deg,#2b7bd6,#064eaa);box-shadow:0 8px 18px rgba(14,86,168,.16)}.chip.final{color:var(--green);border-color:rgba(63,140,68,.22);box-shadow:0 0 0 5px rgba(119,205,101,.05)}.chip .small-icon{width:14px;height:14px;border-radius:50%;border:1.8px dashed currentColor}.horizon{position:absolute;left:32px;right:32px;bottom:8px;height:23px;z-index:41;border-radius:999px;background:rgba(255,255,255,.74);display:flex;align-items:center;justify-content:center;gap:12px;text-transform:uppercase;color:var(--blue);letter-spacing:.10em;font-size:9.8px;font-weight:950}.horizon span{color:var(--green)}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}@keyframes softPulse{0%,100%{transform:scale(1);filter:saturate(1)}50%{transform:scale(1.06);filter:saturate(1.12)}}@keyframes matrixBlink{0%,100%{opacity:.35;transform:scale(.82)}50%{opacity:1;transform:scale(1.12)}}@keyframes leafSway{0%,100%{transform:rotate(-7deg) translateX(-1px)}50%{transform:rotate(9deg) translateX(9px)}}@keyframes veinLight{0%,100%{opacity:.45;stroke-dashoffset:18}50%{opacity:1;stroke-dashoffset:-18}}@keyframes sunGlow{0%,100%{opacity:.44}50%{opacity:.78}}@keyframes radarWave{0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}12%{opacity:.55}72%{opacity:.16}100%{opacity:0;transform:translate(-50%,-50%) scale(4.8)}}@keyframes lightDown{0%{opacity:0;transform:translateY(-72px)}12%{opacity:1}48%{opacity:1;transform:translateY(55px)}72%{opacity:.72;transform:translateY(142px)}100%{opacity:0;transform:translateY(210px)}}@keyframes rootSpark{0%,48%{opacity:0;stroke-dashoffset:52}58%{opacity:.95}100%{opacity:.18;stroke-dashoffset:-90}}@keyframes nodeFlash{0%,55%,100%{opacity:0;transform:scale(.7)}70%{opacity:1;transform:scale(1.2)}}@keyframes rootBreath{0%,100%{transform:translateX(0)}50%{transform:translateX(1.5px)}}
+
+/* Surgical composition update 190626:
+   lower soil layer, lift plant/root collar to the new soil line,
+   move preset cards away from the plant,
+   make Preset 04 completed/passive, and warm radar rings. */
+.soil{
+  top:395px !important;
+  height:160px !important;
+  opacity:.78 !important;
+  background:
+    radial-gradient(circle at 20% 22%,rgba(90,70,48,.15) 0 3px,transparent 4px),
+    radial-gradient(circle at 47% 18%,rgba(90,70,48,.12) 0 3px,transparent 4px),
+    radial-gradient(circle at 77% 24%,rgba(90,70,48,.13) 0 3px,transparent 4px),
+    linear-gradient(180deg,#b99d78,#a98d6b 54%,#947a59) !important;
+}
+.soil:before{
+  background:linear-gradient(180deg,transparent 0 44%,#b99d78 45% 100%) !important;
+}
+.surface{
+  top:384px !important;
+}
+.plant{
+  top:251px !important;
+}
+.l2{
+  left:92px !important;
+  top:146px !important;
+}
+.l3{
+  right:66px !important;
+  top:155px !important;
+}
+.n2{
+  left:130px !important;
+  top:108px !important;
+}
+.n3{
+  right:78px !important;
+  top:128px !important;
+}
+/* Preset 04 has completed its transfer into soil: make it calm like presets 2–3 */
+.node.final .num{
+  background:linear-gradient(180deg,#1474d8,#064eaa) !important;
+  box-shadow:0 10px 28px rgba(14,85,168,.20) !important;
+  animation:none !important;
+}
+.n4 .num{
+  background:linear-gradient(180deg,#1474d8,#064eaa) !important;
+}
+/* keep the soil-life process icon active, but not the central preset 4 node */
+.step-dot.final{
+  animation:softPulse 2.4s ease-in-out infinite !important;
+}
+/* Radar rings: warmer gold-green, still subtle */
+.circle-field{
+  background:
+    radial-gradient(circle,rgba(154,178,87,.08),transparent 40%),
+    repeating-radial-gradient(circle,rgba(180,162,68,.10) 0 1px,transparent 1px 38px) !important;
+}
+.radar i{
+  border-color:rgba(177,165,72,.34) !important;
+  box-shadow:0 0 12px rgba(177,165,72,.10) !important;
+}
+
+
+/* Root-collar precision correction:
+   previous source had an older .plant top override lower in CSS.
+   This final override aligns the root collar with the new soil surface
+   and moves the Preset 04 tag below Preset 03. */
+.plant{
+  top:134px !important;
+}
+.micro-tag{
+  top:236px !important;
+  right:12px !important;
+}
+
+
+/* Card micro-surgery:
+   - Preset 03 aligned vertically above Preset 04 card and matched in size.
+   - Preset 02 matched in size and moved left to open the leaf.
+   - Seedling card reduced and lowered to reveal node 1. */
+.l3{
+  right:12px !important;
+  top:156px !important;
+  min-width:136px !important;
+  width:136px !important;
+  padding:9px 12px !important;
+  border-radius:14px !important;
+}
+.l3 strong{
+  font-size:10.5px !important;
+  line-height:1.18 !important;
+  letter-spacing:.06em !important;
+}
+.l3 span{
+  margin-top:5px !important;
+  font-size:9.4px !important;
+  line-height:1.2 !important;
+}
+
+.micro-tag{
+  right:12px !important;
+  top:238px !important;
+  min-width:136px !important;
+  width:136px !important;
+}
+
+.l2{
+  left:58px !important;
+  top:150px !important;
+  min-width:136px !important;
+  width:136px !important;
+  padding:9px 12px !important;
+  border-radius:14px !important;
+}
+.l2 strong{
+  font-size:10.5px !important;
+  line-height:1.18 !important;
+  letter-spacing:.06em !important;
+}
+.l2 span{
+  margin-top:5px !important;
+  font-size:9.4px !important;
+  line-height:1.2 !important;
+}
+
+.l1{
+  left:26px !important;
+  top:350px !important;
+  min-width:118px !important;
+  width:118px !important;
+  padding:9px 11px !important;
+  border-radius:14px !important;
+}
+.l1 strong{
+  font-size:10.5px !important;
+  line-height:1.18 !important;
+}
+.l1 span{
+  margin-top:5px !important;
+  font-size:9.2px !important;
+}
+
+/* keep the numeric nodes visually above their smaller cards */
+.n1,.n2,.n3,.n4{
+  z-index:31 !important;
+}
+
+
+/* Final clarification surgery:
+   1) Root collar exactly on soil level.
+   2) Preset 03 card same width as Preset 04 and lowered above it.
+   3) Preset 02 card same width and moved farther left.
+   4) Seedling card text changed to Preset 01 / Seedling Origin. */
+.soil{
+  top:395px !important;
+}
+.surface{
+  top:395px !important;
+}
+/* SVG root collar is at y=250, so top 145px places collar at 395px soil line */
+.plant{
+  top:145px !important;
+}
+
+.l3{
+  right:12px !important;
+  top:196px !important;
+  min-width:136px !important;
+  width:136px !important;
+  padding:9px 12px !important;
+  border-radius:14px !important;
+}
+.l3 strong{
+  font-size:10.5px !important;
+  line-height:1.18 !important;
+  letter-spacing:.06em !important;
+}
+.l3 span{
+  margin-top:5px !important;
+  font-size:9.4px !important;
+  line-height:1.2 !important;
+}
+
+.micro-tag{
+  right:12px !important;
+  top:278px !important;
+  min-width:136px !important;
+  width:136px !important;
+}
+
+.l2{
+  left:18px !important;
+  top:154px !important;
+  min-width:136px !important;
+  width:136px !important;
+  padding:9px 12px !important;
+  border-radius:14px !important;
+}
+.l2 strong{
+  font-size:10.5px !important;
+  line-height:1.18 !important;
+  letter-spacing:.06em !important;
+}
+.l2 span{
+  margin-top:5px !important;
+  font-size:9.4px !important;
+  line-height:1.2 !important;
+}
+
+.l1{
+  left:30px !important;
+  top:350px !important;
+  min-width:122px !important;
+  width:122px !important;
+  padding:9px 11px !important;
+}
+.l1 strong{
+  font-size:10.2px !important;
+  line-height:1.16 !important;
+}
+.l1 span{
+  margin-top:5px !important;
+  font-size:9px !important;
+}
+
+
+/* Cycle Completion / Next Route Selection layer */
+.status .dot{
+  box-shadow:0 0 0 7px rgba(63,140,68,.12),0 0 22px rgba(63,140,68,.48) !important;
+}
+.stage::after{
+  content:"NEXT ROUTE SELECTION";
+  position:absolute;
+  z-index:35;
+  left:50%;
+  bottom:118px;
+  transform:translateX(-50%);
+  padding:9px 22px;
+  border-radius:999px;
+  color:var(--green);
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:10.2px;
+  font-weight:950;
+  background:rgba(255,255,255,.82);
+  border:1px solid rgba(63,140,68,.22);
+  box-shadow:0 12px 32px rgba(63,140,68,.10), inset 0 1px 0 rgba(255,255,255,.9);
+}
+.stage::before{
+  content:"";
+  position:absolute;
+  z-index:9;
+  left:50%;
+  top:49%;
+  width:430px;
+  height:430px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:
+    radial-gradient(circle,rgba(255,244,190,.16),transparent 32%),
+    conic-gradient(from 0deg,transparent,rgba(119,205,101,.18),transparent,rgba(14,86,168,.10),transparent);
+  opacity:.62;
+  animation:memoryOrbit 8s linear infinite;
+  pointer-events:none;
+}
+.circle-field{
+  background:
+    radial-gradient(circle,rgba(255,235,150,.10),transparent 35%),
+    repeating-radial-gradient(circle,rgba(180,162,68,.12) 0 1px,transparent 1px 38px) !important;
+}
+.radar i{
+  border-color:rgba(196,174,74,.38) !important;
+}
+.node.final .num{
+  background:linear-gradient(180deg,#7acc4f,#3e8d38) !important;
+  animation:softPulse 2.6s ease-in-out infinite !important;
+  box-shadow:0 0 0 12px rgba(119,205,101,.16),0 0 34px rgba(119,205,101,.32) !important;
+}
+.micro-tag{
+  background:rgba(255,255,255,.86) !important;
+  border-color:rgba(63,140,68,.20) !important;
+}
+.micro-tag strong{color:var(--green) !important;}
+.l4,.l5{
+  background:rgba(247,255,245,.90) !important;
+  border-color:rgba(63,140,68,.32) !important;
+}
+.horizon{
+  color:var(--blue) !important;
+}
+.horizon span{
+  color:var(--green) !important;
+}
+.chip.final{
+  background:rgba(247,255,245,.86) !important;
+}
+@keyframes memoryOrbit{
+  0%{transform:translate(-50%,-50%) rotate(0deg);opacity:.42}
+  50%{opacity:.78}
+  100%{transform:translate(-50%,-50%) rotate(360deg);opacity:.42}
+}
+
+
+/* Route 02 Activation / Next Biological Path layer */
+.stage::after{
+  content:"ROUTE 02 ACTIVATED";
+  position:absolute;
+  z-index:38;
+  left:50%;
+  bottom:118px;
+  transform:translateX(-50%);
+  padding:9px 24px;
+  border-radius:999px;
+  color:#fff;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:10.2px;
+  font-weight:950;
+  background:linear-gradient(180deg,#7acc4f,#3e8d38);
+  border:1px solid rgba(255,255,255,.42);
+  box-shadow:0 14px 36px rgba(63,140,68,.22), inset 0 1px 0 rgba(255,255,255,.42);
+  animation:route02Activate 2.4s ease-in-out infinite;
+}
+.stage::before{
+  content:"";
+  position:absolute;
+  z-index:9;
+  left:50%;
+  top:49%;
+  width:500px;
+  height:500px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:
+    radial-gradient(circle,rgba(119,205,101,.18),transparent 26%),
+    conic-gradient(from 0deg,
+      transparent 0 10%,
+      rgba(63,140,68,.25) 12% 19%,
+      transparent 22% 40%,
+      rgba(14,86,168,.12) 44% 51%,
+      transparent 54% 72%,
+      rgba(63,140,68,.20) 76% 82%,
+      transparent 85% 100%);
+  opacity:.78;
+  animation:route02LaunchOrbit 6.8s linear infinite;
+  pointer-events:none;
+}
+.circle-field{
+  background:
+    radial-gradient(circle,rgba(119,205,101,.13),transparent 34%),
+    repeating-radial-gradient(circle,rgba(63,140,68,.08) 0 1px,transparent 1px 38px) !important;
+}
+.radar i{
+  border-color:rgba(63,140,68,.36) !important;
+  box-shadow:0 0 14px rgba(63,140,68,.11) !important;
+}
+.node.final .num{
+  background:linear-gradient(180deg,#7acc4f,#3e8d38) !important;
+  color:#fff !important;
+  animation:softPulse 1.8s ease-in-out infinite !important;
+  box-shadow:0 0 0 12px rgba(119,205,101,.20),0 0 42px rgba(119,205,101,.42) !important;
+}
+.micro-tag{
+  background:rgba(247,255,245,.94) !important;
+  border-color:rgba(63,140,68,.32) !important;
+}
+.micro-tag strong{color:var(--green) !important;}
+.l5{
+  background:rgba(247,255,245,.94) !important;
+  border-color:rgba(63,140,68,.40) !important;
+  animation:route02Activate 2.4s ease-in-out infinite;
+}
+.l5 strong{color:var(--green) !important;}
+.plant{
+  filter:drop-shadow(0 0 16px rgba(119,205,101,.10));
+}
+.chip.final{
+  background:rgba(247,255,245,.90) !important;
+  color:var(--green) !important;
+}
+@keyframes route02LaunchOrbit{
+  0%{transform:translate(-50%,-50%) rotate(0deg);opacity:.52}
+  50%{opacity:.86}
+  100%{transform:translate(-50%,-50%) rotate(360deg);opacity:.52}
+}
+@keyframes route02Activate{
+  0%,100%{filter:saturate(1);box-shadow:0 12px 32px rgba(63,140,68,.11)}
+  50%{filter:saturate(1.18);box-shadow:0 18px 42px rgba(63,140,68,.24)}
+}
+
+
+/* Begin New Adaptive Cycle layer */
+.stage::after{
+  content:"NEW ADAPTIVE CYCLE";
+  position:absolute;
+  z-index:38;
+  left:50%;
+  bottom:118px;
+  transform:translateX(-50%);
+  padding:9px 24px;
+  border-radius:999px;
+  color:#fff;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:10.2px;
+  font-weight:950;
+  background:linear-gradient(180deg,#69c84b,#2f8d36);
+  border:1px solid rgba(255,255,255,.46);
+  box-shadow:0 14px 36px rgba(63,140,68,.24), inset 0 1px 0 rgba(255,255,255,.46);
+  animation:newCyclePulse 2.2s ease-in-out infinite;
+}
+.stage::before{
+  content:"";
+  position:absolute;
+  z-index:9;
+  left:50%;
+  top:49%;
+  width:520px;
+  height:520px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:
+    radial-gradient(circle,rgba(119,205,101,.22),transparent 24%),
+    conic-gradient(from 0deg,
+      rgba(119,205,101,.08) 0 7%,
+      transparent 9% 19%,
+      rgba(255,228,130,.16) 23% 29%,
+      transparent 32% 47%,
+      rgba(63,140,68,.20) 51% 60%,
+      transparent 64% 79%,
+      rgba(14,86,168,.10) 82% 88%,
+      transparent 91% 100%);
+  opacity:.80;
+  animation:newCycleOrbit 6.2s linear infinite;
+  pointer-events:none;
+}
+.circle-field{
+  background:
+    radial-gradient(circle,rgba(119,205,101,.14),transparent 33%),
+    repeating-radial-gradient(circle,rgba(119,205,101,.08) 0 1px,transparent 1px 38px) !important;
+}
+.radar i{
+  border-color:rgba(119,205,101,.40) !important;
+  box-shadow:0 0 16px rgba(119,205,101,.14) !important;
+}
+.node.final .num{
+  background:linear-gradient(180deg,#69c84b,#2f8d36) !important;
+  color:#fff !important;
+  animation:softPulse 1.7s ease-in-out infinite !important;
+  box-shadow:0 0 0 13px rgba(119,205,101,.20),0 0 44px rgba(119,205,101,.44) !important;
+}
+.micro-tag,.l5{
+  background:rgba(247,255,245,.95) !important;
+  border-color:rgba(63,140,68,.38) !important;
+}
+.micro-tag strong,.l5 strong{color:var(--green) !important;}
+.plant{
+  filter:drop-shadow(0 0 20px rgba(119,205,101,.12));
+}
+.horizon span{
+  color:var(--green) !important;
+}
+@keyframes newCycleOrbit{
+  0%{transform:translate(-50%,-50%) rotate(0deg);opacity:.55}
+  50%{opacity:.88}
+  100%{transform:translate(-50%,-50%) rotate(360deg);opacity:.55}
+}
+@keyframes newCyclePulse{
+  0%,100%{filter:saturate(1);box-shadow:0 14px 36px rgba(63,140,68,.18)}
+  50%{filter:saturate(1.20);box-shadow:0 20px 46px rgba(63,140,68,.30)}
+}
+
+
+/* Launch Pad 01 / Primary Root Interface layer */
+.stage::after{
+  content:"PRIMARY ROOT INTERFACE";
+  position:absolute;
+  z-index:38;
+  left:50%;
+  bottom:118px;
+  transform:translateX(-50%);
+  padding:9px 24px;
+  border-radius:999px;
+  color:#fff;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:10.2px;
+  font-weight:950;
+  background:linear-gradient(180deg,#2d80df,#0756a8);
+  border:1px solid rgba(255,255,255,.46);
+  box-shadow:0 14px 36px rgba(14,86,168,.24), inset 0 1px 0 rgba(255,255,255,.46);
+  animation:interfacePulse 2.2s ease-in-out infinite;
+}
+.stage::before{
+  content:"";
+  position:absolute;
+  z-index:9;
+  left:50%;
+  top:49%;
+  width:500px;
+  height:500px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:
+    radial-gradient(circle,rgba(14,86,168,.12),transparent 22%),
+    conic-gradient(from 0deg,
+      rgba(14,86,168,.10) 0 9%,
+      transparent 11% 20%,
+      rgba(119,205,101,.18) 25% 33%,
+      transparent 36% 52%,
+      rgba(14,86,168,.16) 57% 64%,
+      transparent 67% 82%,
+      rgba(255,228,130,.12) 86% 91%,
+      transparent 94% 100%);
+  opacity:.78;
+  animation:interfaceOrbit 7s linear infinite;
+  pointer-events:none;
+}
+.circle-field{
+  background:
+    radial-gradient(circle,rgba(14,86,168,.09),transparent 33%),
+    repeating-radial-gradient(circle,rgba(14,86,168,.08) 0 1px,transparent 1px 38px) !important;
+}
+.radar i{
+  border-color:rgba(14,86,168,.32) !important;
+  box-shadow:0 0 14px rgba(14,86,168,.12) !important;
+}
+.node.final .num{
+  background:linear-gradient(180deg,#2d80df,#0756a8) !important;
+  color:#fff !important;
+  animation:softPulse 1.8s ease-in-out infinite !important;
+  box-shadow:0 0 0 13px rgba(14,86,168,.15),0 0 38px rgba(14,86,168,.28) !important;
+}
+.micro-tag{
+  background:rgba(245,250,255,.94) !important;
+  border-color:rgba(14,86,168,.22) !important;
+}
+.micro-tag strong{color:var(--blue) !important;}
+.l4,.l5{
+  background:rgba(245,250,255,.94) !important;
+  border-color:rgba(14,86,168,.22) !important;
+}
+.l4 strong,.l5 strong{color:var(--blue) !important;}
+.root-glow{
+  stroke:rgba(180,226,255,.92) !important;
+  filter:drop-shadow(0 0 8px rgba(80,170,255,.70)) !important;
+}
+.light-dot,.root-node{
+  fill:#c8ecff !important;
+  filter:drop-shadow(0 0 8px rgba(80,170,255,.75)) !important;
+}
+.horizon span{
+  color:var(--blue) !important;
+}
+@keyframes interfaceOrbit{
+  0%{transform:translate(-50%,-50%) rotate(0deg);opacity:.52}
+  50%{opacity:.84}
+  100%{transform:translate(-50%,-50%) rotate(360deg);opacity:.52}
+}
+@keyframes interfacePulse{
+  0%,100%{filter:saturate(1);box-shadow:0 14px 36px rgba(14,86,168,.18)}
+  50%{filter:saturate(1.18);box-shadow:0 20px 46px rgba(14,86,168,.30)}
+}
+
+
+/* Root Reading / Signal Architecture layer */
+.stage::after{
+  content:"SIGNAL ARCHITECTURE ACTIVE";
+  position:absolute;
+  z-index:38;
+  left:50%;
+  bottom:118px;
+  transform:translateX(-50%);
+  padding:9px 24px;
+  border-radius:999px;
+  color:#fff;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:10.2px;
+  font-weight:950;
+  background:linear-gradient(180deg,#2d80df,#0756a8);
+  border:1px solid rgba(255,255,255,.46);
+  box-shadow:0 14px 36px rgba(14,86,168,.26), inset 0 1px 0 rgba(255,255,255,.46);
+  animation:signalPulse 2.2s ease-in-out infinite;
+}
+.stage::before{
+  content:"";
+  position:absolute;
+  z-index:9;
+  left:50%;
+  top:49%;
+  width:520px;
+  height:520px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:
+    radial-gradient(circle,rgba(14,86,168,.12),transparent 22%),
+    conic-gradient(from -35deg,
+      transparent 0 11%,
+      rgba(14,86,168,.22) 13% 18%,
+      transparent 20% 32%,
+      rgba(119,205,101,.18) 35% 43%,
+      transparent 45% 57%,
+      rgba(14,86,168,.18) 60% 67%,
+      transparent 70% 100%);
+  opacity:.78;
+  animation:signalOrbit 6.4s linear infinite;
+  pointer-events:none;
+}
+.circle-field{
+  background:
+    radial-gradient(circle,rgba(14,86,168,.10),transparent 32%),
+    repeating-radial-gradient(circle,rgba(14,86,168,.08) 0 1px,transparent 1px 38px) !important;
+}
+.radar i{
+  border-color:rgba(14,86,168,.34) !important;
+  box-shadow:0 0 15px rgba(14,86,168,.13) !important;
+}
+.node.final .num{
+  background:linear-gradient(180deg,#2d80df,#0756a8) !important;
+  color:#fff !important;
+  animation:softPulse 1.8s ease-in-out infinite !important;
+  box-shadow:0 0 0 13px rgba(14,86,168,.15),0 0 40px rgba(14,86,168,.30) !important;
+}
+.micro-tag,.l4,.l5{
+  background:rgba(245,250,255,.94) !important;
+  border-color:rgba(14,86,168,.24) !important;
+}
+.micro-tag strong,.l4 strong,.l5 strong{color:var(--blue) !important;}
+/* visible signal architecture lines over root */
+.plant::before,
+.plant::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:184px;
+  width:220px;
+  height:120px;
+  transform-origin:left center;
+  pointer-events:none;
+  opacity:.72;
+  background:
+    linear-gradient(90deg,rgba(14,86,168,.0),rgba(14,86,168,.55),rgba(119,205,101,.15),rgba(14,86,168,.0));
+  height:2px;
+  filter:drop-shadow(0 0 8px rgba(80,170,255,.55));
+  animation:signalSweep 2.8s ease-in-out infinite;
+}
+.plant::before{transform:translateX(-50%) rotate(-22deg)}
+.plant::after{transform:translateX(-50%) rotate(24deg);animation-delay:.7s}
+.root-glow{
+  stroke:rgba(150,214,255,.96) !important;
+  filter:drop-shadow(0 0 9px rgba(80,170,255,.78)) !important;
+}
+.light-dot,.root-node{
+  fill:#c8ecff !important;
+  filter:drop-shadow(0 0 8px rgba(80,170,255,.78)) !important;
+}
+.horizon span{color:var(--blue) !important;}
+@keyframes signalOrbit{
+  0%{transform:translate(-50%,-50%) rotate(0deg);opacity:.52}
+  50%{opacity:.86}
+  100%{transform:translate(-50%,-50%) rotate(360deg);opacity:.52}
+}
+@keyframes signalPulse{
+  0%,100%{filter:saturate(1);box-shadow:0 14px 36px rgba(14,86,168,.18)}
+  50%{filter:saturate(1.20);box-shadow:0 20px 46px rgba(14,86,168,.32)}
+}
+@keyframes signalSweep{
+  0%,100%{opacity:.25}
+  50%{opacity:.82}
+}
+
+
+/* Root Decision Logic / Adaptive Response layer */
+.stage::after{
+  content:"ROOT DECISION ACTIVE";
+  position:absolute;
+  z-index:38;
+  left:50%;
+  bottom:118px;
+  transform:translateX(-50%);
+  padding:9px 24px;
+  border-radius:999px;
+  color:#fff;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:10.2px;
+  font-weight:950;
+  background:linear-gradient(180deg,#38a6e8,#0756a8);
+  border:1px solid rgba(255,255,255,.46);
+  box-shadow:0 14px 36px rgba(14,86,168,.26), inset 0 1px 0 rgba(255,255,255,.46);
+  animation:decisionPulse 2.2s ease-in-out infinite;
+}
+.stage::before{
+  content:"";
+  position:absolute;
+  z-index:9;
+  left:50%;
+  top:49%;
+  width:520px;
+  height:520px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:
+    radial-gradient(circle,rgba(56,166,232,.13),transparent 22%),
+    conic-gradient(from 26deg,
+      transparent 0 8%,
+      rgba(56,166,232,.24) 11% 18%,
+      transparent 21% 36%,
+      rgba(119,205,101,.16) 39% 48%,
+      transparent 51% 64%,
+      rgba(14,86,168,.22) 67% 75%,
+      transparent 78% 100%);
+  opacity:.80;
+  animation:decisionOrbit 5.8s linear infinite;
+  pointer-events:none;
+}
+.circle-field{
+  background:
+    radial-gradient(circle,rgba(56,166,232,.10),transparent 32%),
+    repeating-radial-gradient(circle,rgba(14,86,168,.08) 0 1px,transparent 1px 38px) !important;
+}
+.radar i{
+  border-color:rgba(56,166,232,.38) !important;
+  box-shadow:0 0 16px rgba(56,166,232,.16) !important;
+}
+.node.final .num{
+  background:linear-gradient(180deg,#38a6e8,#0756a8) !important;
+  color:#fff !important;
+  animation:softPulse 1.7s ease-in-out infinite !important;
+  box-shadow:0 0 0 13px rgba(56,166,232,.17),0 0 42px rgba(56,166,232,.32) !important;
+}
+.micro-tag,.l4,.l5{
+  background:rgba(245,251,255,.95) !important;
+  border-color:rgba(56,166,232,.28) !important;
+}
+.micro-tag strong,.l4 strong,.l5 strong{color:var(--blue) !important;}
+/* decision vectors: three soft choice traces */
+.plant::before,
+.plant::after{
+  background:
+    linear-gradient(90deg,rgba(56,166,232,0),rgba(56,166,232,.62),rgba(119,205,101,.20),rgba(56,166,232,0)) !important;
+}
+.root-system-choice{
+  position:absolute;
+}
+.root-glow{
+  stroke:rgba(180,235,255,.98) !important;
+  stroke-dasharray:8 22 !important;
+  filter:drop-shadow(0 0 10px rgba(56,166,232,.78)) !important;
+}
+.light-dot,.root-node{
+  fill:#d1f2ff !important;
+  filter:drop-shadow(0 0 9px rgba(56,166,232,.78)) !important;
+}
+.l5{
+  animation:decisionPulse 2.2s ease-in-out infinite;
+}
+.horizon span{color:var(--blue) !important;}
+@keyframes decisionOrbit{
+  0%{transform:translate(-50%,-50%) rotate(0deg);opacity:.54}
+  50%{opacity:.88}
+  100%{transform:translate(-50%,-50%) rotate(360deg);opacity:.54}
+}
+@keyframes decisionPulse{
+  0%,100%{filter:saturate(1);box-shadow:0 14px 36px rgba(14,86,168,.18)}
+  50%{filter:saturate(1.20);box-shadow:0 20px 46px rgba(56,166,232,.34)}
+}
+
+
+/* Adaptive Growth Reorganization layer */
+.stage::after{
+  content:"GROWTH REORGANIZATION";
+  position:absolute;
+  z-index:38;
+  left:50%;
+  bottom:118px;
+  transform:translateX(-50%);
+  padding:9px 24px;
+  border-radius:999px;
+  color:#fff;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:10.2px;
+  font-weight:950;
+  background:linear-gradient(180deg,#72c94f,#2f8d36);
+  border:1px solid rgba(255,255,255,.46);
+  box-shadow:0 14px 36px rgba(63,140,68,.26), inset 0 1px 0 rgba(255,255,255,.46);
+  animation:growthPulse 2.2s ease-in-out infinite;
+}
+.stage::before{
+  content:"";
+  position:absolute;
+  z-index:9;
+  left:50%;
+  top:49%;
+  width:540px;
+  height:540px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:
+    radial-gradient(circle,rgba(119,205,101,.18),transparent 23%),
+    conic-gradient(from 18deg,
+      transparent 0 8%,
+      rgba(119,205,101,.26) 10% 18%,
+      transparent 21% 33%,
+      rgba(255,228,130,.15) 36% 42%,
+      transparent 45% 58%,
+      rgba(63,140,68,.23) 61% 70%,
+      transparent 73% 100%);
+  opacity:.80;
+  animation:growthOrbit 6s linear infinite;
+  pointer-events:none;
+}
+.circle-field{
+  background:
+    radial-gradient(circle,rgba(119,205,101,.13),transparent 32%),
+    repeating-radial-gradient(circle,rgba(119,205,101,.08) 0 1px,transparent 1px 38px) !important;
+}
+.radar i{
+  border-color:rgba(119,205,101,.38) !important;
+  box-shadow:0 0 16px rgba(119,205,101,.16) !important;
+}
+.node.final .num{
+  background:linear-gradient(180deg,#72c94f,#2f8d36) !important;
+  color:#fff !important;
+  animation:softPulse 1.7s ease-in-out infinite !important;
+  box-shadow:0 0 0 13px rgba(119,205,101,.20),0 0 44px rgba(119,205,101,.44) !important;
+}
+.micro-tag,.l4,.l5{
+  background:rgba(247,255,245,.95) !important;
+  border-color:rgba(63,140,68,.34) !important;
+}
+.micro-tag strong,.l4 strong,.l5 strong{color:var(--green) !important;}
+/* growth vectors: green reorganization traces */
+.plant::before,
+.plant::after{
+  background:
+    linear-gradient(90deg,rgba(119,205,101,0),rgba(119,205,101,.68),rgba(255,228,130,.22),rgba(119,205,101,0)) !important;
+  height:2px !important;
+  filter:drop-shadow(0 0 8px rgba(119,205,101,.55)) !important;
+}
+.root-glow{
+  stroke:rgba(210,255,170,.96) !important;
+  stroke-dasharray:10 18 !important;
+  filter:drop-shadow(0 0 10px rgba(119,205,101,.72)) !important;
+}
+.light-dot,.root-node{
+  fill:#e7ffbd !important;
+  filter:drop-shadow(0 0 9px rgba(119,205,101,.78)) !important;
+}
+.l5{
+  animation:growthPulse 2.2s ease-in-out infinite;
+}
+.horizon span{color:var(--green) !important;}
+@keyframes growthOrbit{
+  0%{transform:translate(-50%,-50%) rotate(0deg);opacity:.54}
+  50%{opacity:.88}
+  100%{transform:translate(-50%,-50%) rotate(360deg);opacity:.54}
+}
+@keyframes growthPulse{
+  0%,100%{filter:saturate(1);box-shadow:0 14px 36px rgba(63,140,68,.18)}
+  50%{filter:saturate(1.20);box-shadow:0 20px 46px rgba(63,140,68,.34)}
+}
+
+
+/* Branching Logic / New Root Architecture layer */
+.stage::after{
+  content:"BRANCHING ARCHITECTURE ACTIVE";
+  position:absolute;
+  z-index:38;
+  left:50%;
+  bottom:118px;
+  transform:translateX(-50%);
+  padding:9px 24px;
+  border-radius:999px;
+  color:#fff;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:10.2px;
+  font-weight:950;
+  background:linear-gradient(180deg,#66c946,#2f8d36);
+  border:1px solid rgba(255,255,255,.48);
+  box-shadow:0 14px 38px rgba(63,140,68,.28), inset 0 1px 0 rgba(255,255,255,.48);
+  animation:branchPulse 2.05s ease-in-out infinite;
+}
+.stage::before{
+  content:"";
+  position:absolute;
+  z-index:9;
+  left:50%;
+  top:49%;
+  width:560px;
+  height:560px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:
+    radial-gradient(circle,rgba(119,205,101,.18),transparent 22%),
+    conic-gradient(from -18deg,
+      transparent 0 7%,
+      rgba(119,205,101,.30) 10% 18%,
+      transparent 21% 31%,
+      rgba(255,228,130,.17) 35% 42%,
+      transparent 45% 56%,
+      rgba(63,140,68,.26) 60% 70%,
+      transparent 73% 83%,
+      rgba(119,205,101,.20) 86% 92%,
+      transparent 95% 100%);
+  opacity:.84;
+  animation:branchOrbit 5.6s linear infinite;
+  pointer-events:none;
+}
+.circle-field{
+  background:
+    radial-gradient(circle,rgba(119,205,101,.15),transparent 31%),
+    repeating-radial-gradient(circle,rgba(119,205,101,.085) 0 1px,transparent 1px 38px) !important;
+}
+.radar i{
+  border-color:rgba(119,205,101,.42) !important;
+  box-shadow:0 0 18px rgba(119,205,101,.18) !important;
+}
+.node.final .num{
+  background:linear-gradient(180deg,#66c946,#2f8d36) !important;
+  color:#fff !important;
+  animation:softPulse 1.55s ease-in-out infinite !important;
+  box-shadow:0 0 0 14px rgba(119,205,101,.22),0 0 48px rgba(119,205,101,.48) !important;
+}
+.micro-tag,.l4,.l5{
+  background:rgba(247,255,245,.96) !important;
+  border-color:rgba(63,140,68,.38) !important;
+}
+.micro-tag strong,.l4 strong,.l5 strong{color:var(--green) !important;}
+.root{
+  stroke:#e8d194 !important;
+  stroke-width:6.4 !important;
+}
+.root-thin{
+  stroke:#f0dcae !important;
+  stroke-width:3.8 !important;
+}
+.root-mini{
+  stroke:#f5e6c4 !important;
+  stroke-width:2.6 !important;
+}
+.root-glow{
+  stroke:rgba(214,255,174,.98) !important;
+  stroke-dasharray:9 15 !important;
+  filter:drop-shadow(0 0 11px rgba(119,205,101,.78)) !important;
+}
+.light-dot,.root-node{
+  fill:#edffbd !important;
+  filter:drop-shadow(0 0 10px rgba(119,205,101,.82)) !important;
+}
+.plant::before,
+.plant::after{
+  background:
+    linear-gradient(90deg,rgba(119,205,101,0),rgba(119,205,101,.74),rgba(255,228,130,.26),rgba(119,205,101,0)) !important;
+  height:2.5px !important;
+  filter:drop-shadow(0 0 9px rgba(119,205,101,.60)) !important;
+  animation:branchTrace 2.5s ease-in-out infinite !important;
+}
+.l5{
+  animation:branchPulse 2.05s ease-in-out infinite;
+}
+.horizon span{color:var(--green) !important;}
+@keyframes branchOrbit{
+  0%{transform:translate(-50%,-50%) rotate(0deg);opacity:.56}
+  50%{opacity:.90}
+  100%{transform:translate(-50%,-50%) rotate(360deg);opacity:.56}
+}
+@keyframes branchPulse{
+  0%,100%{filter:saturate(1);box-shadow:0 14px 36px rgba(63,140,68,.20)}
+  50%{filter:saturate(1.24);box-shadow:0 22px 50px rgba(63,140,68,.38)}
+}
+@keyframes branchTrace{
+  0%,100%{opacity:.28}
+  50%{opacity:.88}
+}
+
+/* Exact MATRIX114 reference for Explorer/Archive screens */
+.cell-matrix{width:82px;height:64px;display:grid;align-content:center;justify-content:center;grid-template-columns:repeat(var(--cols),14px);grid-auto-rows:14px;column-gap:2px;row-gap:2px;position:relative;overflow:visible}
+.cell-matrix i{width:14px;height:14px;box-sizing:border-box;border-radius:50%;border:1.5px solid #4f7f34;background:#a9d28e;position:relative}
+.cell-matrix i.hole::after{content:"";display:block;position:absolute;inset:3px;border-radius:50%;background:#fff}
+.cell-matrix i.solid::after{content:"";display:block;position:absolute;left:50%;top:50%;width:2px;height:2px;transform:translate(-50%,-50%);border-radius:50%;background:rgba(60,100,48,.55)}
+.scale-row.next .cell-matrix i{border-color:#397a39;background:#9dce87}
+.matrix-floor{position:absolute;z-index:3;left:50%;top:45px;width:calc(var(--cols) * 16px + 2px);height:4px;box-sizing:border-box;transform:translateX(-50%);border:2px solid #3029ff;background:#fff;border-radius:0}
+.matrix-icon.matrix-live{position:relative;display:block;overflow:visible;width:48px;height:48px;background:transparent;border:0;padding:0;border-radius:0;animation:matrixExactPulse 2.2s ease-in-out infinite}
+.matrix-live i{position:absolute;width:20px;height:20px;border-radius:50%;border:1.5px solid #4f7f34;background:#a9d28e;animation:none}
+.matrix-live i:nth-child(1){left:14px;top:0}.matrix-live i:nth-child(2){right:0;top:14px}.matrix-live i:nth-child(3){left:14px;bottom:0}.matrix-live i:nth-child(4){left:0;top:14px}
+.matrix-live .matrix-diamond{position:absolute;left:9px;top:9px;width:30px;height:30px;box-sizing:border-box;border:2px solid #3029ff;background:transparent;transform:rotate(45deg);box-shadow:none;animation:none}
+.matrix-live .matrix-core{position:absolute;left:15px;top:15px;width:18px;height:18px;box-sizing:border-box;border:4px solid #a9d28e;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px #4f7f34;animation:none}
+@keyframes matrixExactPulse{0%,100%{transform:scale(.94);opacity:.82}50%{transform:scale(1.06);opacity:1}}
+@media (prefers-reduced-motion:reduce){.matrix-icon.matrix-live{animation:none}}
+
+/* Screens 15-23: separate the status tag from node 4 */
+.micro-tag{right:90px !important;}
+
+/* Left information card: replay on every screen change */
+.left .info .icon{
+  position:relative;
+  isolation:isolate;
+  --icon-delay:0s;
+  animation:abiIconAwake .78s cubic-bezier(.20,.82,.22,1.18) var(--icon-delay) both;
+  transition:transform .24s ease,box-shadow .24s ease,color .24s ease;
+}
+.left .info:nth-child(2) .icon{--icon-delay:.12s}
+.left .info:nth-child(3) .icon{--icon-delay:.24s}
+.left .info:nth-child(4) .icon{--icon-delay:.36s}
+.left .info .icon::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:-7px;
+  border-radius:50%;
+  border:2px solid rgba(22,112,214,.42);
+  opacity:0;
+  pointer-events:none;
+  animation:abiIconRing 1.05s ease-out calc(var(--icon-delay) + .18s) both;
+}
+.left .info:nth-child(4) .icon::after{border-color:rgba(63,140,68,.42)}
+.left .info:hover .icon{
+  animation:none;
+  transform:translateY(-3px) scale(1.08);
+  color:#075fbe;
+  box-shadow:0 12px 28px rgba(20,104,188,.17),0 0 0 5px rgba(72,148,224,.08);
+}
+.left .info:hover .icon::after{animation:abiIconHoverRing 1.45s ease-out infinite}
+@keyframes abiIconAwake{
+  0%{opacity:.28;transform:translateX(-9px) scale(.72) rotate(-12deg);filter:saturate(.7)}
+  58%{opacity:1;transform:translateX(2px) scale(1.12) rotate(4deg);filter:saturate(1.25)}
+  100%{opacity:1;transform:translateX(0) scale(1) rotate(0);filter:saturate(1)}
+}
+@keyframes abiIconRing{
+  0%{opacity:0;transform:scale(.48)}
+  24%{opacity:.72}
+  100%{opacity:0;transform:scale(1.32)}
+}
+@keyframes abiIconHoverRing{
+  0%{opacity:.42;transform:scale(.82)}
+  100%{opacity:0;transform:scale(1.28)}
+}
+@media (prefers-reduced-motion:reduce){
+  .left .info .icon,.left .info .icon::after{animation:none!important;transition:none!important}
+}
+
+/* Process card: staged replay on every screen change */
+.process .step-dot{
+  position:relative;
+  isolation:isolate;
+  --step-delay:.08s;
+  animation:abiStepWake .72s cubic-bezier(.20,.82,.22,1.18) var(--step-delay) both;
+  transition:transform .22s ease,box-shadow .22s ease,filter .22s ease;
+}
+.process .step:nth-child(2) .step-dot{--step-delay:.18s}
+.process .step:nth-child(3) .step-dot{--step-delay:.28s}
+.process .step:nth-child(4) .step-dot{--step-delay:.38s}
+.process .step:nth-child(5) .step-dot{--step-delay:.48s}
+.process .step-dot::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:-6px;
+  border-radius:50%;
+  border:2px solid rgba(22,112,214,.38);
+  opacity:0;
+  pointer-events:none;
+  animation:abiStepRing .95s ease-out calc(var(--step-delay) + .12s) both;
+}
+.process .final-step .step-dot::after{border-color:rgba(63,140,68,.48)}
+.process .step:hover .step-dot{
+  animation:none;
+  transform:translateY(-2px) scale(1.09);
+  filter:saturate(1.22);
+  box-shadow:0 10px 24px rgba(20,104,188,.16),0 0 0 5px rgba(72,148,224,.07);
+}
+.process .final-step:hover .step-dot{box-shadow:0 10px 24px rgba(63,140,68,.17),0 0 0 5px rgba(94,174,87,.08)}
+.process .step:hover .step-dot::after{animation:abiStepHoverRing 1.4s ease-out infinite}
+@keyframes abiStepWake{
+  0%{opacity:.24;transform:translateY(-9px) scale(.68);filter:saturate(.65)}
+  60%{opacity:1;transform:translateY(2px) scale(1.12);filter:saturate(1.28)}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:saturate(1)}
+}
+@keyframes abiStepRing{
+  0%{opacity:0;transform:scale(.48)}
+  26%{opacity:.68}
+  100%{opacity:0;transform:scale(1.28)}
+}
+@keyframes abiStepHoverRing{
+  0%{opacity:.38;transform:scale(.84)}
+  100%{opacity:0;transform:scale(1.25)}
+}
+@media (prefers-reduced-motion:reduce){
+  .process .step-dot,.process .step-dot::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<main class="frame">
+<header><div class="brand">ABI World <span>Branching Logic</span></div><div class="title"><h1>Branching Logic / New Root Architecture</h1><p>The reorganized growth pattern opens a new branching logic.<br>Adaptive response becomes visible as a stronger root architecture and a new support geometry.</p></div><div class="status"><i class="dot"></i> Branching Active</div></header>
+<section class="layout">
+<aside class="panel left"><div class="info"><div class="icon">◎</div><div><h3>Mission</h3><p>Show how growth reorganization becomes branching logic and a new root architecture.</p></div></div><div class="info"><div class="icon">⌕</div><div><h3>Discovery</h3><p>The root system now branches as a structured architecture: support geometry expands and the plant gains a stronger adaptive base.</p></div></div><div class="info big"><div class="icon">＋</div><div><h3>Principles</h3><ul><li>Matrix program = constant.</li><li>Growth reorganization complete</li><li>Branching logic active</li><li>New root architecture</li><li>Support geometry expands</li></ul></div></div><div class="info big"><div class="icon">⌁</div><div><h3>Evolution Signals</h3><p>Branching becomes the visible memory of the decision: the root system builds a new support architecture.</p></div></div></aside>
+<aside class="panel process"><div class="step"><div class="step-dot seed">🌱</div><div><strong>Seedling</strong><span>Biological origin established.</span></div></div><div class="step"><div class="step-dot active">◉</div><div><strong>Preset 02<br>R76</strong><span>First scale input activated.</span></div></div><div class="step"><div class="step-dot active">◉</div><div><strong>Preset 03<br>R108</strong><span>Scale evolved. Development completed.</span></div></div><div class="step"><div class="step-dot active">◉</div><div><strong>Root Expansion</strong><span>Root network expands.</span></div></div><div class="step final-step"><div class="step-dot final">🌿</div><div><strong>Branching Active</strong><span>Route memory captured.</span></div></div></aside>
+<section class="panel stage"><h2>Branching Logic / New Root Architecture</h2><div class="sub">Reorganized growth expands into branching logic and a stronger root architecture.</div><div class="circle-field"></div><div class="radar"><i></i><i></i><i></i><i></i></div><div class="sun-ray"></div><div class="soil"></div><div class="surface"></div>
+<div class="node seed n1"><div class="num">1</div></div><div class="node n2"><div class="num">2</div></div><div class="node n3"><div class="num">3</div></div><div class="node final n4"><div class="num">4</div></div><div class="micro-tag"><strong>Branching Active</strong><span>Next biological path</span></div><div class="label l1"><strong>Preset 01<br>Seedling</strong><span>Origin</span></div><div class="label l2"><strong>Preset 02<br>R76</strong><span>First scale input</span></div><div class="label l3"><strong>Preset 03<br>R108</strong><span>Completed input</span></div><div class="label l4"><strong>Branching<br>Logic</strong><span>Architecture opens</span></div><div class="label l5"><strong>Root<br>Architecture</strong><span>Support expands</span></div>
+<div class="plant"><svg viewBox="0 0 270 410">
+<path class="stem" d="M135 18 C132 75 130 125 131 174 C132 205 132 225 132 251"/><path class="stem" d="M135 95 C104 85 86 78 62 78"/><path class="stem" d="M137 105 C163 92 183 84 209 78"/><path class="stem" d="M134 150 C111 143 95 138 72 142"/>
+<g><path class="leaf" d="M58 70 C30 61 12 71 0 85 C29 101 55 98 80 78 C74 75 66 72 58 70Z"/><path class="leaf-vein" d="M10 83 C34 80 55 77 76 76"/></g>
+<g class="leaf-right-top"><path class="leaf" d="M178 65 C206 43 238 42 264 45 C255 78 226 98 184 91 C178 83 176 73 178 65Z"/><path class="leaf-vein" d="M190 86 C210 72 230 60 252 49"/><path class="sun-vein" d="M194 83 C207 75 221 66 238 56"/><path class="sun-vein" d="M202 78 C214 79 226 78 239 75"/><path class="sun-vein" d="M210 70 C218 64 224 58 231 51"/></g>
+<g><path class="leaf" d="M72 137 C46 129 28 139 17 153 C42 166 69 162 93 145 C87 141 80 139 72 137Z"/><path class="leaf-vein" d="M27 151 C48 147 69 144 90 143"/></g>
+<circle class="light-dot" cx="171" cy="75" r="3"/><circle class="light-dot" cx="135" cy="130" r="3" style="animation-delay:.35s"/><circle class="light-dot" cx="132" cy="214" r="4" style="animation-delay:.72s"/><circle class="light-dot" cx="132" cy="252" r="4.5" style="animation-delay:1.05s"/>
+<path class="root" d="M132 250 C132 278 132 314 132 386"/><path class="root root-thin" d="M132 270 C104 285 82 300 58 323"/><path class="root root-thin" d="M132 282 C160 292 186 304 213 327"/><path class="root root-thin" d="M132 310 C108 324 91 338 72 356"/><path class="root root-thin" d="M132 320 C156 335 174 350 193 370"/><path class="root root-thin" d="M132 348 C114 360 105 374 94 394"/><path class="root root-thin" d="M132 352 C147 365 157 378 167 397"/><path class="root root-mini" d="M80 305 C65 306 52 314 42 326"/><path class="root root-mini" d="M62 321 C47 331 37 342 28 356"/><path class="root root-mini" d="M188 308 C201 310 215 320 228 334"/><path class="root root-mini" d="M206 326 C222 335 235 350 245 366"/>
+<path class="root-glow" d="M132 250 C132 278 132 314 132 386"/><path class="root-glow" d="M132 270 C104 285 82 300 58 323"/><path class="root-glow" d="M132 282 C160 292 186 304 213 327"/><path class="root-glow" d="M132 310 C108 324 91 338 72 356"/><path class="root-glow" d="M132 320 C156 335 174 350 193 370"/><circle class="root-node node-a" cx="132" cy="250" r="4.5"/><circle class="root-node node-b" cx="92" cy="302" r="3.4"/><circle class="root-node node-c" cx="186" cy="304" r="3.4"/><circle class="root-node node-d" cx="132" cy="338" r="3.6"/>
+</svg></div>
+<div class="ref"><div class="ref-title">Preset Scale Reference</div><div class="ref-line"></div><div class="ref-item r51"><b>R51 mm</b><span>Smaller scale</span><div class="ref-dot"></div></div><div class="ref-item r76"><b>R76 mm</b><span>Completed</span><div class="ref-dot"></div></div><div class="ref-item r108"><b>R108 mm</b><span>Completed</span><div class="ref-dot"></div></div><div class="ref-item r146"><b style="color:var(--green)">R146 mm</b><span>Active</span><div class="ref-dot final"></div></div></div>
+</section>
+<aside class="panel right"><h2>Branching Architecture Schematic</h2><p>The reorganized response becomes branching architecture.</p><p>The matrix program remains constant while branching geometry expands.</p>
+<div class="scale-row"><div class="scale-name">Preset 01<br>R51</div><div class="cell-matrix" style="--cols:3" aria-label="Matrix preset diagram"><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><b class="matrix-floor" aria-hidden="true"></b></div><div class="scale-data"><div><b>D</b><span>102 mm</span></div><div><b>h</b><span>100 mm</span></div><div><b>V</b><span>0.82 L</span></div></div></div>
+<div class="scale-row"><div class="scale-name">Preset 02<br>R76</div><div class="cell-matrix" style="--cols:4" aria-label="Matrix preset diagram"><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><b class="matrix-floor" aria-hidden="true"></b></div><div class="scale-data"><div><b>D</b><span>152 mm</span></div><div><b>h</b><span>150 mm</span></div><div><b>V</b><span>2.8 L</span></div></div></div>
+<div class="scale-row"><div class="scale-name">Preset 03<br>R108</div><div class="cell-matrix" style="--cols:5" aria-label="Matrix preset diagram"><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><b class="matrix-floor" aria-hidden="true"></b></div><div class="scale-data"><div><b>D</b><span>216 mm</span></div><div><b>h</b><span>200 mm</span></div><div><b>V</b><span>7.3 L</span></div></div></div>
+<div class="scale-row next"><div class="scale-name">Preset 04<br>R146</div><div class="cell-matrix" style="--cols:6" aria-label="Matrix preset diagram"><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><b class="matrix-floor" aria-hidden="true"></b></div><div class="scale-data"><div><b>D</b><span>292 mm</span></div><div><b>h</b><span>250 mm</span></div><div><b>V</b><span>17.0 L</span></div></div></div>
+<div class="matrix-card"><div class="matrix-icon matrix-live" aria-label="Active matrix"><i></i><i></i><i></i><i></i><b class="matrix-diamond"></b><b class="matrix-core"></b></div><div><strong>Matrix Program: Constant</strong><span>Branching logic is active. The system builds a stronger root architecture.</span></div></div></aside>
+</section>
+<section class="bottom"><div class="chip">🌱 Seedling</div><div class="chip"><span class="small-icon"></span> R76 Active</div><div class="chip">✓ R108 Complete</div><div class="chip active">◎ Branching</div><div class="chip final">✔ Branching Active</div></section><div class="horizon">Next Horizon: <span>Root Architecture Stabilization / System Memory</span></div>
+</main></body></html>

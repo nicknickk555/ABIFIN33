@@ -1,0 +1,190 @@
+{
+  "route_name": "ABI World Closed Route Memory",
+  "version": "Draft Final Route 200626 / assembled 050726",
+  "source_zip": "ABI-FINISH(1).zip",
+  "presentation_route": [
+    {
+      "id": "01",
+      "title": "Adaptive Growth Reorganization",
+      "source_file": "190626_adaptive_growth_reorganization (1).html",
+      "file": "route_screens/01_adaptive_growth_reorganization.html",
+      "status": "available"
+    },
+    {
+      "id": "02",
+      "title": "Branching Logic / New Root Architecture",
+      "source_file": "200626_branching_logic_new_root_architecture (1).html",
+      "file": "route_screens/02_branching_logic_new_root_architecture.html",
+      "status": "available"
+    },
+    {
+      "id": "03",
+      "title": "Root Architecture Stabilization / System Memory",
+      "source_file": "200626_root_architecture_stabilization_system_memory.html",
+      "file": "route_screens/03_root_architecture_stabilization_system_memory.html",
+      "status": "available"
+    },
+    {
+      "id": "04",
+      "title": "Return to ABI World / Route Memory",
+      "source_file": "200626_return_to_abi_world_route_memory_card_left.html",
+      "file": "route_screens/04_return_to_abi_world_route_memory.html",
+      "status": "available"
+    },
+    {
+      "id": "05",
+      "title": "ABI World Navigation / Next Route Selector",
+      "source_file": "200626_final_abi_world_navigation_next_route_selector.html",
+      "file": "route_screens/05_abi_world_navigation_next_route_selector.html",
+      "status": "available"
+    },
+    {
+      "id": "06",
+      "title": "Next Route Activation / New Biological Program",
+      "source_file": "200626_next_route_activation_new_biological_program.html",
+      "file": "route_screens/06_next_route_activation_new_biological_program.html",
+      "status": "available"
+    },
+    {
+      "id": "07",
+      "title": "Cycle Close / Final ABI World Memory",
+      "source_file": "200626_cycle_close_final_abi_world_memory_cards_tuned.html",
+      "file": "route_screens/07_cycle_close_final_abi_world_memory.html",
+      "status": "available"
+    },
+    {
+      "id": "08",
+      "title": "ABI World Map Reopened / Closed Loop",
+      "source_file": "200626_abi_world_route_selector_memory_reopened_stable_slots.html",
+      "file": "route_screens/08_abi_world_map_reopened_closed_loop.html",
+      "status": "available"
+    }
+  ],
+  "missing_from_uploaded_zip_but_recovered": [
+    "200626_root_architecture_stabilization_system_memory.html",
+    "200626_root_architecture_stabilization_system_memory.txt"
+  ],
+  "missing": [],
+  "archive_screens": [
+    {
+      "file": "../01_html_screens/180626_abi_world_exit_portal_living_plant_v2_circles_text_fixed.html",
+      "title": "ABI World — Exit Portal / Living Plant",
+      "source_file": "180626_abi_world_exit_portal_living_plant_v2_circles_text_fixed.html"
+    },
+    {
+      "file": "../01_html_screens/180626_guided_scale_evolution_preset04_oneline.html",
+      "title": "Guided Scale Evolution",
+      "source_file": "180626_guided_scale_evolution_preset04_oneline.html"
+    },
+    {
+      "file": "../01_html_screens/180626_large_root_system_expansion_ref_raised (2).html",
+      "title": "Large Root-System Expansion",
+      "source_file": "180626_large_root_system_expansion_ref_raised (2).html"
+    },
+    {
+      "file": "../01_html_screens/180626_preset04_r146_activation.html",
+      "title": "Preset 04 / R146 Activation",
+      "source_file": "180626_preset04_r146_activation.html"
+    },
+    {
+      "file": "../01_html_screens/180626_r146_development_field.html",
+      "title": "R146 Development Field",
+      "source_file": "180626_r146_development_field.html"
+    },
+    {
+      "file": "../01_html_screens/190626_adaptive_growth_reorganization (1).html",
+      "title": "Adaptive Growth Reorganization",
+      "source_file": "190626_adaptive_growth_reorganization (1).html"
+    },
+    {
+      "file": "../01_html_screens/190626_begin_new_adaptive_cycle (1).html",
+      "title": "Begin New Adaptive Cycle",
+      "source_file": "190626_begin_new_adaptive_cycle (1).html"
+    },
+    {
+      "file": "../01_html_screens/190626_launch_pad01_primary_root_interface_restart (2).html",
+      "title": "Launch Pad 01 / Primary Root Interface",
+      "source_file": "190626_launch_pad01_primary_root_interface_restart (2).html"
+    },
+    {
+      "file": "../01_html_screens/190626_next_route_selection (1).html",
+      "title": "Next Route Selection",
+      "source_file": "190626_next_route_selection (1).html"
+    },
+    {
+      "file": "../01_html_screens/190626_plant_stability_soil_life_final_clarification (1).html",
+      "title": "Plant Stability / Independent Soil Life",
+      "source_file": "190626_plant_stability_soil_life_final_clarification (1).html"
+    },
+    {
+      "file": "../01_html_screens/190626_root_decision_logic_adaptive_response (1).html",
+      "title": "Root Decision Logic / Adaptive Response",
+      "source_file": "190626_root_decision_logic_adaptive_response (1).html"
+    },
+    {
+      "file": "../01_html_screens/190626_root_reading_signal_architecture (1).html",
+      "title": "Root Reading / Signal Architecture",
+      "source_file": "190626_root_reading_signal_architecture (1).html"
+    },
+    {
+      "file": "../01_html_screens/190626_route02_activation_next_biological_path (2).html",
+      "title": "Route 02 Activation / Next Biological Path",
+      "source_file": "190626_route02_activation_next_biological_path (2).html"
+    },
+    {
+      "file": "../01_html_screens/200626_abi_world_route_selector_memory_reopened_stable_slots.html",
+      "title": "ABI World Map Reopened",
+      "source_file": "200626_abi_world_route_selector_memory_reopened_stable_slots.html"
+    },
+    {
+      "file": "../01_html_screens/200626_branching_logic_new_root_architecture (1).html",
+      "title": "Branching Logic / New Root Architecture",
+      "source_file": "200626_branching_logic_new_root_architecture (1).html"
+    },
+    {
+      "file": "../01_html_screens/200626_cycle_close_final_abi_world_memory_cards_tuned.html",
+      "title": "Cycle Close / Final ABI World Memory",
+      "source_file": "200626_cycle_close_final_abi_world_memory_cards_tuned.html"
+    },
+    {
+      "file": "../01_html_screens/200626_final_abi_world_navigation_next_route_selector.html",
+      "title": "ABI World Navigation / Next Route Selector",
+      "source_file": "200626_final_abi_world_navigation_next_route_selector.html"
+    },
+    {
+      "file": "../01_html_screens/200626_next_route_activation_new_biological_program.html",
+      "title": "Next Route Activation / New Biological Program",
+      "source_file": "200626_next_route_activation_new_biological_program.html"
+    },
+    {
+      "file": "../01_html_screens/200626_return_to_abi_world_route_memory.html",
+      "title": "Return to ABI World",
+      "source_file": "200626_return_to_abi_world_route_memory.html"
+    },
+    {
+      "file": "../01_html_screens/200626_return_to_abi_world_route_memory_card_left.html",
+      "title": "Return to ABI World / Route Memory",
+      "source_file": "200626_return_to_abi_world_route_memory_card_left.html"
+    },
+    {
+      "file": "../01_html_screens/200626_return_to_abi_world_route_memory_cards_fixed.html",
+      "title": "Return to ABI World",
+      "source_file": "200626_return_to_abi_world_route_memory_cards_fixed.html"
+    },
+    {
+      "file": "../01_html_screens/200626_return_to_abi_world_route_memory_point2_map_focus (2).html",
+      "title": "Return to ABI World",
+      "source_file": "200626_return_to_abi_world_route_memory_point2_map_focus (2).html"
+    },
+    {
+      "file": "../01_html_screens/200626_root_architecture_stabilization_system_memory.html",
+      "title": "Root Architecture Stabilization / System Memory",
+      "source_file": "200626_root_architecture_stabilization_system_memory.html"
+    }
+  ],
+  "notes": [
+    "This is a draft navigation assembly. Original screens remain autonomous.",
+    "Presentation Mode follows the 8-screen closed-route chain.",
+    "Explorer Mode lists all HTML screens from the uploaded ABI-FINISH folder plus the recovered screen 03."
+  ]
+}

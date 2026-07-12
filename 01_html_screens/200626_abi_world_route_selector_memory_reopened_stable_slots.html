@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ABI World — Route Selector / Memory Reopened</title>
+<style>
+:root{
+  --blue:#0756a8;
+  --blue2:#2e86e5;
+  --green:#3f8c44;
+  --green2:#79c95a;
+  --ink:#183247;
+  --soft:#eaf4fb;
+  --line:rgba(28,93,160,.14);
+  --card:rgba(255,255,255,.76);
+  --gold:#e9cf72;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#eaf4fb;font-family:Inter,Arial,sans-serif;color:var(--ink)}
+body{display:grid;place-items:center}
+.frame{
+  position:relative;width:min(100vw,1600px);aspect-ratio:16/9;overflow:hidden;border-radius:28px;
+  background:
+    radial-gradient(circle at 50% 3%,#fff,rgba(255,255,255,.52) 34%,transparent 62%),
+    linear-gradient(180deg,#fbfdff,#edf7fd);
+  box-shadow:0 30px 100px rgba(35,78,120,.18);
+}
+.frame:before{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(15,86,168,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(15,86,168,.035) 1px,transparent 1px);
+  background-size:38px 38px;opacity:.45;
+}
+header{position:absolute;left:40px;right:40px;top:24px;z-index:30;display:grid;grid-template-columns:320px 1fr 250px;align-items:start}
+.brand{text-transform:uppercase;color:var(--blue);font-weight:950;letter-spacing:.18em;font-size:13px}.brand span{color:var(--green)}
+.title{text-align:center}.title h1{margin:0;color:var(--blue);text-transform:uppercase;letter-spacing:.055em;font-size:34px;line-height:1}.title p{margin:8px auto 0;max-width:790px;color:#315d84;line-height:1.34;font-size:13px}
+.status{justify-self:end;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.72);box-shadow:0 12px 30px rgba(35,78,120,.08);color:var(--green);text-transform:uppercase;font-size:11px;font-weight:950;letter-spacing:.13em}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 7px rgba(63,140,68,.12),0 0 18px rgba(63,140,68,.42);animation:pulse 2.2s ease-in-out infinite}
+.layout{position:absolute;left:36px;right:36px;top:112px;bottom:92px;display:grid;grid-template-columns:310px 1fr 380px;gap:22px;z-index:4}
+.panel{border:1px solid var(--line);background:var(--card);border-radius:24px;box-shadow:0 18px 48px rgba(35,78,120,.08),inset 0 1px 0 rgba(255,255,255,.86);backdrop-filter:blur(10px)}
+.left{padding:18px 16px;display:flex;flex-direction:column;gap:13px}
+.info{min-height:116px;display:grid;grid-template-columns:58px 1fr;gap:13px;align-items:start;padding:16px 14px;border-radius:22px;background:rgba(255,255,255,.62);border:1px solid rgba(25,92,165,.10)}
+.info.big{min-height:154px}.icon{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#f8fcff,#e9f4ff);border:1px solid rgba(20,91,168,.13);box-shadow:0 10px 22px rgba(25,92,165,.08);color:var(--blue);font-size:24px}
+.info h3{margin:0 0 8px;color:var(--blue);text-transform:uppercase;font-size:12px;letter-spacing:.12em}.info p,.info li{color:#365a78;font-size:12px;line-height:1.42}.info p{margin:0}.info ul{margin:8px 0 0 16px;padding:0}.info b{color:var(--green)}
+.map{position:relative;overflow:hidden;padding:26px 28px}
+.map h2{position:relative;z-index:30;margin:0;color:var(--blue);font-size:15px;letter-spacing:.13em;text-transform:uppercase;text-align:center}.map .sub{position:relative;z-index:30;color:#40637d;font-size:12px;margin-top:6px;text-align:center}
+.map-field{position:absolute;z-index:1;left:50%;top:49%;width:720px;height:720px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(63,140,68,.08),transparent 35%),repeating-radial-gradient(circle,rgba(20,91,168,.055) 0 1px,transparent 1px 44px);opacity:.88}
+.map-glow{position:absolute;z-index:2;left:50%;top:52%;width:520px;height:520px;transform:translate(-50%,-50%);border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(63,140,68,.18),transparent,rgba(14,86,168,.11),transparent,rgba(233,207,114,.14),transparent);animation:orbit 10s linear infinite;opacity:.70}
+.core{position:absolute;z-index:20;left:50%;top:50%;width:112px;height:112px;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;color:#fff;font-size:25px;font-weight:950;letter-spacing:.10em;background:linear-gradient(180deg,#fff,#dff3ff 8%,#2d80df 45%,#3f8c44 100%);border:4px solid rgba(255,255,255,.88);box-shadow:0 0 0 18px rgba(255,255,255,.32),0 0 44px rgba(63,140,68,.28);animation:softPulse 2.6s ease-in-out infinite}
+.core:after{content:"ROUTE\A SELECTOR";white-space:pre;position:absolute;top:120px;left:50%;transform:translateX(-50%);color:var(--green);font-size:10px;line-height:1.15;letter-spacing:.14em;text-align:center;text-transform:uppercase}
+.route-ring{position:absolute;z-index:14;left:50%;top:50%;border-radius:50%;border:1px dashed rgba(14,86,168,.22);transform:translate(-50%,-50%)}
+.ring1{width:220px;height:220px;animation:orbit 12s linear infinite reverse}.ring2{width:360px;height:360px;border-color:rgba(63,140,68,.25);animation:orbit 16s linear infinite}.ring3{width:500px;height:500px;border-color:rgba(233,207,114,.28);animation:orbit 20s linear infinite reverse}
+/* Stable node-slot system:
+   route cards no longer depend on one-off absolute coordinates.
+   Every new screen can reuse these fixed slots without card collisions. */
+.node-slot{position:absolute;z-index:28;width:152px}
+.slot-l1{left:22px;top:168px}
+.slot-l2{left:22px;top:380px}
+.slot-r1{right:22px;top:168px}
+.slot-r2{right:22px;top:380px}
+.slot-cb{left:50%;bottom:128px;transform:translateX(-50%);width:186px}
+.route-node{position:relative;width:100%;min-height:96px;border-radius:22px;background:rgba(255,255,255,.88);border:1px solid rgba(25,92,165,.13);box-shadow:0 16px 34px rgba(35,78,120,.09);padding:13px 14px;text-align:center}
+.route-node .bubble{position:absolute;left:50%;top:-27px;transform:translateX(-50%);width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:21px;font-weight:950;background:linear-gradient(180deg,#2e86e5,#0756a8);border:4px solid rgba(255,255,255,.92);box-shadow:0 12px 28px rgba(14,85,168,.20)}
+.route-node strong{display:block;margin-top:18px;color:var(--blue);text-transform:uppercase;font-size:11px;letter-spacing:.08em;line-height:1.15}
+.route-node span{display:block;margin-top:8px;color:#456a86;font-size:10px;line-height:1.25}
+.route-node.stored{border-color:rgba(63,140,68,.32);background:rgba(247,255,245,.92)}
+.route-node.stored strong{color:var(--green)}
+.route-node.stored .bubble{background:linear-gradient(180deg,#79c95a,#3f8c44);box-shadow:0 0 0 11px rgba(119,205,101,.13),0 0 32px rgba(119,205,101,.30)}
+.route-node.open{border-color:rgba(63,140,68,.38);background:rgba(247,255,245,.96);animation:openPulse 2.4s ease-in-out infinite}
+.route-node.open strong{color:var(--green)}
+.route-node.open .bubble{background:linear-gradient(180deg,#78cf59,#2f8d36);animation:softPulse 2s ease-in-out infinite}
+.slot-cb .route-node{min-height:84px}
+.trace{position:absolute;z-index:10;left:0;top:0;width:100%;height:100%;pointer-events:none}.trace path{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:8 13;animation:dash 5s linear infinite}.trace .blue{stroke:rgba(14,86,168,.26);stroke-width:2}.trace .green{stroke:rgba(63,140,68,.42);stroke-width:3;filter:drop-shadow(0 0 8px rgba(63,140,68,.22))}.trace .gold{stroke:rgba(233,207,114,.35);stroke-width:2.5}
+.memory-band{position:absolute;z-index:32;left:50%;bottom:158px;transform:translateX(-50%);height:38px;padding:0 26px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:#fff;text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:950;background:linear-gradient(180deg,#3f8c44,#0756a8);box-shadow:0 14px 38px rgba(35,78,120,.18),inset 0 1px 0 rgba(255,255,255,.38)}
+.route-dock{position:absolute;z-index:34;left:44px;right:44px;bottom:28px;height:82px;border-radius:22px;background:rgba(255,255,255,.78);border:1px solid rgba(25,92,165,.11);box-shadow:0 14px 34px rgba(35,78,120,.07),inset 0 1px 0 rgba(255,255,255,.86);display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:12px}
+.dock-card{border-radius:16px;border:1px solid rgba(25,92,165,.11);background:rgba(255,255,255,.62);display:grid;grid-template-columns:36px 1fr;align-items:center;gap:10px;padding:8px 10px}.dock-card i{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--blue);font-style:normal;font-weight:950;border:2px dashed rgba(14,86,168,.35)}.dock-card strong{display:block;color:var(--blue);text-transform:uppercase;font-size:10px;line-height:1.12;letter-spacing:.06em}.dock-card span{display:block;color:#5a7590;font-size:8.8px;margin-top:3px}.dock-card.active{background:rgba(247,255,245,.92);border-color:rgba(63,140,68,.30)}.dock-card.active i{color:var(--green);border-color:rgba(63,140,68,.48);box-shadow:0 0 0 8px rgba(63,140,68,.07)}.dock-card.active strong{color:var(--green)}
+.right{padding:20px 20px 18px;display:flex;flex-direction:column;gap:13px}.right h2{margin:0;color:var(--blue);text-transform:uppercase;font-size:14px;letter-spacing:.10em}.right p{margin:0;color:#42627c;font-size:11.5px;line-height:1.38}.route-card{display:grid;grid-template-columns:78px 1fr 70px;gap:12px;align-items:center;padding:13px 14px;border-radius:18px;border:1px solid rgba(25,92,165,.10);background:rgba(255,255,255,.58)}.route-card.active{border-color:rgba(63,140,68,.34);background:rgba(247,255,245,.88);box-shadow:0 0 0 1px rgba(63,140,68,.05),0 12px 26px rgba(63,140,68,.07)}.route-name{color:var(--blue);font-size:12px;font-weight:950;line-height:1.16;text-transform:uppercase}.route-card.active .route-name{color:var(--green)}.mini-map{height:52px;position:relative;border-radius:15px;background:radial-gradient(circle at 50% 50%,rgba(14,86,168,.10),transparent 60%);border:1px dashed rgba(14,86,168,.24)}.route-card.active .mini-map{background:radial-gradient(circle at 50% 50%,rgba(63,140,68,.13),transparent 60%);border-color:rgba(63,140,68,.42)}.mini-map:before,.mini-map:after{content:"";position:absolute;border-radius:50%;border:1px dashed currentColor;color:rgba(14,86,168,.55);left:50%;top:50%;transform:translate(-50%,-50%)}.mini-map:before{width:28px;height:28px}.mini-map:after{width:44px;height:44px}.route-card.active .mini-map:before,.route-card.active .mini-map:after{color:rgba(63,140,68,.65)}.route-state{text-align:right}.route-state b{display:block;color:var(--blue);font-size:10px;text-transform:uppercase;margin-bottom:6px}.route-card.active .route-state b{color:var(--green)}.route-state span{color:#506c84;font-size:9.5px;white-space:nowrap}.matrix-card{margin-top:auto;padding:16px;border-radius:20px;background:rgba(255,255,255,.62);border:1px solid rgba(25,92,165,.11);display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:center}.matrix-icon{width:48px;height:48px;border-radius:13px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:9px;background:rgba(244,252,243,.9);border:1px solid rgba(63,140,68,.16)}.matrix-icon i{border-radius:50%;background:var(--green);animation:matrixBlink 2.4s ease-in-out infinite}.matrix-icon i:nth-child(2n){animation-delay:.45s}.matrix-icon i:nth-child(3n){animation-delay:.9s}.matrix-card strong{display:block;color:var(--green);text-transform:uppercase;letter-spacing:.08em;font-size:12px}.matrix-card span{display:block;margin-top:6px;color:#40637d;font-size:11px;line-height:1.34}
+.bottom{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);width:auto;max-width:calc(100% - 420px);height:44px;z-index:40;border-radius:18px;background:rgba(255,255,255,.78);border:1px solid rgba(28,93,160,.13);box-shadow:0 14px 38px rgba(35,78,120,.07),inset 0 1px 0 rgba(255,255,255,.86);display:flex;align-items:center;justify-content:center;gap:10px;padding:0 12px;backdrop-filter:blur(10px) saturate(1.04)}.chip{flex:0 0 auto;height:30px;display:flex;align-items:center;justify-content:center;gap:7px;padding:0 14px;border-radius:999px;border:1px solid rgba(25,92,165,.12);background:rgba(255,255,255,.72);color:var(--blue);font-size:9.6px;font-weight:950;letter-spacing:.045em;text-transform:uppercase;white-space:nowrap}.chip.active{color:#fff;background:linear-gradient(180deg,#3f8c44,#0756a8);box-shadow:0 8px 18px rgba(14,86,168,.16)}.chip.final{background:rgba(247,255,245,.92);color:var(--green);border-color:rgba(63,140,68,.22);box-shadow:0 0 0 5px rgba(119,205,101,.05)}.horizon{position:absolute;left:32px;right:32px;bottom:8px;height:23px;z-index:41;border-radius:999px;background:rgba(255,255,255,.74);display:flex;align-items:center;justify-content:center;gap:12px;text-transform:uppercase;color:var(--blue);letter-spacing:.10em;font-size:9.8px;font-weight:950}.horizon span{color:var(--green)}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+@keyframes softPulse{0%,100%{transform:translate(-50%,-50%) scale(1);filter:saturate(1)}50%{transform:translate(-50%,-50%) scale(1.045);filter:saturate(1.12)}}
+@keyframes openPulse{0%,100%{box-shadow:0 16px 34px rgba(35,78,120,.09)}50%{box-shadow:0 20px 46px rgba(63,140,68,.22)}}
+@keyframes orbit{0%{transform:translate(-50%,-50%) rotate(0deg);opacity:.55}50%{opacity:.86}100%{transform:translate(-50%,-50%) rotate(360deg);opacity:.55}}
+@keyframes dash{to{stroke-dashoffset:-90}}
+@keyframes matrixBlink{0%,100%{opacity:.35;transform:scale(.82)}50%{opacity:1;transform:scale(1.12)}}
+/* Exact MATRIX114 reference for Explorer/Archive screens */
+.cell-matrix{width:82px;height:64px;display:grid;align-content:center;justify-content:center;grid-template-columns:repeat(var(--cols),14px);grid-auto-rows:14px;column-gap:2px;row-gap:2px;position:relative;overflow:visible}
+.cell-matrix i{width:14px;height:14px;box-sizing:border-box;border-radius:50%;border:1.5px solid #4f7f34;background:#a9d28e;position:relative}
+.cell-matrix i.hole::after{content:"";display:block;position:absolute;inset:3px;border-radius:50%;background:#fff}
+.cell-matrix i.solid::after{content:"";display:block;position:absolute;left:50%;top:50%;width:2px;height:2px;transform:translate(-50%,-50%);border-radius:50%;background:rgba(60,100,48,.55)}
+.scale-row.next .cell-matrix i{border-color:#397a39;background:#9dce87}
+.matrix-floor{position:absolute;z-index:3;left:50%;top:45px;width:calc(var(--cols) * 16px + 2px);height:4px;box-sizing:border-box;transform:translateX(-50%);border:2px solid #3029ff;background:#fff;border-radius:0}
+.matrix-icon.matrix-live{position:relative;display:block;overflow:visible;width:48px;height:48px;background:transparent;border:0;padding:0;border-radius:0;animation:matrixExactPulse 2.2s ease-in-out infinite}
+.matrix-live i{position:absolute;width:20px;height:20px;border-radius:50%;border:1.5px solid #4f7f34;background:#a9d28e;animation:none}
+.matrix-live i:nth-child(1){left:14px;top:0}.matrix-live i:nth-child(2){right:0;top:14px}.matrix-live i:nth-child(3){left:14px;bottom:0}.matrix-live i:nth-child(4){left:0;top:14px}
+.matrix-live .matrix-diamond{position:absolute;left:9px;top:9px;width:30px;height:30px;box-sizing:border-box;border:2px solid #3029ff;background:transparent;transform:rotate(45deg);box-shadow:none;animation:none}
+.matrix-live .matrix-core{position:absolute;left:15px;top:15px;width:18px;height:18px;box-sizing:border-box;border:4px solid #a9d28e;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px #4f7f34;animation:none}
+@keyframes matrixExactPulse{0%,100%{transform:scale(.94);opacity:.82}50%{transform:scale(1.06);opacity:1}}
+@media (prefers-reduced-motion:reduce){.matrix-icon.matrix-live{animation:none}}
+
+/* Left information card: replay on every screen change */
+.left .info .icon{
+  position:relative;
+  isolation:isolate;
+  --icon-delay:0s;
+  animation:abiIconAwake .78s cubic-bezier(.20,.82,.22,1.18) var(--icon-delay) both;
+  transition:transform .24s ease,box-shadow .24s ease,color .24s ease;
+}
+.left .info:nth-child(2) .icon{--icon-delay:.12s}
+.left .info:nth-child(3) .icon{--icon-delay:.24s}
+.left .info:nth-child(4) .icon{--icon-delay:.36s}
+.left .info .icon::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:-7px;
+  border-radius:50%;
+  border:2px solid rgba(22,112,214,.42);
+  opacity:0;
+  pointer-events:none;
+  animation:abiIconRing 1.05s ease-out calc(var(--icon-delay) + .18s) both;
+}
+.left .info:nth-child(4) .icon::after{border-color:rgba(63,140,68,.42)}
+.left .info:hover .icon{
+  animation:none;
+  transform:translateY(-3px) scale(1.08);
+  color:#075fbe;
+  box-shadow:0 12px 28px rgba(20,104,188,.17),0 0 0 5px rgba(72,148,224,.08);
+}
+.left .info:hover .icon::after{animation:abiIconHoverRing 1.45s ease-out infinite}
+@keyframes abiIconAwake{
+  0%{opacity:.28;transform:translateX(-9px) scale(.72) rotate(-12deg);filter:saturate(.7)}
+  58%{opacity:1;transform:translateX(2px) scale(1.12) rotate(4deg);filter:saturate(1.25)}
+  100%{opacity:1;transform:translateX(0) scale(1) rotate(0);filter:saturate(1)}
+}
+@keyframes abiIconRing{
+  0%{opacity:0;transform:scale(.48)}
+  24%{opacity:.72}
+  100%{opacity:0;transform:scale(1.32)}
+}
+@keyframes abiIconHoverRing{
+  0%{opacity:.42;transform:scale(.82)}
+  100%{opacity:0;transform:scale(1.28)}
+}
+@media (prefers-reduced-motion:reduce){
+  .left .info .icon,.left .info .icon::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<main class="frame">
+  <header>
+    <div class="brand">ABI World <span>Route Selector</span></div>
+    <div class="title">
+      <h1>ABI World Map Reopened</h1>
+      <p>The stored route returns to the navigation field.<br>The completed biological path is now available as reusable ABI World route memory.</p>
+    </div>
+    <div class="status"><i class="dot"></i> Map Reopened</div>
+  </header>
+
+  <section class="layout">
+    <aside class="panel left">
+      <div class="info"><div class="icon">↺</div><div><h3>Mission</h3><p>Reopen ABI World after the completed route has been stored as memory.</p></div></div>
+      <div class="info"><div class="icon">⌖</div><div><h3>Discovery</h3><p>The plant cycle is no longer only a finished screen. It becomes a readable coordinate inside the ABI World map.</p></div></div>
+      <div class="info big"><div class="icon">＋</div><div><h3>Principles</h3><ul><li>Completed route stays visible</li><li>Memory coordinate is stored</li><li>Route selector opens again</li><li>Next route can start from memory</li><li>Map remains calm and readable</li></ul></div></div>
+      <div class="info big"><div class="icon">⌁</div><div><h3>Route Signals</h3><p>The biological result returns as a soft navigation trace linking origin, preset inputs, expansion, and next map access.</p></div></div>
+    </aside>
+
+    <section class="panel map">
+      <h2>ABI World / Route Memory Selector</h2>
+      <div class="sub">The completed adaptive route is now stored as a route coordinate and the next route remains open.</div>
+      <div class="map-field"></div>
+      <div class="map-glow"></div>
+      <span class="route-ring ring1"></span><span class="route-ring ring2"></span><span class="route-ring ring3"></span>
+      <svg class="trace" viewBox="0 0 820 610" preserveAspectRatio="none">
+        <path class="blue" d="M150 390 C245 330 298 292 410 305 C506 317 568 274 665 204"/>
+        <path class="gold" d="M214 194 C300 250 352 272 410 305 C470 340 540 392 650 388"/>
+        <path class="green" d="M410 305 C420 382 420 425 410 484 C401 525 398 548 410 575"/>
+        <path class="green" d="M410 305 C455 380 485 442 523 505 C560 566 617 583 700 562"/>
+      </svg>
+      <div class="core">ABI</div>
+
+      <div class="node-slot slot-l1"><div class="route-node"><div class="bubble">2</div><strong>R76 / R108<br>Memory</strong><span>Scale inputs readable</span></div></div>
+      <div class="node-slot slot-l2"><div class="route-node stored"><div class="bubble">1</div><strong>Route 01<br>Stored</strong><span>Completed biological path</span></div></div>
+      <div class="node-slot slot-r1"><div class="route-node"><div class="bubble">3</div><strong>R146<br>Expansion</strong><span>Large-root memory</span></div></div>
+      <div class="node-slot slot-r2"><div class="route-node stored"><div class="bubble">4</div><strong>Return<br>Coordinate</strong><span>Map entry restored</span></div></div>
+      <div class="node-slot slot-cb"><div class="route-node open"><div class="bubble">＋</div><strong>Next Route<br>Open</strong><span>Start from memory</span></div></div>
+
+      <div class="memory-band">ROUTE MEMORY STORED IN ABI WORLD</div>
+      <div class="route-dock">
+        <div class="dock-card active"><i>01</i><div><strong>Stored Route</strong><span>Origin → R146 → Return</span></div></div>
+        <div class="dock-card"><i>02</i><div><strong>Next Preset</strong><span>Reusable route coordinate</span></div></div>
+        <div class="dock-card"><i>03</i><div><strong>Branching Path</strong><span>Future navigation layer</span></div></div>
+        <div class="dock-card active"><i>↺</i><div><strong>ABI Map</strong><span>Selector reopened</span></div></div>
+      </div>
+    </section>
+
+    <aside class="panel right">
+      <h2>Navigation State</h2>
+      <p>The completed route is stored, while ABI World returns to selector mode.</p>
+      <p>The next biological route can now start from the preserved memory coordinate.</p>
+
+      <div class="route-card active"><div class="route-name">Route 01<br>Memory</div><div class="mini-map"></div><div class="route-state"><b>State</b><span>Stored</span></div></div>
+      <div class="route-card active"><div class="route-name">ABI Map<br>Return</div><div class="mini-map"></div><div class="route-state"><b>Access</b><span>Open</span></div></div>
+      <div class="route-card"><div class="route-name">Route 02<br>Preset Path</div><div class="mini-map"></div><div class="route-state"><b>Next</b><span>Ready</span></div></div>
+      <div class="route-card"><div class="route-name">Route 03<br>Branching</div><div class="mini-map"></div><div class="route-state"><b>Layer</b><span>Future</span></div></div>
+
+      <div class="matrix-card"><div class="matrix-icon matrix-live" aria-label="Active matrix"><i></i><i></i><i></i><i></i><b class="matrix-diamond"></b><b class="matrix-core"></b></div><div><strong>Selector Mode Active</strong><span>ABI World has reopened with the completed biological path preserved as route memory.</span></div></div>
+    </aside>
+  </section>
+
+  <section class="bottom"><div class="chip">✓ Route Stored</div><div class="chip active">ABI World Map</div><div class="chip final">Next Route Open</div><div class="chip">Route Selector</div></section>
+  <div class="horizon">Current Position: <span>ABI World / Route Selector / Memory Reopened</span></div>
+</main>
+</body>
+</html>

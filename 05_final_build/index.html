@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ABI World Final Route — Wide Presentation View</title>
+<style>
+:root{
+  --navy:#0b2a4a;--blue:#2b9fd6;--green:#109c5d;--line:#dfeaf3;--muted:#60778d;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;
+  color:var(--navy);
+  background:
+    radial-gradient(circle at 14% 0%,rgba(43,159,214,.10),transparent 32%),
+    radial-gradient(circle at 88% 10%,rgba(16,156,93,.10),transparent 26%),
+    linear-gradient(135deg,#f7fbff,#fff);
+}
+.shell{width:min(1780px,98vw);margin:14px auto 18px;}
+.top{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:end;
+  gap:18px;
+  margin-bottom:10px;
+}
+.kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);font-weight:800}
+h1{margin:4px 0 0;font-size:clamp(28px,2.8vw,46px);letter-spacing:-.04em;line-height:1.03}
+.sub{margin-top:6px;color:#42627b;font-size:14px;line-height:1.42;max-width:980px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end;}
+button,select{
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--navy);
+  border-radius:999px;
+  padding:9px 13px;
+  font-weight:750;
+  font-size:13px;
+  box-shadow:0 8px 20px rgba(11,42,74,.06);
+  cursor:pointer;
+}
+button.primary{background:linear-gradient(90deg,var(--navy),var(--green));color:#fff;border-color:transparent}
+button:hover,select:hover{transform:translateY(-1px)}
+.viewer{
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:rgba(255,255,255,.94);
+  box-shadow:0 18px 42px rgba(11,42,74,.08);
+  overflow:hidden;
+  height:calc(100vh - 210px);
+  min-height:720px;
+  display:grid;
+  grid-template-rows:auto 1fr;
+}
+.viewer-head{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  padding:10px 14px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(90deg,rgba(43,159,214,.07),rgba(16,156,93,.05));
+}
+.current-title{font-weight:900;letter-spacing:-.01em}
+.current-src{font-size:12px;color:var(--muted);margin-top:2px}
+.progress{font-size:12px;color:#244e68;font-weight:800}
+iframe{width:100%;height:100%;border:0;background:#fff;display:block;}
+.route-strip{
+  margin-top:10px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 12px 30px rgba(11,42,74,.06);
+  padding:10px;
+  overflow-x:auto;
+}
+.mode-title{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);font-weight:900;margin:0 0 8px 4px}
+.list{
+  display:flex;
+  gap:8px;
+  min-width:max-content;
+}
+.item{
+  width:210px;
+  display:grid;
+  grid-template-columns:30px 1fr;
+  gap:8px;
+  align-items:center;
+  border:1px solid #e7eff8;
+  border-radius:14px;
+  background:linear-gradient(180deg,#fff,#fbfdff);
+  padding:8px;
+  cursor:pointer;
+}
+.item:hover{border-color:rgba(43,159,214,.45);transform:translateY(-1px)}
+.item.active{border-color:rgba(16,156,93,.55);background:linear-gradient(135deg,rgba(16,156,93,.09),#fff)}
+.num{
+  width:28px;height:28px;border-radius:50%;
+  display:grid;place-items:center;
+  background:#eaf4fb;color:#1f4e79;
+  font-weight:900;font-size:11px;
+}
+.item.active .num{background:var(--green);color:#fff}
+.title{font-weight:800;font-size:12px;line-height:1.18}
+.src{font-size:10px;color:var(--muted);margin-top:2px;word-break:break-word;display:none}
+.open-direct{
+  margin-left:6px;
+  color:var(--green);
+  font-size:12px;
+  font-weight:800;
+  text-decoration:none;
+}
+.footer-note{margin-top:8px;color:var(--muted);font-size:12px;text-align:center}
+@media(max-width:980px){
+  .top{grid-template-columns:1fr}
+  .controls{justify-content:flex-start}
+  .viewer{height:72vh;min-height:560px}
+  .shell{width:98vw}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <div>
+      <div class="kicker">ABI World final route assembly · wide view v3</div>
+      <h1>Closed Route Memory Loop</h1>
+      <div class="sub">Wide Presentation View keeps the original ABI screens from being squeezed. The route selector is now a bottom strip, not a side column.</div>
+    </div>
+    <div class="controls">
+      <button class="primary" id="startBtn">Start Route</button>
+      <button id="prevBtn">Previous</button>
+      <button id="nextBtn">Next</button>
+      <button id="openBtn">Open current full tab</button>
+      <select id="modeSel">
+        <option value="presentation">Presentation Mode</option>
+        <option value="explorer">Explorer Mode</option>
+      </select>
+    </div>
+  </div>
+
+  <section class="viewer">
+    <div class="viewer-head">
+      <div>
+        <div class="current-title" id="curTitle">—</div>
+        <div class="current-src" id="curSrc">—</div>
+      </div>
+      <div class="progress" id="progress">—</div>
+    </div>
+    <iframe id="frame" title="ABI World screen"></iframe>
+  </section>
+
+  <section class="route-strip">
+    <div class="mode-title" id="modeTitle">Presentation route</div>
+    <div class="list" id="list"></div>
+  </section>
+
+  <div class="footer-note">Open the ZIP as a full unzipped folder. The screens are original autonomous HTML files loaded into the wide viewer.</div>
+</div>
+
+<script>
+const routeScreens = [{"id": "01", "title": "Adaptive Growth Reorganization", "source_file": "190626_adaptive_growth_reorganization (1).html", "file": "route_screens/01_adaptive_growth_reorganization.html", "status": "available"}, {"id": "02", "title": "Branching Logic / New Root Architecture", "source_file": "200626_branching_logic_new_root_architecture (1).html", "file": "route_screens/02_branching_logic_new_root_architecture.html", "status": "available"}, {"id": "03", "title": "Root Architecture Stabilization / System Memory", "source_file": "200626_root_architecture_stabilization_system_memory.html", "file": "route_screens/03_root_architecture_stabilization_system_memory.html", "status": "available"}, {"id": "04", "title": "Return to ABI World / Route Memory", "source_file": "200626_return_to_abi_world_route_memory_card_left.html", "file": "route_screens/04_return_to_abi_world_route_memory.html", "status": "available"}, {"id": "05", "title": "ABI World Navigation / Next Route Selector", "source_file": "200626_final_abi_world_navigation_next_route_selector.html", "file": "route_screens/05_abi_world_navigation_next_route_selector.html", "status": "available"}, {"id": "06", "title": "Next Route Activation / New Biological Program", "source_file": "200626_next_route_activation_new_biological_program.html", "file": "route_screens/06_next_route_activation_new_biological_program.html", "status": "available"}, {"id": "07", "title": "Cycle Close / Final ABI World Memory", "source_file": "200626_cycle_close_final_abi_world_memory_cards_tuned.html", "file": "route_screens/07_cycle_close_final_abi_world_memory.html", "status": "available"}, {"id": "08", "title": "ABI World Map Reopened / Closed Loop", "source_file": "200626_abi_world_route_selector_memory_reopened_stable_slots.html", "file": "route_screens/08_abi_world_map_reopened_closed_loop.html", "status": "available"}];
+const archiveScreens = [{"file": "../01_html_screens/180626_abi_world_exit_portal_living_plant_v2_circles_text_fixed.html", "title": "ABI World — Exit Portal / Living Plant", "source_file": "180626_abi_world_exit_portal_living_plant_v2_circles_text_fixed.html"}, {"file": "../01_html_screens/180626_guided_scale_evolution_preset04_oneline.html", "title": "Guided Scale Evolution", "source_file": "180626_guided_scale_evolution_preset04_oneline.html"}, {"file": "../01_html_screens/180626_large_root_system_expansion_ref_raised (2).html", "title": "Large Root-System Expansion", "source_file": "180626_large_root_system_expansion_ref_raised (2).html"}, {"file": "../01_html_screens/180626_preset04_r146_activation.html", "title": "Preset 04 / R146 Activation", "source_file": "180626_preset04_r146_activation.html"}, {"file": "../01_html_screens/180626_r146_development_field.html", "title": "R146 Development Field", "source_file": "180626_r146_development_field.html"}, {"file": "../01_html_screens/190626_adaptive_growth_reorganization (1).html", "title": "Adaptive Growth Reorganization", "source_file": "190626_adaptive_growth_reorganization (1).html"}, {"file": "../01_html_screens/190626_begin_new_adaptive_cycle (1).html", "title": "Begin New Adaptive Cycle", "source_file": "190626_begin_new_adaptive_cycle (1).html"}, {"file": "../01_html_screens/190626_launch_pad01_primary_root_interface_restart (2).html", "title": "Launch Pad 01 / Primary Root Interface", "source_file": "190626_launch_pad01_primary_root_interface_restart (2).html"}, {"file": "../01_html_screens/190626_next_route_selection (1).html", "title": "Next Route Selection", "source_file": "190626_next_route_selection (1).html"}, {"file": "../01_html_screens/190626_plant_stability_soil_life_final_clarification (1).html", "title": "Plant Stability / Independent Soil Life", "source_file": "190626_plant_stability_soil_life_final_clarification (1).html"}, {"file": "../01_html_screens/190626_root_decision_logic_adaptive_response (1).html", "title": "Root Decision Logic / Adaptive Response", "source_file": "190626_root_decision_logic_adaptive_response (1).html"}, {"file": "../01_html_screens/190626_root_reading_signal_architecture (1).html", "title": "Root Reading / Signal Architecture", "source_file": "190626_root_reading_signal_architecture (1).html"}, {"file": "../01_html_screens/190626_route02_activation_next_biological_path (2).html", "title": "Route 02 Activation / Next Biological Path", "source_file": "190626_route02_activation_next_biological_path (2).html"}, {"file": "../01_html_screens/200626_abi_world_route_selector_memory_reopened_stable_slots.html", "title": "ABI World Map Reopened", "source_file": "200626_abi_world_route_selector_memory_reopened_stable_slots.html"}, {"file": "../01_html_screens/200626_branching_logic_new_root_architecture (1).html", "title": "Branching Logic / New Root Architecture", "source_file": "200626_branching_logic_new_root_architecture (1).html"}, {"file": "../01_html_screens/200626_cycle_close_final_abi_world_memory_cards_tuned.html", "title": "Cycle Close / Final ABI World Memory", "source_file": "200626_cycle_close_final_abi_world_memory_cards_tuned.html"}, {"file": "../01_html_screens/200626_final_abi_world_navigation_next_route_selector.html", "title": "ABI World Navigation / Next Route Selector", "source_file": "200626_final_abi_world_navigation_next_route_selector.html"}, {"file": "../01_html_screens/200626_next_route_activation_new_biological_program.html", "title": "Next Route Activation / New Biological Program", "source_file": "200626_next_route_activation_new_biological_program.html"}, {"file": "../01_html_screens/200626_return_to_abi_world_route_memory.html", "title": "Return to ABI World", "source_file": "200626_return_to_abi_world_route_memory.html"}, {"file": "../01_html_screens/200626_return_to_abi_world_route_memory_card_left.html", "title": "Return to ABI World / Route Memory", "source_file": "200626_return_to_abi_world_route_memory_card_left.html"}, {"file": "../01_html_screens/200626_return_to_abi_world_route_memory_cards_fixed.html", "title": "Return to ABI World", "source_file": "200626_return_to_abi_world_route_memory_cards_fixed.html"}, {"file": "../01_html_screens/200626_return_to_abi_world_route_memory_point2_map_focus (2).html", "title": "Return to ABI World", "source_file": "200626_return_to_abi_world_route_memory_point2_map_focus (2).html"}, {"file": "../01_html_screens/200626_root_architecture_stabilization_system_memory.html", "title": "Root Architecture Stabilization / System Memory", "source_file": "200626_root_architecture_stabilization_system_memory.html"}];
+let mode = 'presentation';
+let screens = routeScreens;
+let current = 0;
+
+function normalizeArchive(list){
+  return list.map((x,i)=>({id:String(i+1).padStart(2,'0'),title:x.title||x.source_file,file:x.file,source_file:x.source_file}));
+}
+
+function renderList(){
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  screens.forEach((s,i)=>{
+    const div = document.createElement('div');
+    div.className = 'item' + (i===current?' active':'');
+    div.innerHTML = `<div class="num">${s.id}</div><div><div class="title">${s.title}</div><div class="src">${s.source_file||s.file}</div></div>`;
+    div.onclick = () => show(i);
+    list.appendChild(div);
+  });
+}
+
+function show(i){
+  if(!screens.length) return;
+  current = (i + screens.length) % screens.length;
+  const s = screens[current];
+  document.getElementById('curTitle').textContent = s.title;
+  document.getElementById('curSrc').textContent = s.source_file || s.file;
+  document.getElementById('progress').textContent = `${current+1} / ${screens.length}`;
+  document.getElementById('frame').src = s.file;
+  renderList();
+}
+
+document.getElementById('startBtn').onclick = () => show(0);
+document.getElementById('prevBtn').onclick = () => show(current-1);
+document.getElementById('nextBtn').onclick = () => show(current+1);
+document.getElementById('openBtn').onclick = () => {
+  if(!screens.length) return;
+  window.open(screens[current].file, '_blank');
+};
+document.getElementById('modeSel').onchange = (e) => {
+  mode = e.target.value;
+  screens = mode === 'presentation' ? routeScreens : normalizeArchive(archiveScreens);
+  current = 0;
+  document.getElementById('modeTitle').textContent = mode === 'presentation' ? 'Presentation route' : 'Explorer archive';
+  show(0);
+};
+show(0);
+</script>
+</body>
+</html>

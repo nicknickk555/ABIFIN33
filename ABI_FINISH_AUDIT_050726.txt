@@ -1,0 +1,42 @@
+ABI-FINISH ZIP AUDIT
+
+HTML files in uploaded ZIP: 22
+TXT files in uploaded ZIP: 22
+Recovered required screen 03: yes
+
+Selected route:
+
+01. Adaptive Growth Reorganization — 190626_adaptive_growth_reorganization (1).html
+02. Branching Logic / New Root Architecture — 200626_branching_logic_new_root_architecture (1).html
+03. Root Architecture Stabilization / System Memory — 200626_root_architecture_stabilization_system_memory.html
+04. Return to ABI World / Route Memory — 200626_return_to_abi_world_route_memory_card_left.html
+05. ABI World Navigation / Next Route Selector — 200626_final_abi_world_navigation_next_route_selector.html
+06. Next Route Activation / New Biological Program — 200626_next_route_activation_new_biological_program.html
+07. Cycle Close / Final ABI World Memory — 200626_cycle_close_final_abi_world_memory_cards_tuned.html
+08. ABI World Map Reopened / Closed Loop — 200626_abi_world_route_selector_memory_reopened_stable_slots.html
+
+All HTML screens:
+
+- 180626_abi_world_exit_portal_living_plant_v2_circles_text_fixed.html — ABI World — Exit Portal / Living Plant
+- 180626_guided_scale_evolution_preset04_oneline.html — Guided Scale Evolution
+- 180626_large_root_system_expansion_ref_raised (2).html — Large Root-System Expansion
+- 180626_preset04_r146_activation.html — Preset 04 / R146 Activation
+- 180626_r146_development_field.html — R146 Development Field
+- 190626_adaptive_growth_reorganization (1).html — Adaptive Growth Reorganization
+- 190626_begin_new_adaptive_cycle (1).html — Begin New Adaptive Cycle
+- 190626_launch_pad01_primary_root_interface_restart (2).html — Launch Pad 01 / Primary Root Interface
+- 190626_next_route_selection (1).html — Next Route Selection
+- 190626_plant_stability_soil_life_final_clarification (1).html — Plant Stability / Independent Soil Life
+- 190626_root_decision_logic_adaptive_response (1).html — Root Decision Logic / Adaptive Response
+- 190626_root_reading_signal_architecture (1).html — Root Reading / Signal Architecture
+- 190626_route02_activation_next_biological_path (2).html — Route 02 Activation / Next Biological Path
+- 200626_abi_world_route_selector_memory_reopened_stable_slots.html — ABI World Map Reopened
+- 200626_branching_logic_new_root_architecture (1).html — Branching Logic / New Root Architecture
+- 200626_cycle_close_final_abi_world_memory_cards_tuned.html — Cycle Close / Final ABI World Memory
+- 200626_final_abi_world_navigation_next_route_selector.html — ABI World Navigation / Next Route Selector
+- 200626_next_route_activation_new_biological_program.html — Next Route Activation / New Biological Program
+- 200626_return_to_abi_world_route_memory.html — Return to ABI World
+- 200626_return_to_abi_world_route_memory_card_left.html — Return to ABI World / Route Memory
+- 200626_return_to_abi_world_route_memory_cards_fixed.html — Return to ABI World
+- 200626_return_to_abi_world_route_memory_point2_map_focus (2).html — Return to ABI World
+- 200626_root_architecture_stabilization_system_memory.html — Root Architecture Stabilization / System Memory
