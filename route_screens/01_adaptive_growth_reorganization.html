@@ -1038,13 +1038,59 @@ header{position:absolute;left:40px;right:40px;top:24px;z-index:30;display:grid;g
 @media (prefers-reduced-motion:reduce){
   .process .step-dot,.process .step-dot::after{animation:none!important;transition:none!important}
 }
+
+/* Exact principal matrix cell from the 08.08.26 reference screen */
+.matrix-icon.matrix-live{position:relative;display:block;width:52px;height:52px;overflow:visible;background:transparent;border:0;padding:0;border-radius:0;animation:matrixExactPulse 2.2s ease-in-out infinite}
+.matrix-live .matrix-exact-icon{display:block;width:52px;height:52px;overflow:visible}
+.matrix-exact-icon .matrix-lobe{fill:#aad28f;stroke:#385723;stroke-width:1.5}
+.matrix-exact-icon .matrix-diamond-line{fill:none;stroke:#340cfc;stroke-width:2;stroke-linejoin:miter}
+.matrix-exact-icon .matrix-core-outer{fill:#aad28f;stroke:#385723;stroke-width:1.5}
+.matrix-exact-icon .matrix-core-inner{fill:#fff;stroke:#385723;stroke-width:1.5}
+@keyframes matrixExactPulse{0%,100%{transform:scale(.94);opacity:.82}50%{transform:scale(1.06);opacity:1}}
+@media (prefers-reduced-motion:reduce){.matrix-icon.matrix-live{animation:none}}
+/* Five-screen composition repair: keep every label unobstructed */
+.stage::after{bottom:166px!important}
+.ref{bottom:32px!important}
+.n4{right:6px!important}
+.micro-tag{right:78px!important}
+.process{padding-bottom:76px!important}
+
+/* Guidance Cell portal: the constant matrix cell becomes an interactive deep dive */
+.matrix-card.guidance-entry{position:relative;isolation:isolate;cursor:pointer;padding-right:54px!important;transition:border-color .22s ease,box-shadow .22s ease,filter .22s ease;background-image:linear-gradient(135deg,rgba(255,255,255,.76),rgba(247,255,245,.88))}
+.matrix-card.guidance-entry::after{content:"\2197";position:absolute;right:13px;top:50%;width:28px;height:28px;transform:translateY(-50%);display:grid;place-items:center;border-radius:50%;color:#fff;background:linear-gradient(135deg,#126fc3,#109c5d);box-shadow:0 8px 18px rgba(16,120,88,.20);font:900 14px/1 Arial,sans-serif;transition:transform .22s ease,box-shadow .22s ease}
+.matrix-card.guidance-entry::before{content:"Explore Guidance Cell";position:absolute;z-index:6;right:5px;bottom:calc(100% + 7px);padding:7px 10px;border-radius:999px;color:#fff;background:linear-gradient(90deg,#0b2a4a,#109c5d);box-shadow:0 10px 24px rgba(11,42,74,.16);font:900 8.5px/1 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;opacity:0;pointer-events:none;transform:translateY(5px);transition:opacity .2s ease,transform .2s ease}
+.matrix-card.guidance-entry:hover,.matrix-card.guidance-entry:focus-visible{outline:none;border-color:rgba(16,156,93,.54)!important;box-shadow:0 0 0 4px rgba(16,156,93,.08),0 16px 34px rgba(16,120,88,.14)!important;filter:saturate(1.08)}
+.matrix-card.guidance-entry:hover::before,.matrix-card.guidance-entry:focus-visible::before{opacity:1;transform:translateY(0)}
+.matrix-card.guidance-entry:hover::after,.matrix-card.guidance-entry:focus-visible::after{transform:translateY(-50%) scale(1.12);box-shadow:0 10px 24px rgba(16,120,88,.30)}
+@media(prefers-reduced-motion:reduce){.matrix-card.guidance-entry,.matrix-card.guidance-entry::before,.matrix-card.guidance-entry::after{transition:none}}
+
+/* Matrix to Container portal: Preset 02 expands from a 2D field into 3D volume */
+.scale-row.container-entry{position:relative;overflow:visible;cursor:pointer;isolation:isolate;transition:border-color .22s ease,box-shadow .22s ease,transform .22s ease;background-image:linear-gradient(135deg,rgba(255,255,255,.72),rgba(244,251,255,.92))}
+.scale-row.container-entry::after{content:"3D";position:absolute;z-index:4;right:-7px;top:-9px;width:30px;height:30px;display:grid;place-items:center;border:3px solid #fff;border-radius:50%;color:#fff;background:linear-gradient(135deg,#126fc3,#109c5d);box-shadow:0 8px 18px rgba(16,120,88,.24);font:950 8px/1 Arial,sans-serif;animation:containerEntryPulse 2.25s ease-in-out infinite}
+.scale-row.container-entry::before{content:"Preset 02: 2D guidance field > 3D root architecture";position:absolute;z-index:7;right:0;bottom:calc(100% + 8px);padding:7px 10px;border-radius:999px;color:#fff;background:linear-gradient(90deg,#0b2a4a,#109c5d);box-shadow:0 10px 24px rgba(11,42,74,.18);font:900 8px/1 Arial,sans-serif;letter-spacing:.06em;white-space:nowrap;opacity:0;pointer-events:none;transform:translateY(5px);transition:opacity .2s ease,transform .2s ease}
+.scale-row.container-entry:hover,.scale-row.container-entry:focus-visible{outline:none;border-color:rgba(16,156,93,.55)!important;box-shadow:0 0 0 4px rgba(16,156,93,.08),0 16px 34px rgba(16,120,88,.14)!important;transform:translateY(-2px)}
+.scale-row.container-entry:hover::before,.scale-row.container-entry:focus-visible::before{opacity:1;transform:translateY(0)}
+.scale-row.container-entry:hover .scale-name,.scale-row.container-entry:focus-visible .scale-name{color:#0b7d4d}
+@keyframes containerEntryPulse{0%,100%{transform:scale(.92);box-shadow:0 7px 15px rgba(16,120,88,.18)}50%{transform:scale(1.10);box-shadow:0 10px 24px rgba(16,120,88,.38)}}
+@media(prefers-reduced-motion:reduce){.scale-row.container-entry,.scale-row.container-entry::before,.scale-row.container-entry::after{animation:none;transition:none}}
+
+/* Dew Zone portal: Principles opens the local physics behind the guidance field */
+.left .info.principles-entry{position:relative;overflow:visible;isolation:isolate;cursor:pointer;padding-right:50px;transition:border-color .22s ease,box-shadow .22s ease,transform .22s ease;background-image:linear-gradient(135deg,rgba(255,255,255,.76),rgba(243,251,255,.90))}
+.left .info.principles-entry::after{content:"ƒ";position:absolute;z-index:4;right:14px;top:16px;width:31px;height:31px;display:grid;place-items:center;border:3px solid #fff;border-radius:50%;color:#fff;background:linear-gradient(135deg,#167bd0,#15a56b);box-shadow:0 8px 18px rgba(31,128,178,.24);font:italic 950 15px/1 Georgia,serif;animation:principlesPhysicsPulse 2.25s ease-in-out infinite}
+.left .info.principles-entry::before{content:"Open Dew Zone physics";position:absolute;z-index:7;left:50%;bottom:calc(100% + 7px);padding:7px 10px;border-radius:999px;color:#fff;background:linear-gradient(90deg,#0b2a4a,#167bd0,#109c5d);box-shadow:0 10px 24px rgba(11,42,74,.18);font:900 8px/1 Arial,sans-serif;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;opacity:0;pointer-events:none;transform:translate(-50%,5px);transition:opacity .2s ease,transform .2s ease}
+.left .info.principles-entry:hover,.left .info.principles-entry:focus-visible{outline:none;border-color:rgba(43,159,214,.52)!important;box-shadow:0 0 0 4px rgba(43,159,214,.08),0 16px 34px rgba(19,119,169,.14)!important;transform:translateY(-2px)}
+.left .info.principles-entry:hover::before,.left .info.principles-entry:focus-visible::before{opacity:1;transform:translate(-50%,0)}
+.left .info.principles-entry:hover::after,.left .info.principles-entry:focus-visible::after{animation-duration:1.25s}
+.left .info.principles-entry h3{padding-right:6px}
+@keyframes principlesPhysicsPulse{0%,100%{transform:scale(.92);box-shadow:0 7px 15px rgba(31,128,178,.18),0 0 0 0 rgba(43,159,214,.22)}50%{transform:scale(1.10);box-shadow:0 10px 24px rgba(31,128,178,.36),0 0 0 8px rgba(43,159,214,0)}}
+@media(prefers-reduced-motion:reduce){.left .info.principles-entry,.left .info.principles-entry::before,.left .info.principles-entry::after{animation:none;transition:none}}
 </style>
 </head>
 <body>
 <main class="frame">
 <header><div class="brand">ABI World <span>Growth Reorganization</span></div><div class="title"><h1>Adaptive Growth Reorganization</h1><p>The root decision now reorganizes the growth pattern.<br>Adaptive response becomes a new branching geometry for the next biological development stage.</p></div><div class="status"><i class="dot"></i> Growth Reorganized</div></header>
 <section class="layout">
-<aside class="panel left"><div class="info"><div class="icon">◎</div><div><h3>Mission</h3><p>Show how the root decision reorganizes growth into a new adaptive architecture.</p></div></div><div class="info"><div class="icon">⌕</div><div><h3>Discovery</h3><p>The decision field reorganizes root growth: support, branching, and direction shift into a new biological pattern.</p></div></div><div class="info big"><div class="icon">＋</div><div><h3>Principles</h3><ul><li>Matrix program = constant.</li><li>Decision completed</li><li>Growth pattern shifts</li><li>Branching geometry opens</li><li>Adaptive structure expands</li></ul></div></div><div class="info big"><div class="icon">⌁</div><div><h3>Evolution Signals</h3><p>The biological decision becomes visible as growth reorganization: roots redistribute into a new support logic.</p></div></div></aside>
+<aside class="panel left"><div class="info"><div class="icon">◎</div><div><h3>Mission</h3><p>Show how the root decision reorganizes growth into a new adaptive architecture.</p></div></div><div class="info"><div class="icon">⌕</div><div><h3>Discovery</h3><p>The decision field reorganizes root growth: support, branching, and direction shift into a new biological pattern.</p></div></div><div class="info big principles-entry" role="button" tabindex="0" aria-label="Open Dew Zone Explorer and see the local physics behind the guidance field"><div class="icon">＋</div><div><h3>Principles</h3><ul><li>Matrix program = constant.</li><li>Decision completed</li><li>Growth pattern shifts</li><li>Branching geometry opens</li><li>Adaptive structure expands</li></ul></div></div><div class="info big"><div class="icon">⌁</div><div><h3>Evolution Signals</h3><p>The biological decision becomes visible as growth reorganization: roots redistribute into a new support logic.</p></div></div></aside>
 <aside class="panel process"><div class="step"><div class="step-dot seed">🌱</div><div><strong>Seedling</strong><span>Biological origin established.</span></div></div><div class="step"><div class="step-dot active">◉</div><div><strong>Preset 02<br>R76</strong><span>First scale input activated.</span></div></div><div class="step"><div class="step-dot active">◉</div><div><strong>Preset 03<br>R108</strong><span>Scale evolved. Development completed.</span></div></div><div class="step"><div class="step-dot active">◉</div><div><strong>Root Expansion</strong><span>Root network expands.</span></div></div><div class="step final-step"><div class="step-dot final">🌿</div><div><strong>Growth Reorganized</strong><span>Route memory captured.</span></div></div></aside>
 <section class="panel stage"><h2>Adaptive Growth Reorganization</h2><div class="sub">The decision field reorganizes root geometry into a new adaptive growth architecture.</div><div class="circle-field"></div><div class="radar"><i></i><i></i><i></i><i></i></div><div class="sun-ray"></div><div class="soil"></div><div class="surface"></div>
 <div class="node seed n1"><div class="num">1</div></div><div class="node n2"><div class="num">2</div></div><div class="node n3"><div class="num">3</div></div><div class="node final n4"><div class="num">4</div></div><div class="micro-tag"><strong>Growth Reorganized</strong><span>Next biological path</span></div><div class="label l1"><strong>Preset 01<br>Seedling</strong><span>Origin</span></div><div class="label l2"><strong>Preset 02<br>R76</strong><span>First scale input</span></div><div class="label l3"><strong>Preset 03<br>R108</strong><span>Completed input</span></div><div class="label l4"><strong>Growth<br>Shift</strong><span>Pattern reorganized</span></div><div class="label l5"><strong>Branching<br>Logic</strong><span>New geometry opens</span></div>
@@ -1061,10 +1107,59 @@ header{position:absolute;left:40px;right:40px;top:24px;z-index:30;display:grid;g
 </section>
 <aside class="panel right"><h2>Growth Reorganization Schematic</h2><p>The selected response reorganizes root geometry.</p><p>The matrix program remains constant while growth architecture changes.</p>
 <div class="scale-row"><div class="scale-name">Preset 01<br>R51</div><div class="cell-matrix" style="--cols:3" aria-label="Matrix preset diagram"><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><b class="matrix-floor" aria-hidden="true"></b></div><div class="scale-data"><div><b>D</b><span>102 mm</span></div><div><b>h</b><span>100 mm</span></div><div><b>V</b><span>0.82 L</span></div></div></div>
-<div class="scale-row"><div class="scale-name">Preset 02<br>R76</div><div class="cell-matrix" style="--cols:4" aria-label="Matrix preset diagram"><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><b class="matrix-floor" aria-hidden="true"></b></div><div class="scale-data"><div><b>D</b><span>152 mm</span></div><div><b>h</b><span>150 mm</span></div><div><b>V</b><span>2.8 L</span></div></div></div>
+<div class="scale-row container-entry" role="button" tabindex="0" aria-label="Explore Preset 02 R76 matrix inside a 2.8 litre container"><div class="scale-name">Preset 02<br>R76</div><div class="cell-matrix" style="--cols:4" aria-label="Matrix preset diagram"><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><b class="matrix-floor" aria-hidden="true"></b></div><div class="scale-data"><div><b>D</b><span>152 mm</span></div><div><b>h</b><span>150 mm</span></div><div><b>V</b><span>2.8 L</span></div></div></div>
 <div class="scale-row"><div class="scale-name">Preset 03<br>R108</div><div class="cell-matrix" style="--cols:5" aria-label="Matrix preset diagram"><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><b class="matrix-floor" aria-hidden="true"></b></div><div class="scale-data"><div><b>D</b><span>216 mm</span></div><div><b>h</b><span>200 mm</span></div><div><b>V</b><span>7.3 L</span></div></div></div>
 <div class="scale-row next"><div class="scale-name">Preset 04<br>R146</div><div class="cell-matrix" style="--cols:6" aria-label="Matrix preset diagram"><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><b class="matrix-floor" aria-hidden="true"></b></div><div class="scale-data"><div><b>D</b><span>292 mm</span></div><div><b>h</b><span>250 mm</span></div><div><b>V</b><span>17.0 L</span></div></div></div>
-<div class="matrix-card"><div class="matrix-icon matrix-live" aria-label="Active matrix"><i></i><i></i><i></i><i></i><b class="matrix-diamond"></b><b class="matrix-core"></b></div><div><strong>Matrix Program: Constant</strong><span>Growth reorganization is active. The system prepares the next branching stage.</span></div></div></aside>
+<div class="matrix-card guidance-entry" role="button" tabindex="0" aria-label="Explore how this matrix guidance cell works"><div class="matrix-icon matrix-live" role="img" aria-label="Active matrix"><svg class="matrix-exact-icon" viewBox="0 0 108 108" aria-hidden="true"><circle class="matrix-lobe" cx="54" cy="18" r="17.5"/><circle class="matrix-lobe" cx="18" cy="54" r="17.5"/><circle class="matrix-lobe" cx="90" cy="54" r="17.5"/><circle class="matrix-lobe" cx="54" cy="90" r="17.5"/><path class="matrix-diamond-line" d="M54 18 L90 54 L54 90 L18 54 Z"/><circle class="matrix-core-outer" cx="54" cy="54" r="18"/><circle class="matrix-core-inner" cx="54" cy="54" r="11"/></svg></div><div><strong>Matrix Program: Constant</strong><span>Growth reorganization is active. The system prepares the next branching stage.</span></div></div></aside>
 </section>
 <section class="bottom"><div class="chip">🌱 Seedling</div><div class="chip"><span class="small-icon"></span> R76 Active</div><div class="chip">✓ R108 Complete</div><div class="chip active">◎ Growth Shift</div><div class="chip final">✔ Growth Reorganized</div></section><div class="horizon">Next Horizon: <span>Branching Logic / New Root Architecture</span></div>
-</main></body></html>
+</main><script>
+/* Guidance Cell portal interaction */
+(()=>{
+  const entry=document.querySelector('.guidance-entry');
+  if(!entry)return;
+  const openGuidance=()=>{
+    const source=document.title;
+    if(window.parent&&window.parent!==window){window.parent.postMessage({type:'abi:open-guidance-cell',source},'*');return;}
+    window.location.href='../modules/guidance-cell/index.html?source='+encodeURIComponent(source);
+  };
+  entry.addEventListener('click',openGuidance);
+  entry.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openGuidance();}});
+  window.addEventListener('message',event=>{if(event.data&&event.data.type==='abi:guidance-closed')entry.focus();});
+})();
+</script>
+<script>
+/* Matrix to Container portal interaction */
+(()=>{
+  const entry=document.querySelector('.container-entry');
+  if(!entry)return;
+  const openContainer=()=>{
+    const source='Preset 02 / R76 / D 152 mm / h 150 mm / V 2.8 L';
+    if(window.parent&&window.parent!==window){
+      try{if(typeof window.parent.openMatrixContainer==='function'){window.parent.openMatrixContainer(source);return;}}catch(error){}
+      window.parent.postMessage({type:'abi:open-container',source},'*');return;
+    }
+    window.location.href='../modules/matrix-to-container/index.html?source='+encodeURIComponent(source);
+  };
+  entry.addEventListener('click',openContainer);
+  entry.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openContainer();}});
+})();
+</script>
+<script>
+/* Dew Zone physics portal interaction */
+(()=>{
+  const entry=document.querySelector('.principles-entry');
+  if(!entry)return;
+  const openDewZone=()=>{
+    const source='Principles / local dew-point and thermal-gradient physics';
+    if(window.parent&&window.parent!==window){
+      try{if(typeof window.parent.openDewZone==='function'){window.parent.openDewZone(source);return;}}catch(error){}
+      window.parent.postMessage({type:'abi:open-dew-zone',source},'*');return;
+    }
+    window.location.href='../modules/dew-zone/index.html?source='+encodeURIComponent(source);
+  };
+  entry.addEventListener('click',openDewZone);
+  entry.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openDewZone();}});
+})();
+</script>
+</body></html>

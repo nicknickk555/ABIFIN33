@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Guidance Cell Explorer — VCT Interactive Module</title>
+<style>
+:root{--navy:#0b2a4a;--green:#109c5d;--blue:#2b9fd6;--yellow:#f4b63f;--red:#d33b35;--brown:#8a5a2b;--brown-hi:#b7834c;--muted:#60778d;--line:#dfeaf3}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#f5f7fa,#fff);color:var(--navy)}
+.shell{width:min(1440px,96vw);margin:22px auto}.header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px 26px;box-shadow:0 16px 40px rgba(11,42,74,.07)}
+.kicker{color:var(--green);font-size:12px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}h1{margin:6px 0 8px;font-size:34px;line-height:1.06;letter-spacing:-.035em}.subtitle{max-width:980px;color:var(--muted);font-size:15px;line-height:1.5}.version{text-align:right;color:var(--muted);font-size:12px;font-weight:900;white-space:nowrap}
+.board{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 18px 50px rgba(11,42,74,.08)}
+.controls{display:grid;grid-template-columns:repeat(5,1fr) auto;gap:10px;margin-bottom:18px}button{border:0;border-radius:14px;padding:12px 14px;font-weight:900;color:#fff;background:#5aa5d6;cursor:pointer;box-shadow:0 8px 18px rgba(43,159,214,.15);transition:.2s ease}button:hover{transform:translateY(-1px)}button.active{background:linear-gradient(135deg,var(--navy),var(--green))}button.secondary{background:var(--navy)}
+.main{display:grid;grid-template-columns:1.16fr .84fr;gap:18px}.stage{min-height:650px;border:1px solid var(--line);border-radius:22px;position:relative;overflow:hidden;background:linear-gradient(90deg,rgba(11,42,74,.03) 1px,transparent 1px),linear-gradient(180deg,rgba(11,42,74,.03) 1px,transparent 1px),linear-gradient(180deg,#fff,#fbfcfe);background-size:26px 26px,26px 26px,auto}
+.panel{border:1px solid var(--line);border-radius:22px;padding:24px;background:linear-gradient(180deg,#fff,#fbfcfe)}.step-label{color:var(--green);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.panel h2{margin:8px 0 14px;font-size:31px;line-height:1.08;letter-spacing:-.03em}.panel p{color:var(--muted);font-size:16px;line-height:1.56}
+.formula{margin-top:18px;border-radius:18px;border:1px solid rgba(43,159,214,.18);background:linear-gradient(90deg,rgba(43,159,214,.06),rgba(11,42,74,.03));padding:16px;font-weight:900;line-height:1.45}.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.badge{border:1px solid var(--line);border-radius:999px;padding:8px 10px;background:#fff;font-size:12px;font-weight:900}
+svg{width:100%;height:100%;display:block}.layer{opacity:0;transition:opacity .48s ease,transform .48s ease}.layer.on{opacity:1}.dash-drift{animation:dashDrift 5.2s linear infinite}@keyframes dashDrift{from{stroke-dashoffset:0}to{stroke-dashoffset:-120}}.thermal-pulse{transform-origin:450px 300px;animation:thermalPulse 2.7s ease-in-out infinite}@keyframes thermalPulse{0%,100%{transform:scale(.96);opacity:.55}50%{transform:scale(1.07);opacity:1}}
+.root-main{stroke-dasharray:700;stroke-dashoffset:700;transition:stroke-dashoffset 1.25s ease}#rootLayer.on .root-main{stroke-dashoffset:0}.panel.fade{animation:panelFade .32s ease}@keyframes panelFade{from{opacity:.45;transform:translateY(4px)}to{opacity:1;transform:none}}
+.hotspot{position:absolute;z-index:8;width:34px;height:34px;border-radius:50%;border:2px solid #fff;box-shadow:0 8px 20px rgba(11,42,74,.18);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transform:scale(.88);transition:.25s ease}.hotspot.show{opacity:1;pointer-events:auto;transform:scale(1)}.hotspot.vertex{left:35%;top:30%;background:#d33b35}.hotspot.target{left:50%;top:43%;background:#f4b63f;color:#0b2a4a}.hotspot.field{left:59%;top:59%;background:#2b9fd6}.hotspot.root{left:24%;top:49%;background:#109c5d}
+.tooltip{position:absolute;z-index:9;width:258px;border:1px solid #dfeaf3;border-radius:16px;background:rgba(255,255,255,.98);box-shadow:0 18px 42px rgba(11,42,74,.16);padding:14px 15px;color:#0b2a4a;opacity:0;pointer-events:none;transform:translateY(6px);transition:.22s ease}.tooltip.show{opacity:1;pointer-events:auto;transform:translateY(0)}.tooltip b{display:block;margin-bottom:6px;font-size:15px}.tooltip p{margin:0;color:#60778d;font-size:13px;line-height:1.45}.tip-vertex{left:39%;top:23%}.tip-target{left:54%;top:36%}.tip-field{left:62%;top:54%}.tip-root{left:28%;top:45%}
+.legend{margin-top:18px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.legend-card{border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff;min-height:96px;display:grid;grid-template-columns:58px 1fr;align-items:center;gap:10px}.legend-icon{width:52px;height:52px;display:flex;align-items:center;justify-content:center}.legend-icon svg{width:52px;height:52px;overflow:visible}.legend-copy b{display:block;margin-bottom:6px}.legend-copy span{font-size:12px;color:var(--muted);line-height:1.35}
+.ref-card{margin-top:20px;border:1px solid rgba(43,159,214,.20);border-radius:20px;background:linear-gradient(180deg,#fff,#f7fbfe);padding:14px;box-shadow:0 12px 30px rgba(11,42,74,.06)}.ref-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;color:#0b2a4a;font-size:14px;font-weight:900}.ref-title span{color:#109c5d;font-size:11px;letter-spacing:.10em;text-transform:uppercase}.ref-diagram{border:1px solid #dfeaf3;border-radius:16px;background:#fff;min-height:190px;padding:14px}
+@media(max-width:1050px){.controls{grid-template-columns:1fr 1fr}.main{grid-template-columns:1fr}.legend{grid-template-columns:1fr 1fr}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ===== Guidance Cell Explorer v1.1 additions ===== */
+.process-indicator{
+  margin-top:14px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+  color:#7a8ea3;
+  font-size:13px;
+  font-weight:900;
+}
+.process-indicator .process-node{
+  border:1px solid rgba(223,234,243,.95);
+  background:#fff;
+  border-radius:999px;
+  padding:7px 10px;
+  transition:.22s ease;
+}
+.process-indicator .process-arrow{
+  color:#109c5d;
+  opacity:.72;
+}
+.process-indicator .process-node.active{
+  color:#fff;
+  border-color:transparent;
+  background:linear-gradient(135deg,#0b2a4a,#109c5d);
+  box-shadow:0 8px 18px rgba(16,156,93,.16);
+}
+.legend-card{
+  cursor:pointer;
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.legend-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(43,159,214,.38);
+  box-shadow:0 12px 26px rgba(11,42,74,.08);
+}
+.stage .highlighted{
+  opacity:1!important;
+  filter:drop-shadow(0 0 12px rgba(43,159,214,.78));
+}
+#geometryLayer.highlighted{
+  filter:drop-shadow(0 0 11px rgba(211,59,53,.78));
+}
+#vertexLayer.highlighted{
+  filter:drop-shadow(0 0 12px rgba(211,59,53,.82));
+}
+#targetLayer.highlighted{
+  filter:drop-shadow(0 0 16px rgba(244,182,63,.95));
+}
+#fieldLayer.highlighted{
+  filter:drop-shadow(0 0 18px rgba(43,159,214,.86));
+}
+#rootLayer.highlighted{
+  filter:drop-shadow(0 0 12px rgba(138,90,43,.75));
+}
+.branch-hint{
+  opacity:0;
+  stroke-dasharray:120;
+  stroke-dashoffset:120;
+  transition:opacity .65s ease, stroke-dashoffset .85s ease;
+}
+#rootLayer.on .branch-hint{
+  opacity:.82;
+  stroke-dashoffset:0;
+  transition-delay:.42s;
+}
+
+
+/* ABI World bridge: the route icon opens into this local-scale module */
+.module-heading{min-width:0}
+.module-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap;max-width:520px}
+.abi-cell-identity{display:grid;grid-template-columns:58px 1fr;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(63,140,68,.18);border-radius:18px;background:linear-gradient(135deg,rgba(247,255,245,.96),#fff);box-shadow:0 10px 24px rgba(63,140,68,.08)}
+.abi-cell-mark{width:54px;height:54px;animation:abiCellPulse 2.2s ease-in-out infinite}
+.abi-cell-svg{display:block;width:100%;height:100%;overflow:visible}
+.abi-cell-lobe{fill:#aad28f;stroke:#385723;stroke-width:1.5}
+.abi-cell-diamond{fill:none;stroke:#340cfc;stroke-width:2;stroke-linejoin:miter}
+.abi-cell-core-outer{fill:#aad28f;stroke:#385723;stroke-width:1.5}
+.abi-cell-core-inner{fill:#fff;stroke:#385723;stroke-width:1.5}
+.abi-cell-identity span,.abi-cell-identity strong,.abi-cell-identity small{display:block}
+.abi-cell-identity span{color:var(--green);font-size:10px;font-weight:950;letter-spacing:.12em;text-transform:uppercase}
+.abi-cell-identity strong{margin-top:3px;font-size:13px}
+.abi-cell-identity small{margin-top:4px;color:var(--muted);font-size:10px;max-width:190px;white-space:normal}
+.return-route{background:linear-gradient(135deg,var(--navy),var(--green));padding:11px 15px;white-space:nowrap}
+.version{width:100%;text-align:right}
+@keyframes abiCellPulse{0%,100%{transform:scale(.95);opacity:.84}50%{transform:scale(1.06);opacity:1}}
+@media(max-width:1050px){.header{flex-direction:column}.module-actions{max-width:none;justify-content:flex-start}.version{text-align:left}}
+@media(prefers-reduced-motion:reduce){.abi-cell-mark{animation:none}}
+
+/* Outer Venturi cone portal: four inner cones guide the root to this central base */
+.outer-cone-entry{cursor:pointer;transform-box:fill-box;transform-origin:center;outline:none}
+.outer-cone-entry .outer-cone-pulse{animation:outerConePulse 2.25s ease-in-out infinite}
+.outer-cone-entry .outer-cone-base,.outer-cone-entry .outer-cone-core,.outer-cone-entry text{transition:filter .2s ease,stroke-width .2s ease,fill .2s ease}
+.outer-cone-entry:hover .outer-cone-base,.outer-cone-entry:focus .outer-cone-base{filter:drop-shadow(0 0 12px rgba(16,156,93,.48));stroke-width:5}
+.outer-cone-entry:hover .outer-cone-core,.outer-cone-entry:focus .outer-cone-core{fill:#f5fff1;stroke-width:3}
+.outer-cone-entry:hover text,.outer-cone-entry:focus text{fill:#0b6f47}
+@keyframes outerConePulse{0%,100%{opacity:.20;transform:scale(.90)}50%{opacity:.68;transform:scale(1.08)}}
+@media(prefers-reduced-motion:reduce){.outer-cone-entry .outer-cone-pulse{animation:none}}
+
+/* Visible Venturi header action; the outer viewer owns embedded back navigation */
+.open-venturi-header{background:linear-gradient(135deg,#126fc3,#109c5d);color:#fff;border-color:transparent;padding:11px 15px;white-space:nowrap;box-shadow:0 9px 20px rgba(16,120,88,.18)}
+.open-venturi-header:hover,.open-venturi-header:focus-visible{transform:translateY(-1px);box-shadow:0 13px 26px rgba(16,120,88,.27)}
+body.embedded .return-route{display:none}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="header">
+    <div class="module-heading"><div class="kicker">ABI World / Matrix Program / Internal View</div><h1>Guidance Cell Explorer</h1><div class="subtitle">The same matrix cell shown in Living Route Memory, opened to reveal its local geometry, attraction field, programmed target, and root response.</div>
+      <div class="process-indicator" aria-label="VCT process indicator">
+        <span class="process-node" data-process="wall">Wall</span><span class="process-arrow">&rarr;</span><span class="process-node" data-process="guidance">Guidance Cell</span><span class="process-arrow">&rarr;</span><span class="process-node" data-process="dew">Dew Zone</span><span class="process-arrow">&rarr;</span><span class="process-node" data-process="target">Target</span><span class="process-arrow">&rarr;</span><span class="process-node" data-process="branching">Branching</span>
+      </div>
+    </div>
+    <div class="module-actions">
+      <div class="abi-cell-identity"><div class="abi-cell-mark"><svg class="abi-cell-svg" viewBox="0 0 108 108" aria-hidden="true"><circle class="abi-cell-lobe" cx="54" cy="18" r="17.5"/><circle class="abi-cell-lobe" cx="18" cy="54" r="17.5"/><circle class="abi-cell-lobe" cx="90" cy="54" r="17.5"/><circle class="abi-cell-lobe" cx="54" cy="90" r="17.5"/><path class="abi-cell-diamond" d="M54 18 L90 54 L54 90 L18 54 Z"/><circle class="abi-cell-core-outer" cx="54" cy="54" r="18"/><circle class="abi-cell-core-inner" cx="54" cy="54" r="11"/></svg>      </div><div><span>Same Matrix Cell</span><strong>Macro to Local View</strong><small id="bridgeSource">Opened from ABI World</small></div></div>
+      <button class="open-venturi-header" id="openVenturiHeader" type="button">Open Venturi Cone &rarr;</button><button class="return-route" id="returnToRoute" type="button">&larr; Back to Living Route Memory</button>
+      <div class="version">MODULE / GCE v1.1</div>
+    </div>
+  </header>
+  <section class="board">
+    <div class="controls">
+      <button class="step active" data-step="1">1 - Same cell</button><button class="step" data-step="2">2 · Vertices</button><button class="step" data-step="3">3 · Attraction</button><button class="step" data-step="4">4 · Target</button><button class="step" data-step="5">5 · Root approach</button><button class="secondary" id="play">▶ Play</button>
+    </div>
+    <div class="main">
+      <div class="stage">
+        <svg viewBox="0 0 900 650" aria-label="Guidance cell explorer">
+          <defs><radialGradient id="fieldGrad"><stop offset="0%" stop-color="#2b9fd6" stop-opacity=".24"/><stop offset="50%" stop-color="#109c5d" stop-opacity=".13"/><stop offset="100%" stop-color="#2b9fd6" stop-opacity="0"/></radialGradient><filter id="softShadow"><feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#0b2a4a" flood-opacity=".12"/></filter></defs>
+          <g id="baseLayer" class="layer on"><text x="450" y="78" text-anchor="middle" fill="#0b2a4a" font-size="22" font-weight="900">Single guidance cell — local geometry</text><rect x="160" y="115" width="580" height="365" rx="24" fill="#f8fbff" stroke="#dfeaf3" stroke-width="2"/><text x="450" y="520" text-anchor="middle" fill="#60778d" font-size="15" font-weight="800">4 inner cones guide the root to 1 outer Venturi cone base</text></g>
+          <g id="identityLayer" class="layer on"><circle cx="450" cy="195" r="38" fill="#aad28f" stroke="#385723" stroke-width="3"/><circle cx="345" cy="300" r="38" fill="#aad28f" stroke="#385723" stroke-width="3"/><circle cx="555" cy="300" r="38" fill="#aad28f" stroke="#385723" stroke-width="3"/><circle cx="450" cy="405" r="38" fill="#aad28f" stroke="#385723" stroke-width="3"/><path d="M450 195 L555 300 L450 405 L345 300 Z" fill="none" stroke="#340cfc" stroke-width="5"/><g id="outerConeEntry" class="outer-cone-entry" role="button" tabindex="0" aria-label="Explore the outer Venturi cone"><title>Open the outer Venturi cone: the four inner cones guide the root to this central base</title><circle class="outer-cone-pulse" cx="450" cy="300" r="70" fill="none" stroke="#2b9fd6" stroke-width="6"/><circle class="outer-cone-base" cx="450" cy="300" r="54" fill="#aad28f" stroke="#385723" stroke-width="3"/><circle class="outer-cone-core" cx="450" cy="300" r="32" fill="#fff" stroke="#385723" stroke-width="2"/><text x="450" y="296" text-anchor="middle" fill="#109c5d" font-size="10" font-weight="950">OUTER</text><text x="450" y="310" text-anchor="middle" fill="#109c5d" font-size="10" font-weight="950">CONE</text></g><text x="450" y="463" text-anchor="middle" fill="#109c5d" font-size="15" font-weight="900">4 inner cones guide the root to the outer Venturi cone base</text></g>
+<g id="geometryLayer" class="layer on"><path d="M450 180 L570 300 L450 420 L330 300 Z" fill="rgba(211,59,53,.026)" stroke="#d33b35" stroke-width="4" stroke-dasharray="11 8" class="dash-drift"/><rect x="300" y="138" width="300" height="44" rx="18" fill="#fff" stroke="#dfeaf3" stroke-width="2"/><text x="450" y="166" text-anchor="middle" fill="#d33b35" font-size="15" font-weight="900">four inner cones define one guidance diamond</text></g>
+          <g id="vertexLayer" class="layer"><circle cx="450" cy="180" r="28" fill="#f8fbff" stroke="#8fa0b1" stroke-width="3"/><circle cx="570" cy="300" r="28" fill="#f8fbff" stroke="#8fa0b1" stroke-width="3"/><circle cx="450" cy="420" r="28" fill="#f8fbff" stroke="#8fa0b1" stroke-width="3"/><circle cx="330" cy="300" r="28" fill="#f8fbff" stroke="#8fa0b1" stroke-width="3"/><text x="450" y="190" text-anchor="middle" fill="#d33b35" font-size="36" font-weight="900">×</text><text x="570" y="310" text-anchor="middle" fill="#d33b35" font-size="36" font-weight="900">×</text><text x="450" y="430" text-anchor="middle" fill="#d33b35" font-size="36" font-weight="900">×</text><text x="330" y="310" text-anchor="middle" fill="#d33b35" font-size="36" font-weight="900">×</text></g>
+          <g id="fieldLayer" class="layer"><circle cx="450" cy="300" r="158" fill="url(#fieldGrad)" stroke="#2b9fd6" stroke-dasharray="8 7" stroke-opacity=".55" stroke-width="2.2" class="dash-drift"/><circle cx="450" cy="300" r="105" fill="none" stroke="#109c5d" stroke-opacity=".18" stroke-width="18" class="thermal-pulse"/><circle cx="450" cy="300" r="60" fill="none" stroke="#109c5d" stroke-opacity=".13" stroke-width="10" class="thermal-pulse"/><rect x="610" y="402" width="178" height="44" rx="18" fill="#fff" stroke="#dfeaf3" stroke-width="2"/><text x="699" y="429" text-anchor="middle" fill="#2b9fd6" font-size="15" font-weight="900">attraction field</text></g>
+          <g id="targetLayer" class="layer"><circle cx="450" cy="300" r="33" fill="#f7d77e" stroke="#c9972c" stroke-width="4" filter="url(#softShadow)"/><circle cx="450" cy="300" r="52" fill="none" stroke="#f4b63f" stroke-opacity=".20" stroke-width="12"/><text x="450" y="306" text-anchor="middle" fill="#0b2a4a" font-size="12" font-weight="900">target</text><rect x="600" y="270" width="230" height="64" rx="18" fill="#fff" stroke="#dfeaf3" stroke-width="2"/><text x="618" y="296" fill="#0b2a4a" font-size="16" font-weight="900">outer Venturi cone base</text><text x="618" y="318" fill="#60778d" font-size="13" font-weight="800">programmed destination</text></g>
+          <g id="rootLayer" class="layer"><path class="root-main" d="M92 340 C168 333, 238 317, 298 298 C347 283, 394 289, 431 300" fill="none" stroke="#8a5a2b" stroke-width="11" stroke-linecap="round"/><path d="M92 340 C168 333, 238 317, 298 298 C347 283, 394 289, 431 300" fill="none" stroke="#b7834c" stroke-width="3.7" stroke-linecap="round" opacity=".56"/><ellipse cx="431" cy="300" rx="7" ry="4.3" fill="#7a4d24" stroke="#68401f" stroke-width="1.6"/><circle cx="431" cy="300" r="12" fill="#109c5d" fill-opacity=".14"/><path class="branch-hint" d="M431 300 C446 292, 456 283, 466 268" fill="none" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/><path class="branch-hint" d="M431 300 C446 308, 456 318, 466 334" fill="none" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/><path class="branch-hint" d="M431 300 C446 292, 456 283, 466 268" fill="none" stroke="#b7834c" stroke-width="2" stroke-linecap="round" opacity=".55"/><path class="branch-hint" d="M431 300 C446 308, 456 318, 466 334" fill="none" stroke="#b7834c" stroke-width="2" stroke-linecap="round" opacity=".55"/><rect x="86" y="248" width="278" height="44" rx="18" fill="#fff" stroke="#dfeaf3" stroke-width="2"/><text x="225" y="275" text-anchor="middle" fill="#8a5a2b" font-size="15" font-weight="900">root reaches target → pre-branching</text></g>
+        </svg>
+        <button class="hotspot vertex" id="vertexHotspot">i</button><button class="hotspot field" id="fieldHotspot">i</button><button class="hotspot target" id="targetHotspot">i</button><button class="hotspot root" id="rootHotspot">i</button>
+        <div class="tooltip tip-vertex" id="vertexTip"><b>Guidance vertices</b><p>Four neighbouring inner-cone points create a local geometric frame for root direction.</p></div>
+        <div class="tooltip tip-field" id="fieldTip"><b>Local attraction zone</b><p>The dew-point and thermal-gradient field makes the centre biologically attractive.</p></div>
+        <div class="tooltip tip-target" id="targetTip"><b>Programmed target</b><p>The outer Venturi cone base is the predefined destination inside the guidance cell.</p></div>
+        <div class="tooltip tip-root" id="rootTip"><b>Root approach</b><p>The root does not find the target by accident; the cell geometry brings it there.</p></div>
+      </div>
+      <aside class="panel" id="panel">
+        <div class="step-label">Step 1 - Same Cell</div><h2>The ABI matrix cell opens into local guidance geometry.</h2><p>This is the same constant matrix element shown in Living Route Memory. Four surrounding inner cones guide the root toward the central base of the outer Venturi cone.</p>
+        <div class="formula">4 inner cones → guidance cell → biological direction</div>
+        <div class="badges"><span class="badge">local unit</span><span class="badge">geometric direction</span><span class="badge">programmable architecture</span></div>
+        <div class="ref-card"><div class="ref-title">Guidance Cell Reference <span>VCT module</span></div><div class="ref-diagram"><svg viewBox="0 0 360 180"><path d="M180 24 L300 90 L180 156 L60 90 Z" fill="rgba(211,59,53,.025)" stroke="#d33b35" stroke-width="4" stroke-dasharray="9 7"/><circle cx="180" cy="24" r="16" fill="#fff" stroke="#8fa0b1" stroke-width="2"/><text x="180" y="31" text-anchor="middle" fill="#d33b35" font-size="22" font-weight="900">×</text><circle cx="300" cy="90" r="16" fill="#fff" stroke="#8fa0b1" stroke-width="2"/><text x="300" y="97" text-anchor="middle" fill="#d33b35" font-size="22" font-weight="900">×</text><circle cx="180" cy="156" r="16" fill="#fff" stroke="#8fa0b1" stroke-width="2"/><text x="180" y="163" text-anchor="middle" fill="#d33b35" font-size="22" font-weight="900">×</text><circle cx="60" cy="90" r="16" fill="#fff" stroke="#8fa0b1" stroke-width="2"/><text x="60" y="97" text-anchor="middle" fill="#d33b35" font-size="22" font-weight="900">×</text><circle cx="180" cy="90" r="24" fill="#f7d77e" stroke="#c9972c" stroke-width="4"/><circle cx="180" cy="90" r="50" fill="none" stroke="#2b9fd6" stroke-opacity=".15" stroke-width="14"/></svg></div></div>
+      </aside>
+    </div>
+    <div class="legend">
+      <div class="legend-card" data-highlight="diamond"><div class="legend-icon"><svg viewBox="0 0 64 64"><path d="M32 6 L58 32 L32 58 L6 32 Z" fill="none" stroke="#d33b35" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7"/></svg></div><div class="legend-copy"><b>Red dashed diamond</b><span>Local cell boundary.</span></div></div>
+      <div class="legend-card" data-highlight="vertices"><div class="legend-icon"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="19" fill="#fff" stroke="#8fa0b1" stroke-width="3"/><text x="32" y="42" text-anchor="middle" font-size="28" font-weight="900" fill="#d33b35">×</text></svg></div><div class="legend-copy"><b>Inner cone vertices</b><span>Four geometry points.</span></div></div>
+      <div class="legend-card" data-highlight="target"><div class="legend-icon"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="20" fill="#f7d77e" stroke="#c9972c" stroke-width="4"/></svg></div><div class="legend-copy"><b>Outer cone base</b><span>Programmed destination.</span></div></div>
+      <div class="legend-card" data-highlight="field"><div class="legend-icon"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#2b9fd6" opacity=".15"/><circle cx="32" cy="32" r="18" fill="#109c5d" opacity=".20"/><circle cx="32" cy="32" r="8" fill="#109c5d" opacity=".75"/></svg></div><div class="legend-copy"><b>Attraction zone</b><span>Dew-point field.</span></div></div>
+      <div class="legend-card" data-highlight="root"><div class="legend-icon"><svg viewBox="0 0 64 64"><path d="M8 42 C20 38, 30 28, 44 30 C50 31, 55 34, 58 37" fill="none" stroke="#8a5a2b" stroke-width="7" stroke-linecap="round"/><path d="M8 42 C20 38, 30 28, 44 30 C50 31, 55 34, 58 37" fill="none" stroke="#b7834c" stroke-width="2.5" stroke-linecap="round" opacity=".65"/></svg></div><div class="legend-copy"><b>Root path</b><span>Approach to target.</span></div></div>
+    </div>
+  </section>
+</div>
+<script>
+const steps={1:{label:'Step 1 - Same Cell',title:'The ABI matrix cell opens into local guidance geometry.',text:'This is the same constant matrix element shown in Living Route Memory. Four surrounding inner cones guide the root toward the central base of the outer Venturi cone.',formula:'ABI matrix cell -> local guidance geometry',layers:['baseLayer','identityLayer'],hotspots:[],process:['guidance']},2:{label:'Step 2 · Vertices',title:'Four vertices define the guidance cell.',text:'The four inner-cone points form a local frame. This frame gives the root a repeatable spatial signal instead of an accidental surface encounter.',formula:'4 vertices = one repeatable local guidance unit',layers:['baseLayer','geometryLayer','vertexLayer'],hotspots:['vertexHotspot'],process:['guidance']},3:{label:'Step 3 · Attraction',title:'The cell centre becomes biologically attractive.',text:'The thermal and dew-point microzone creates a soft attraction field. The root is encouraged to approach the centre of the geometry.',formula:'geometry + microclimate → attraction field',layers:['baseLayer','geometryLayer','vertexLayer','fieldLayer'],hotspots:['vertexHotspot','fieldHotspot'],process:['guidance','dew']},4:{label:'Step 4 · Target',title:'The outer Venturi cone base becomes the programmed target.',text:'Inside the guidance cell, the yellow target represents the outer truncated-cone top cut — a predefined destination for root approach.',formula:'attraction field → programmed target',layers:['baseLayer','geometryLayer','vertexLayer','fieldLayer','targetLayer'],hotspots:['vertexHotspot','fieldHotspot','targetHotspot'],process:['target']},5:{label:'Step 5 · Root approach',title:'The root reaches the programmed target.',text:'The root apex arrives at the programmed target and begins preparing for a lateral response. Small side branches indicate the transition toward the next biological phase.',formula:'geometry → attraction → target → pre-branching response',layers:['baseLayer','geometryLayer','vertexLayer','fieldLayer','targetLayer','rootLayer'],hotspots:['vertexHotspot','fieldHotspot','targetHotspot','rootHotspot'],process:['branching']}};
+let current=1;const panel=document.getElementById('panel');function setStep(n){current=n;document.querySelectorAll('.step').forEach(btn=>btn.classList.toggle('active',Number(btn.dataset.step)===n));document.querySelectorAll('.layer').forEach(el=>el.classList.remove('on'));steps[n].layers.forEach(id=>document.getElementById(id)?.classList.add('on'));document.querySelectorAll('.hotspot').forEach(h=>h.classList.remove('show'));steps[n].hotspots.forEach(id=>document.getElementById(id)?.classList.add('show'));document.querySelectorAll('.process-node').forEach(node=>node.classList.toggle('active',steps[n].process?.includes(node.dataset.process)));document.querySelectorAll('.tooltip').forEach(t=>t.classList.remove('show'));panel.classList.remove('fade');void panel.offsetWidth;panel.classList.add('fade');panel.querySelector('.step-label').textContent=steps[n].label;panel.querySelector('h2').textContent=steps[n].title;panel.querySelector('p').textContent=steps[n].text;panel.querySelector('.formula').textContent=steps[n].formula}
+document.querySelectorAll('.step').forEach(btn=>btn.addEventListener('click',()=>setStep(Number(btn.dataset.step))));let playing=false;document.getElementById('play').addEventListener('click',()=>{if(playing)return;playing=true;let n=1;const tick=()=>{setStep(n);n++;if(n<=5){setTimeout(tick,1450)}else{playing=false}};tick()});
+[['vertexHotspot','vertexTip'],['fieldHotspot','fieldTip'],['targetHotspot','targetTip'],['rootHotspot','rootTip']].forEach(([h,t])=>{const hot=document.getElementById(h),tip=document.getElementById(t);hot.addEventListener('click',e=>{e.stopPropagation();document.querySelectorAll('.tooltip').forEach(x=>{if(x!==tip)x.classList.remove('show')});tip.classList.toggle('show')})});document.addEventListener('click',()=>document.querySelectorAll('.tooltip').forEach(t=>t.classList.remove('show')));
+const highlightMap={diamond:'geometryLayer',vertices:'vertexLayer',target:'targetLayer',field:'fieldLayer',root:'rootLayer'};
+document.querySelectorAll('.legend-card[data-highlight]').forEach(card=>{
+  card.addEventListener('mouseenter',()=>{
+    const id=highlightMap[card.dataset.highlight];
+    const el=document.getElementById(id);
+    if(el){
+      el.classList.add('highlighted');
+      if(!el.classList.contains('on')) el.classList.add('on');
+    }
+  });
+  card.addEventListener('mouseleave',()=>{
+    const id=highlightMap[card.dataset.highlight];
+    const el=document.getElementById(id);
+    if(el){
+      el.classList.remove('highlighted');
+      if(!steps[current].layers.includes(id)) el.classList.remove('on');
+    }
+  });
+});
+const bridgeParams=new URLSearchParams(window.location.search);
+const guidanceEmbedded=window.parent&&window.parent!==window;
+if(guidanceEmbedded)document.body.classList.add('embedded');
+const bridgeSourceText=bridgeParams.get('source');
+if(bridgeSourceText){document.getElementById('bridgeSource').textContent='Opened from: '+bridgeSourceText;}
+function returnToLivingRoute(){
+  if(window.parent&&window.parent!==window){
+    try{if(typeof window.parent.closeGuidanceCell==='function'){window.parent.closeGuidanceCell();return;}}catch(error){}
+    window.parent.postMessage({type:'abi:close-guidance-cell'},'*');return; // Direct same-origin route return with message fallback
+  }
+  window.location.href='../../index.html';
+}
+document.getElementById('returnToRoute').addEventListener('click',returnToLivingRoute);
+document.addEventListener('keydown',event=>{if(event.key==='Escape')returnToLivingRoute();});
+function openOuterVenturiCone(){
+  const source='Central base of the outer Venturi cone';
+  if(window.parent&&window.parent!==window){window.parent.postMessage({type:'abi:open-venturi',source,guidanceStep:current},'*');return;}
+  window.location.href='../venturi-drying/index.html?source='+encodeURIComponent(source)+'&guidanceStep='+current;
+}
+const outerConeEntry=document.getElementById('outerConeEntry');
+document.getElementById('openVenturiHeader').addEventListener('click',openOuterVenturiCone);
+outerConeEntry.addEventListener('click',openOuterVenturiCone);
+outerConeEntry.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openOuterVenturiCone();}});
+const requestedGuidanceStep=Math.min(5,Math.max(1,Number(bridgeParams.get('step'))||1));
+setStep(requestedGuidanceStep);
+</script>
+</body></html>

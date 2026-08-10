@@ -161,6 +161,43 @@ header{position:absolute;left:40px;right:40px;top:24px;z-index:30;display:grid;g
 @media (prefers-reduced-motion:reduce){
   .left .info .icon,.left .info .icon::after{animation:none!important;transition:none!important}
 }
+
+/* Exact principal matrix cell from the 08.08.26 reference screen */
+.matrix-icon.matrix-live{position:relative;display:block;width:52px;height:52px;overflow:visible;background:transparent;border:0;padding:0;border-radius:0;animation:matrixExactPulse 2.2s ease-in-out infinite}
+.matrix-live .matrix-exact-icon{display:block;width:52px;height:52px;overflow:visible}
+.matrix-exact-icon .matrix-lobe{fill:#aad28f;stroke:#385723;stroke-width:1.5}
+.matrix-exact-icon .matrix-diamond-line{fill:none;stroke:#340cfc;stroke-width:2;stroke-linejoin:miter}
+.matrix-exact-icon .matrix-core-outer{fill:#aad28f;stroke:#385723;stroke-width:1.5}
+.matrix-exact-icon .matrix-core-inner{fill:#fff;stroke:#385723;stroke-width:1.5}
+@keyframes matrixExactPulse{0%,100%{transform:scale(.94);opacity:.82}50%{transform:scale(1.06);opacity:1}}
+@media (prefers-reduced-motion:reduce){.matrix-icon.matrix-live{animation:none}}
+/* Closed-loop composition repair: place the memory band between the node and dock */
+.memory-band{bottom:112px!important;height:20px!important;padding:0 18px!important;font-size:8.8px!important}
+
+/* Screen 05: keep the ROUTE SELECTOR label clear of the green action node */
+.core:after{
+  content:"ROUTE SELECTOR"!important;
+  top:128px!important;
+  left:calc(50% - 40px)!important;
+  transform:translateX(-100%)!important;
+  width:auto!important;
+  white-space:nowrap!important;
+  padding:4px 8px;
+  border:1px solid rgba(63,140,68,.18);
+  border-radius:999px;
+  background:rgba(255,255,255,.78);
+  box-shadow:0 8px 18px rgba(35,78,120,.07);
+  line-height:1!important;
+}
+
+/* Guidance Cell portal: the constant matrix cell becomes an interactive deep dive */
+.matrix-card.guidance-entry{position:relative;isolation:isolate;cursor:pointer;padding-right:54px!important;transition:border-color .22s ease,box-shadow .22s ease,filter .22s ease;background-image:linear-gradient(135deg,rgba(255,255,255,.76),rgba(247,255,245,.88))}
+.matrix-card.guidance-entry::after{content:"\2197";position:absolute;right:13px;top:50%;width:28px;height:28px;transform:translateY(-50%);display:grid;place-items:center;border-radius:50%;color:#fff;background:linear-gradient(135deg,#126fc3,#109c5d);box-shadow:0 8px 18px rgba(16,120,88,.20);font:900 14px/1 Arial,sans-serif;transition:transform .22s ease,box-shadow .22s ease}
+.matrix-card.guidance-entry::before{content:"Explore Guidance Cell";position:absolute;z-index:6;right:5px;bottom:calc(100% + 7px);padding:7px 10px;border-radius:999px;color:#fff;background:linear-gradient(90deg,#0b2a4a,#109c5d);box-shadow:0 10px 24px rgba(11,42,74,.16);font:900 8.5px/1 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;opacity:0;pointer-events:none;transform:translateY(5px);transition:opacity .2s ease,transform .2s ease}
+.matrix-card.guidance-entry:hover,.matrix-card.guidance-entry:focus-visible{outline:none;border-color:rgba(16,156,93,.54)!important;box-shadow:0 0 0 4px rgba(16,156,93,.08),0 16px 34px rgba(16,120,88,.14)!important;filter:saturate(1.08)}
+.matrix-card.guidance-entry:hover::before,.matrix-card.guidance-entry:focus-visible::before{opacity:1;transform:translateY(0)}
+.matrix-card.guidance-entry:hover::after,.matrix-card.guidance-entry:focus-visible::after{transform:translateY(-50%) scale(1.12);box-shadow:0 10px 24px rgba(16,120,88,.30)}
+@media(prefers-reduced-motion:reduce){.matrix-card.guidance-entry,.matrix-card.guidance-entry::before,.matrix-card.guidance-entry::after{transition:none}}
 </style>
 </head>
 <body>
@@ -221,13 +258,28 @@ header{position:absolute;left:40px;right:40px;top:24px;z-index:30;display:grid;g
       <div class="route-card"><div class="route-name">Route 02<br>Preset Path</div><div class="mini-map"></div><div class="route-state"><b>Next</b><span>Ready</span></div></div>
       <div class="route-card"><div class="route-name">Route 03<br>Branching</div><div class="mini-map"></div><div class="route-state"><b>Layer</b><span>Future</span></div></div>
 
-      <div class="matrix-card"><div class="matrix-icon matrix-live" aria-label="Active matrix"><i></i><i></i><i></i><i></i><b class="matrix-diamond"></b><b class="matrix-core"></b></div><div><strong>Selector Mode Active</strong><span>ABI World has reopened with the completed biological path preserved as route memory.</span></div></div>
+      <div class="matrix-card guidance-entry" role="button" tabindex="0" aria-label="Explore how this matrix guidance cell works"><div class="matrix-icon matrix-live" role="img" aria-label="Active matrix"><svg class="matrix-exact-icon" viewBox="0 0 108 108" aria-hidden="true"><circle class="matrix-lobe" cx="54" cy="18" r="17.5"/><circle class="matrix-lobe" cx="18" cy="54" r="17.5"/><circle class="matrix-lobe" cx="90" cy="54" r="17.5"/><circle class="matrix-lobe" cx="54" cy="90" r="17.5"/><path class="matrix-diamond-line" d="M54 18 L90 54 L54 90 L18 54 Z"/><circle class="matrix-core-outer" cx="54" cy="54" r="18"/><circle class="matrix-core-inner" cx="54" cy="54" r="11"/></svg></div><div><strong>Selector Mode Active</strong><span>ABI World has reopened with the completed biological path preserved as route memory.</span></div></div>
     </aside>
   </section>
 
   <section class="bottom"><div class="chip">✓ Route Stored</div><div class="chip active">ABI World Map</div><div class="chip final">Next Route Open</div><div class="chip">Route Selector</div></section>
   <div class="horizon">Current Position: <span>ABI World / Route Selector / Memory Reopened</span></div>
 </main>
+<script>
+/* Guidance Cell portal interaction */
+(()=>{
+  const entry=document.querySelector('.guidance-entry');
+  if(!entry)return;
+  const openGuidance=()=>{
+    const source=document.title;
+    if(window.parent&&window.parent!==window){window.parent.postMessage({type:'abi:open-guidance-cell',source},'*');return;}
+    window.location.href='../modules/guidance-cell/index.html?source='+encodeURIComponent(source);
+  };
+  entry.addEventListener('click',openGuidance);
+  entry.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openGuidance();}});
+  window.addEventListener('message',event=>{if(event.data&&event.data.type==='abi:guidance-closed')entry.focus();});
+})();
+</script>
 </body>
 </html>
 

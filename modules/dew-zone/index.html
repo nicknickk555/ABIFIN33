@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Dew Zone Explorer — VCT Interactive Module</title>
+<style>
+:root{--navy:#0b2a4a;--green:#109c5d;--blue:#2b9fd6;--cyan:#61c7e8;--yellow:#f4b63f;--brown:#8a5a2b;--brown-hi:#b7834c;--muted:#60778d;--line:#dfeaf3}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#f5f7fa,#fff);color:var(--navy)}
+.shell{width:min(1440px,96vw);margin:22px auto}
+.header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px 26px;box-shadow:0 16px 40px rgba(11,42,74,.07)}
+.kicker{color:var(--green);font-size:12px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+h1{margin:6px 0 8px;font-size:34px;line-height:1.06;letter-spacing:-.035em}
+.subtitle{max-width:980px;color:var(--muted);font-size:15px;line-height:1.5}
+.version{text-align:right;color:var(--muted);font-size:12px;font-weight:900;white-space:nowrap}
+.process-indicator{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:#7a8ea3;font-size:13px;font-weight:900}
+.process-node{border:1px solid rgba(223,234,243,.95);background:#fff;border-radius:999px;padding:7px 10px;transition:.22s ease}
+.process-arrow{color:#109c5d;opacity:.72}
+.process-node.active{color:#fff;border-color:transparent;background:linear-gradient(135deg,#0b2a4a,#109c5d);box-shadow:0 8px 18px rgba(16,156,93,.16)}
+.board{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 18px 50px rgba(11,42,74,.08)}
+.controls{display:grid;grid-template-columns:repeat(5,1fr) auto;gap:10px;margin-bottom:18px}
+button{border:0;border-radius:14px;padding:12px 14px;font-weight:900;color:#fff;background:#5aa5d6;cursor:pointer;box-shadow:0 8px 18px rgba(43,159,214,.15);transition:.2s ease}
+button:hover{transform:translateY(-1px)}
+button.active{background:linear-gradient(135deg,var(--navy),var(--green))}
+button.secondary{background:var(--navy)}
+.main{display:grid;grid-template-columns:1.16fr .84fr;gap:18px}
+.stage{min-height:650px;border:1px solid var(--line);border-radius:22px;position:relative;overflow:hidden;background:linear-gradient(90deg,rgba(11,42,74,.03) 1px,transparent 1px),linear-gradient(180deg,rgba(11,42,74,.03) 1px,transparent 1px),linear-gradient(180deg,#fff,#fbfcfe);background-size:26px 26px,26px 26px,auto}
+.panel{border:1px solid var(--line);border-radius:22px;padding:24px;background:linear-gradient(180deg,#fff,#fbfcfe)}
+.step-label{color:var(--green);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.panel h2{margin:8px 0 14px;font-size:31px;line-height:1.08;letter-spacing:-.03em}
+.panel p{color:var(--muted);font-size:16px;line-height:1.56}
+.formula{margin-top:18px;border-radius:18px;border:1px solid rgba(43,159,214,.18);background:linear-gradient(90deg,rgba(43,159,214,.06),rgba(16,156,93,.05));padding:16px;font-weight:900;line-height:1.45}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.badge{border:1px solid var(--line);border-radius:999px;padding:8px 10px;background:#fff;font-size:12px;font-weight:900}
+svg{width:100%;height:100%;display:block}
+.layer{opacity:0;transition:opacity .48s ease,transform .48s ease}.layer.on{opacity:1}
+.dash-drift{animation:dashDrift 5.2s linear infinite}@keyframes dashDrift{from{stroke-dashoffset:0}to{stroke-dashoffset:-120}}
+.dew-breathe{transform-origin:450px 300px;animation:dewBreathe 3.2s ease-in-out infinite}@keyframes dewBreathe{0%,100%{transform:scale(.92);opacity:.45}50%{transform:scale(1.08);opacity:1}}
+.thermal-flow{animation:thermalShift 3.4s ease-in-out infinite}@keyframes thermalShift{0%,100%{opacity:.46;transform:translateX(-5px)}50%{opacity:.95;transform:translateX(7px)}}
+.air-wave{stroke-dasharray:12 12;animation:airWave 3s linear infinite}@keyframes airWave{from{stroke-dashoffset:0}to{stroke-dashoffset:-96}}
+.root-main{stroke-dasharray:760;stroke-dashoffset:760;transition:stroke-dashoffset 1.3s ease}
+#rootLayer.on .root-main{stroke-dashoffset:0}
+.panel.fade{animation:panelFade .32s ease}@keyframes panelFade{from{opacity:.45;transform:translateY(4px)}to{opacity:1;transform:none}}
+.hotspot{position:absolute;z-index:8;width:34px;height:34px;border-radius:50%;border:2px solid #fff;box-shadow:0 8px 20px rgba(11,42,74,.18);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transform:scale(.88);transition:.25s ease}
+.hotspot.show{opacity:1;pointer-events:auto;transform:scale(1);animation:hotspotPulse 2.6s ease-in-out infinite}
+.hotspot.surface{left:23%;top:38%;background:#0b2a4a}.hotspot.dew{left:53.6%;top:44.3%;background:#2b9fd6}.hotspot.thermal{left:62%;top:36%;background:#109c5d}.hotspot.field{left:60%;top:58%;background:#2b9fd6}.hotspot.root{left:28%;top:52%;background:#8a5a2b}
+@keyframes hotspotPulse{0%,100%{box-shadow:0 8px 20px rgba(11,42,74,.18),0 0 0 0 rgba(43,159,214,.18)}50%{box-shadow:0 10px 24px rgba(11,42,74,.22),0 0 0 8px rgba(43,159,214,.08)}}
+.tooltip{position:absolute;z-index:9;width:258px;border:1px solid #dfeaf3;border-radius:16px;background:rgba(255,255,255,.98);box-shadow:0 18px 42px rgba(11,42,74,.16);padding:14px 15px;color:#0b2a4a;opacity:0;pointer-events:none;transform:translateY(6px);transition:.22s ease}
+.tooltip.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+.tooltip b{display:block;margin-bottom:6px;font-size:15px}.tooltip p{margin:0;color:#60778d;font-size:13px;line-height:1.45}
+.tip-surface{left:25%;top:31%}.tip-dew{left:54%;top:36%}.tip-thermal{left:65%;top:29%}.tip-field{left:64%;top:52%}.tip-root{left:31%;top:46%}
+.legend{margin-top:18px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.legend-card{border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff;min-height:96px;display:grid;grid-template-columns:58px 1fr;align-items:center;gap:10px;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.legend-card:hover{transform:translateY(-2px);border-color:rgba(43,159,214,.38);box-shadow:0 12px 26px rgba(11,42,74,.08)}
+.legend-icon{width:52px;height:52px;display:flex;align-items:center;justify-content:center}.legend-icon svg{width:52px;height:52px;overflow:visible}
+.legend-copy b{display:block;margin-bottom:6px}.legend-copy span{font-size:12px;color:var(--muted);line-height:1.35}
+.stage .highlighted{opacity:1!important;filter:drop-shadow(0 0 14px rgba(43,159,214,.8))}
+#dewLayer.highlighted{filter:drop-shadow(0 0 18px rgba(43,159,214,.95))}
+#thermalLayer.highlighted{filter:drop-shadow(0 0 14px rgba(16,156,93,.78))}
+#fieldLayer.highlighted{filter:drop-shadow(0 0 20px rgba(43,159,214,.9))}
+#rootLayer.highlighted{filter:drop-shadow(0 0 12px rgba(138,90,43,.75))}
+#targetLayer.highlighted{filter:drop-shadow(0 0 14px rgba(244,182,63,.9))}
+.ref-card{margin-top:20px;border:1px solid rgba(43,159,214,.20);border-radius:20px;background:linear-gradient(180deg,#fff,#f7fbfe);padding:14px;box-shadow:0 12px 30px rgba(11,42,74,.06)}
+.ref-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;color:#0b2a4a;font-size:14px;font-weight:900}.ref-title span{color:#109c5d;font-size:11px;letter-spacing:.10em;text-transform:uppercase}
+.ref-diagram{border:1px solid #dfeaf3;border-radius:16px;background:#fff;min-height:190px;padding:14px}
+.physics-snapshot{min-width:258px;border:1px solid rgba(43,159,214,.22);border-radius:18px;padding:14px 16px;background:linear-gradient(135deg,rgba(244,251,255,.96),rgba(245,255,249,.96));box-shadow:0 12px 28px rgba(11,42,74,.07)}
+.physics-snapshot .snapshot-label{color:var(--green);font-size:10px;font-weight:950;letter-spacing:.12em;text-transform:uppercase}
+.physics-snapshot strong{display:block;margin:5px 0 3px;font-size:17px;letter-spacing:-.02em}
+.physics-snapshot span{display:block;color:var(--muted);font-size:12px;line-height:1.35}
+.physics-snapshot .snapshot-signal{display:flex;align-items:center;gap:8px;margin-top:9px;color:#0b719e;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.physics-snapshot .snapshot-signal::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 0 rgba(43,159,214,.35);animation:snapshotPulse 2s ease-in-out infinite}
+@keyframes snapshotPulse{0%,100%{transform:scale(.88);box-shadow:0 0 0 0 rgba(43,159,214,.30)}50%{transform:scale(1.12);box-shadow:0 0 0 8px rgba(43,159,214,0)}}
+.stage-readouts{position:absolute;z-index:7;left:18px;right:18px;bottom:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;pointer-events:none}
+.readout{min-height:60px;border:1px solid rgba(223,234,243,.94);border-radius:14px;padding:10px 12px;background:rgba(255,255,255,.91);box-shadow:0 10px 24px rgba(11,42,74,.07);backdrop-filter:blur(7px)}
+.readout b{display:block;color:var(--navy);font-size:13px;transition:color .3s ease,transform .3s ease}.readout span{display:block;margin-top:3px;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.readout.live b{color:var(--green);animation:readoutWake .65s cubic-bezier(.2,.8,.2,1.15)}
+@keyframes readoutWake{0%{opacity:.35;transform:translateY(4px)}65%{opacity:1;transform:translateY(-1px)}100%{transform:none}}
+.moisture-particle{fill:#61c7e8;filter:drop-shadow(0 0 5px rgba(43,159,214,.45));animation:moistureOrbit 4.8s ease-in-out infinite;transform-origin:450px 300px}
+.moisture-particle:nth-of-type(2n){animation-duration:5.8s;animation-direction:reverse}.moisture-particle:nth-of-type(3n){animation-delay:-1.7s}
+@keyframes moistureOrbit{0%,100%{opacity:.25;transform:rotate(0deg) scale(.92)}50%{opacity:.95;transform:rotate(16deg) scale(1.06)}}
+.target-pulse{transform-origin:450px 300px;animation:targetPhysicsPulse 2.2s ease-in-out infinite}
+@keyframes targetPhysicsPulse{0%,100%{opacity:.26;transform:scale(.82)}50%{opacity:.72;transform:scale(1.18)}}
+.legend{position:relative;padding-top:16px}
+.legend-progress{position:absolute;z-index:0;left:10%;right:10%;top:4px;height:4px;border-radius:999px;background:#e6eef5;overflow:hidden}
+.legend-progress i{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--blue),var(--green));box-shadow:0 0 12px rgba(43,159,214,.42);transition:width .55s cubic-bezier(.2,.8,.2,1)}
+.legend-card{position:relative;z-index:1;outline:none}
+.legend-card::before{content:"";position:absolute;left:50%;top:-20px;width:10px;height:10px;transform:translateX(-50%);border:3px solid #fff;border-radius:50%;background:#cbd9e4;box-shadow:0 0 0 1px #d4e2ec;transition:.3s ease}
+.legend-card.done{border-color:rgba(43,159,214,.28);background:linear-gradient(180deg,#fff,#f5fbff)}
+.legend-card.done::before{background:var(--blue)}
+.legend-card.active{border-color:rgba(16,156,93,.42);background:linear-gradient(180deg,#fff,#f4fff8);box-shadow:0 14px 30px rgba(16,156,93,.11)}
+.legend-card.active::before{background:var(--green);animation:railNodePulse 1.9s ease-in-out infinite}
+.legend-card:focus-visible{box-shadow:0 0 0 4px rgba(43,159,214,.13),0 14px 30px rgba(11,42,74,.09)}
+@keyframes railNodePulse{0%,100%{box-shadow:0 0 0 1px rgba(16,156,93,.22),0 0 0 0 rgba(16,156,93,.24)}50%{box-shadow:0 0 0 1px rgba(16,156,93,.42),0 0 0 9px rgba(16,156,93,0)}}
+@media(max-width:1050px){.controls{grid-template-columns:1fr 1fr}.main{grid-template-columns:1fr}.legend{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.header{flex-direction:column}.physics-snapshot{width:100%;min-width:0}.stage-readouts{grid-template-columns:1fr;position:relative;left:auto;right:auto;bottom:auto;margin:12px}.stage{padding-bottom:8px}.legend{grid-template-columns:1fr}.legend-progress{display:none}.legend-card::before{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="header">
+    <div>
+      <div class="kicker">Venturi Carpet Technology · interactive library</div>
+      <h1>Dew Zone Explorer</h1>
+      <div class="subtitle">How local dew-point formation and thermal gradients create a biologically attractive destination around the programmed target.</div>
+      <div class="process-indicator" aria-label="VCT process indicator">
+        <span class="process-node" data-process="wall">Wall</span><span class="process-arrow">→</span>
+        <span class="process-node" data-process="guidance">Guidance Cell</span><span class="process-arrow">→</span>
+        <span class="process-node" data-process="dew">Dew Zone</span><span class="process-arrow">→</span>
+        <span class="process-node" data-process="target">Target</span><span class="process-arrow">→</span>
+        <span class="process-node" data-process="branching">Branching</span>
+      </div>
+    </div>
+    <div class="physics-snapshot" aria-label="Dew-zone physical principle">
+      <div class="snapshot-label">Principles / local physics</div>
+      <strong>T<sub>surface</sub> ≤ T<sub>dew</sub></strong>
+      <span>When the local surface reaches the dew point, moisture becomes a spatial signal.</span>
+      <div class="snapshot-signal">microclimate active</div>
+    </div>
+  </header>
+
+  <section class="board">
+    <div class="controls">
+      <button class="step active" data-step="1">1 · Surface</button>
+      <button class="step" data-step="2">2 · Dew point</button>
+      <button class="step" data-step="3">3 · Thermal gradient</button>
+      <button class="step" data-step="4">4 · Attraction field</button>
+      <button class="step" data-step="5">5 · Root response</button>
+      <button class="secondary" id="play">▶ Play</button>
+    </div>
+
+    <div class="main">
+      <div class="stage">
+        <svg viewBox="0 0 900 650" aria-label="Dew Zone Explorer">
+          <defs>
+            <radialGradient id="dewGrad">
+              <stop offset="0%" stop-color="#61c7e8" stop-opacity=".55"/>
+              <stop offset="46%" stop-color="#2b9fd6" stop-opacity=".22"/>
+              <stop offset="100%" stop-color="#2b9fd6" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="fieldGrad">
+              <stop offset="0%" stop-color="#109c5d" stop-opacity=".32"/>
+              <stop offset="44%" stop-color="#2b9fd6" stop-opacity=".22"/>
+              <stop offset="100%" stop-color="#2b9fd6" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="thermalGrad" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0%" stop-color="#2b9fd6" stop-opacity=".34"/>
+              <stop offset="50%" stop-color="#ffffff" stop-opacity=".05"/>
+              <stop offset="100%" stop-color="#109c5d" stop-opacity=".28"/>
+            </linearGradient>
+            <filter id="softShadow"><feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#0b2a4a" flood-opacity=".12"/></filter>
+          </defs>
+
+          <g id="baseLayer" class="layer on">
+            <text x="450" y="74" text-anchor="middle" fill="#0b2a4a" font-size="22" font-weight="900">Dew-point microzone — biological attraction engine</text>
+            <rect x="145" y="118" width="610" height="370" rx="24" fill="#f8fbff" stroke="#dfeaf3" stroke-width="2"/>
+            <rect x="185" y="160" width="110" height="285" rx="26" fill="#edf8f0" stroke="#109c5d" stroke-opacity=".26" stroke-width="2"/>
+            <text x="240" y="148" text-anchor="middle" fill="#0b2a4a" font-size="14" font-weight="900">HDPE wall</text>
+            <rect x="605" y="160" width="110" height="285" rx="26" fill="#fff8df" stroke="#f4b63f" stroke-opacity=".32" stroke-width="2"/>
+            <text x="660" y="148" text-anchor="middle" fill="#0b2a4a" font-size="14" font-weight="900">compost side</text>
+            <text x="450" y="522" text-anchor="middle" fill="#60778d" font-size="15" font-weight="800">surface conditions create local moisture and thermal signals</text>
+          </g>
+
+          <g id="surfaceLayer" class="layer on">
+            <path d="M305 212 C350 188, 405 182, 450 194 C506 208, 548 202, 595 178" fill="none" stroke="#2b9fd6" stroke-width="4" stroke-linecap="round" stroke-dasharray="12 12" opacity=".55" class="air-wave"/>
+            <path d="M305 382 C355 405, 406 404, 451 388 C500 370, 548 370, 595 394" fill="none" stroke="#109c5d" stroke-width="4" stroke-linecap="round" stroke-dasharray="12 12" opacity=".42" class="air-wave"/>
+            <rect x="322" y="122" width="258" height="44" rx="18" fill="#fff" stroke="#dfeaf3" stroke-width="2"/>
+            <text x="451" y="150" text-anchor="middle" fill="#0b2a4a" font-size="15" font-weight="900">cool wall + moist compost boundary</text>
+          </g>
+
+          <g id="dewLayer" class="layer">
+            <circle cx="450" cy="300" r="138" fill="url(#dewGrad)" class="dew-breathe"/>
+            <circle cx="450" cy="300" r="86" fill="none" stroke="#2b9fd6" stroke-opacity=".28" stroke-width="16" class="dew-breathe"/>
+            <circle cx="450" cy="300" r="46" fill="none" stroke="#61c7e8" stroke-opacity=".34" stroke-width="9" class="dew-breathe"/>
+            <circle class="moisture-particle" cx="380" cy="244" r="5"/><circle class="moisture-particle" cx="506" cy="226" r="4"/>
+            <circle class="moisture-particle" cx="534" cy="286" r="5"/><circle class="moisture-particle" cx="502" cy="364" r="4"/>
+            <circle class="moisture-particle" cx="410" cy="378" r="5"/><circle class="moisture-particle" cx="360" cy="318" r="4"/>
+            <text x="450" y="206" text-anchor="middle" fill="#2b9fd6" font-size="15" font-weight="900">dew-point formation</text>
+          </g>
+
+          <g id="thermalLayer" class="layer">
+            <rect x="240" y="195" width="420" height="210" rx="38" fill="url(#thermalGrad)" class="thermal-flow"/>
+            <text x="284" y="424" text-anchor="middle" fill="#2b9fd6" font-size="14" font-weight="900">cool side</text>
+            <text x="616" y="424" text-anchor="middle" fill="#109c5d" font-size="14" font-weight="900">warm / moist side</text>
+            <path d="M292 434 C352 458, 430 458, 504 438 C560 423, 600 420, 636 432" fill="none" stroke="#109c5d" stroke-width="4" stroke-linecap="round" stroke-dasharray="10 10" opacity=".55" class="air-wave"/>
+          </g>
+
+          <g id="targetLayer" class="layer">
+            <circle cx="450" cy="300" r="31" fill="#f7d77e" stroke="#c9972c" stroke-width="4" filter="url(#softShadow)"/>
+            <circle class="target-pulse" cx="450" cy="300" r="52" fill="none" stroke="#f4b63f" stroke-opacity=".32" stroke-width="12"/>
+            <text x="450" y="306" text-anchor="middle" fill="#0b2a4a" font-size="12" font-weight="900">target</text>
+          </g>
+
+          <g id="fieldLayer" class="layer">
+            <circle cx="450" cy="300" r="172" fill="url(#fieldGrad)" stroke="#2b9fd6" stroke-width="3" stroke-dasharray="10 8" stroke-opacity=".46" class="dew-breathe"/>
+            <circle cx="450" cy="300" r="105" fill="none" stroke="#109c5d" stroke-opacity=".20" stroke-width="20" class="dew-breathe"/>
+            <rect x="590" y="252" width="238" height="76" rx="20" fill="#fff" stroke="#dfeaf3" stroke-width="2"/>
+            <text x="610" y="282" fill="#0b2a4a" font-size="16" font-weight="900">attraction field</text>
+            <text x="610" y="306" fill="#60778d" font-size="13" font-weight="800">dew-point + thermal gradient</text>
+          </g>
+
+          <g id="rootLayer" class="layer">
+            <path class="root-main" d="M88 358 C156 350, 222 336, 284 318 C337 302, 386 299, 427 300" fill="none" stroke="#8a5a2b" stroke-width="11" stroke-linecap="round"/>
+            <path d="M88 358 C156 350, 222 336, 284 318 C337 302, 386 299, 427 300" fill="none" stroke="#b7834c" stroke-width="3.7" stroke-linecap="round" opacity=".56"/>
+            <ellipse cx="427" cy="300" rx="7" ry="4.3" fill="#7a4d24" stroke="#68401f" stroke-width="1.6"/>
+            <circle cx="427" cy="300" r="14" fill="#109c5d" fill-opacity=".12"/>
+            <circle cx="427" cy="300" r="29" fill="#2b9fd6" fill-opacity=".07"/>
+            <rect x="82" y="260" width="225" height="44" rx="18" fill="#fff" stroke="#dfeaf3" stroke-width="2"/>
+            <text x="194" y="287" text-anchor="middle" fill="#8a5a2b" font-size="15" font-weight="900">root bends toward microzone</text>
+          </g>
+        </svg>
+
+        <div class="stage-readouts" aria-label="Physical signal readouts">
+          <div class="readout" id="readoutMoisture"><b id="moistureValue">RH —</b><span>local moisture</span></div>
+          <div class="readout" id="readoutThermal"><b id="thermalValue">ΔT —</b><span>thermal contrast</span></div>
+          <div class="readout" id="readoutSignal"><b id="signalValue">Field —</b><span>biological signal</span></div>
+        </div>
+
+        <button class="hotspot surface" id="surfaceHotspot">i</button>
+        <button class="hotspot dew" id="dewHotspot">i</button>
+        <button class="hotspot thermal" id="thermalHotspot">i</button>
+        <button class="hotspot field" id="fieldHotspot">i</button>
+        <button class="hotspot root" id="rootHotspot">i</button>
+
+        <div class="tooltip tip-surface" id="surfaceTip"><b>Surface conditions</b><p>The cool HDPE wall and moist compost boundary create the physical starting point for microclimate formation.</p></div>
+        <div class="tooltip tip-dew" id="dewTip"><b>Dew-point zone</b><p>Local moisture condenses into a soft biological signal around the target area.</p></div>
+        <div class="tooltip tip-thermal" id="thermalTip"><b>Thermal gradient</b><p>Temperature contrast helps localize the microzone and gives direction to the attraction field.</p></div>
+        <div class="tooltip tip-field" id="fieldTip"><b>Attraction field</b><p>Dew-point formation and thermal gradient combine into a biologically attractive destination.</p></div>
+        <div class="tooltip tip-root" id="rootTip"><b>Root response</b><p>The root begins to curve toward the local microclimate before any drying or pruning phase begins.</p></div>
+      </div>
+
+      <aside class="panel" id="panel">
+        <div class="step-label">Step 1 · Surface Conditions</div>
+        <h2>Microclimate starts at the wall interface.</h2>
+        <p>The cool HDPE wall and moist compost boundary create a local environment where dew-point and thermal cues can form.</p>
+        <div class="formula">surface conditions → local moisture signal</div>
+        <div class="badges"><span class="badge">HDPE wall</span><span class="badge">moist compost</span><span class="badge">microclimate engine</span></div>
+
+        <div class="ref-card">
+          <div class="ref-title">Dew Zone Reference <span>VCT module</span></div>
+          <div class="ref-diagram">
+            <svg viewBox="0 0 360 180" aria-label="Dew zone reference diagram">
+              <defs>
+                <radialGradient id="refDew">
+                  <stop offset="0%" stop-color="#61c7e8" stop-opacity=".7"/>
+                  <stop offset="55%" stop-color="#109c5d" stop-opacity=".18"/>
+                  <stop offset="100%" stop-color="#2b9fd6" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <rect x="35" y="22" width="48" height="136" rx="18" fill="#edf8f0" stroke="#109c5d" stroke-opacity=".32" stroke-width="2"/>
+              <rect x="277" y="22" width="48" height="136" rx="18" fill="#fff8df" stroke="#f4b63f" stroke-opacity=".34" stroke-width="2"/>
+              <circle cx="180" cy="90" r="68" fill="url(#refDew)"/>
+              <circle cx="180" cy="90" r="26" fill="#f7d77e" stroke="#c9972c" stroke-width="4"/>
+              <path d="M52 90 C94 72, 134 78, 172 90" fill="none" stroke="#2b9fd6" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 8"/>
+              <text x="180" y="96" text-anchor="middle" fill="#0b2a4a" font-size="11" font-weight="900">target</text>
+            </svg>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="legend" aria-label="Dew-zone physical sequence">
+      <div class="legend-progress" aria-hidden="true"><i id="legendProgress"></i></div>
+      <div class="legend-card" data-step="1" data-highlight="surface" role="button" tabindex="0"><div class="legend-icon"><svg viewBox="0 0 64 64"><rect x="8" y="10" width="17" height="44" rx="8" fill="#dff4e6" stroke="#109c5d" stroke-width="2"/><path d="M31 20 C40 16,48 18,56 23 M31 42 C40 47,48 46,56 41" fill="none" stroke="#2b9fd6" stroke-width="4" stroke-linecap="round" stroke-dasharray="5 5"/></svg></div><div class="legend-copy"><b>Boundary</b><span>Cool wall + moist compost.</span></div></div>
+      <div class="legend-card" data-step="2" data-highlight="dew" role="button" tabindex="0"><div class="legend-icon"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#2b9fd6" opacity=".16"/><circle cx="32" cy="32" r="18" fill="#61c7e8" opacity=".30"/><circle cx="32" cy="32" r="7" fill="#2b9fd6" opacity=".75"/></svg></div><div class="legend-copy"><b>Dew Point</b><span>Tsurface ≤ Tdew.</span></div></div>
+      <div class="legend-card" data-step="3" data-highlight="thermal" role="button" tabindex="0"><div class="legend-icon"><svg viewBox="0 0 64 64"><defs><linearGradient id="lgTherm" x1="0" x2="1"><stop offset="0" stop-color="#2b9fd6"/><stop offset="1" stop-color="#109c5d"/></linearGradient></defs><rect x="8" y="18" width="48" height="28" rx="14" fill="url(#lgTherm)" opacity=".7"/><path d="M12 50 C24 42, 38 42, 52 50" fill="none" stroke="#109c5d" stroke-width="4" stroke-linecap="round"/></svg></div><div class="legend-copy"><b>Thermal Gradient</b><span>∇T gives direction.</span></div></div>
+      <div class="legend-card" data-step="4" data-highlight="field" role="button" tabindex="0"><div class="legend-icon"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#2b9fd6" opacity=".12"/><circle cx="32" cy="32" r="22" fill="#109c5d" opacity=".18"/><circle cx="32" cy="32" r="11" fill="#2b9fd6" opacity=".30"/></svg></div><div class="legend-copy"><b>Attraction Field</b><span>Moisture + ∇T combine.</span></div></div>
+      <div class="legend-card" data-step="5" data-highlight="root" role="button" tabindex="0"><div class="legend-icon"><svg viewBox="0 0 64 64"><path d="M8 42 C19 39, 30 31, 43 31 C50 31, 55 34, 58 37" fill="none" stroke="#8a5a2b" stroke-width="7" stroke-linecap="round"/><path d="M8 42 C19 39, 30 31, 43 31 C50 31,55 34,58 37" fill="none" stroke="#b7834c" stroke-width="2.5" stroke-linecap="round" opacity=".65"/></svg></div><div class="legend-copy"><b>Root Response</b><span>Curving toward target.</span></div></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const steps={
+  1:{label:'Step 1 · Surface Conditions',title:'Microclimate starts at the wall interface.',text:'The cool HDPE wall and moist compost boundary create a local environment where dew-point and thermal cues can form.',formula:'boundary conditions → local moisture potential',layers:['baseLayer','surfaceLayer'],hotspots:['surfaceHotspot'],process:['wall'],readouts:['RH rising','ΔT forming','Field off'],live:1},
+  2:{label:'Step 2 · Dew Point Formation',title:'A dew-point zone begins to breathe around the target.',text:'As the local surface approaches the dew-point temperature, water vapour can condense into a thin spatial moisture signal.',formula:'Tsurface ≤ Tdew → local condensation',layers:['baseLayer','surfaceLayer','dewLayer','targetLayer'],hotspots:['surfaceHotspot','dewHotspot'],process:['dew'],readouts:['RH near saturation','ΔT stable','Dew active'],live:1},
+  3:{label:'Step 3 · Thermal Gradient',title:'The temperature contrast gives the microzone direction.',text:'The cool-to-warm transition stabilizes the local signal. Its gradient provides a directional cue across the guidance surface.',formula:'∇T = ΔT / Δx → directional contrast',layers:['baseLayer','surfaceLayer','dewLayer','thermalLayer','targetLayer'],hotspots:['dewHotspot','thermalHotspot'],process:['dew'],readouts:['RH localized','∇T active','Direction set'],live:2},
+  4:{label:'Step 4 · Attraction Field',title:'Dew point and thermal gradient merge into attraction.',text:'The root is not attracted by geometry alone. Moisture availability and thermal contrast make the programmed target biologically meaningful.',formula:'moisture field + ∇T → attraction field',layers:['baseLayer','surfaceLayer','dewLayer','thermalLayer','targetLayer','fieldLayer'],hotspots:['dewHotspot','thermalHotspot','fieldHotspot'],process:['dew','target'],readouts:['Moisture focused','∇T aligned','Field active'],live:3},
+  5:{label:'Step 5 · Root Response',title:'The root begins to curve toward the microzone.',text:'Before Venturi drying or pruning begins, the root follows the combined microclimate cue and bends toward the programmed destination.',formula:'∇(moisture + temperature cue) → root response',layers:['baseLayer','surfaceLayer','dewLayer','thermalLayer','targetLayer','fieldLayer','rootLayer'],hotspots:['fieldHotspot','rootHotspot'],process:['dew','target'],readouts:['Moisture tracked','Gradient followed','Root responding'],live:3}
+};
+let current=1;const panel=document.getElementById('panel');
+function setStep(n){
+  current=n;
+  document.querySelectorAll('.step').forEach(btn=>btn.classList.toggle('active',Number(btn.dataset.step)===n));
+  document.querySelectorAll('.layer').forEach(el=>el.classList.remove('on'));
+  steps[n].layers.forEach(id=>document.getElementById(id)?.classList.add('on'));
+  document.querySelectorAll('.hotspot').forEach(h=>h.classList.remove('show'));
+  steps[n].hotspots.forEach(id=>document.getElementById(id)?.classList.add('show'));
+  document.querySelectorAll('.process-node').forEach(node=>node.classList.toggle('active',steps[n].process?.includes(node.dataset.process)));
+  document.querySelectorAll('.tooltip').forEach(t=>t.classList.remove('show'));
+  panel.classList.remove('fade');void panel.offsetWidth;panel.classList.add('fade');
+  panel.querySelector('.step-label').textContent=steps[n].label;
+  panel.querySelector('h2').textContent=steps[n].title;
+  panel.querySelector('p').textContent=steps[n].text;
+  panel.querySelector('.formula').textContent=steps[n].formula;
+  const readoutIds=['moistureValue','thermalValue','signalValue'];
+  const readoutCards=['readoutMoisture','readoutThermal','readoutSignal'];
+  readoutIds.forEach((id,index)=>document.getElementById(id).textContent=steps[n].readouts[index]);
+  readoutCards.forEach((id,index)=>document.getElementById(id).classList.toggle('live',index<steps[n].live));
+  document.querySelectorAll('.legend-card[data-step]').forEach(card=>{
+    const step=Number(card.dataset.step);
+    card.classList.toggle('active',step===n);
+    card.classList.toggle('done',step<n);
+    card.setAttribute('aria-current',step===n?'step':'false');
+  });
+  document.getElementById('legendProgress').style.width=((n-1)/4*100)+'%';
+}
+document.querySelectorAll('.step').forEach(btn=>btn.addEventListener('click',()=>setStep(Number(btn.dataset.step))));
+document.querySelectorAll('.legend-card[data-step]').forEach(card=>{
+  const activate=()=>setStep(Number(card.dataset.step));
+  card.addEventListener('click',activate);
+  card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();activate();}});
+});
+let playing=false;document.getElementById('play').addEventListener('click',()=>{if(playing)return;playing=true;let n=1;const tick=()=>{setStep(n);n++;if(n<=5){setTimeout(tick,1500)}else{playing=false}};tick()});
+[['surfaceHotspot','surfaceTip'],['dewHotspot','dewTip'],['thermalHotspot','thermalTip'],['fieldHotspot','fieldTip'],['rootHotspot','rootTip']].forEach(([h,t])=>{const hot=document.getElementById(h),tip=document.getElementById(t);hot.addEventListener('click',e=>{e.stopPropagation();document.querySelectorAll('.tooltip').forEach(x=>{if(x!==tip)x.classList.remove('show')});tip.classList.toggle('show')})});
+document.addEventListener('click',()=>document.querySelectorAll('.tooltip').forEach(t=>t.classList.remove('show')));
+const highlightMap={surface:'surfaceLayer',dew:'dewLayer',thermal:'thermalLayer',field:'fieldLayer',root:'rootLayer',target:'targetLayer'};
+document.querySelectorAll('.legend-card[data-highlight]').forEach(card=>{
+  card.addEventListener('mouseenter',()=>{
+    const id=highlightMap[card.dataset.highlight];const el=document.getElementById(id);
+    if(el){el.classList.add('highlighted');if(!el.classList.contains('on'))el.classList.add('on')}
+  });
+  card.addEventListener('mouseleave',()=>{
+    const id=highlightMap[card.dataset.highlight];const el=document.getElementById(id);
+    if(el){el.classList.remove('highlighted');if(!steps[current].layers.includes(id))el.classList.remove('on')}
+  });
+});
+setStep(1);
+</script>
+</body>
+</html>
