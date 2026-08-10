@@ -42,6 +42,7 @@ button,select{
   cursor:pointer;
 }
 button.primary{background:linear-gradient(90deg,var(--navy),var(--green));color:#fff;border-color:transparent}
+.mode-badge{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:999px;padding:9px 13px;font-weight:750;font-size:13px;box-shadow:0 8px 20px rgba(11,42,74,.06);white-space:nowrap}
 button:hover,select:hover{transform:translateY(-1px)}
 .viewer{
   border:1px solid var(--line);
@@ -157,11 +158,43 @@ button.primary{box-shadow:0 8px 20px rgba(16,120,88,.18)}
 .current-title{font-size:16px;font-weight:900;letter-spacing:-.012em}
 .progress{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid rgba(25,92,165,.10);font-size:11px;letter-spacing:.06em}
 .route-strip{margin-top:9px}
+.principle-guide{margin-top:9px;border:1px solid rgba(43,159,214,.18);border-radius:22px;background:radial-gradient(circle at 8% 0%,rgba(43,159,214,.10),transparent 24%),radial-gradient(circle at 92% 100%,rgba(16,156,93,.10),transparent 26%),rgba(255,255,255,.94);box-shadow:0 14px 34px rgba(11,42,74,.065);padding:13px 15px 14px;overflow:hidden}
+.principle-guide-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:12px}
+.principle-guide-kicker{color:var(--green);font-size:10px;font-weight:950;letter-spacing:.15em;text-transform:uppercase}
+.principle-guide h2{margin:3px 0 0;font-size:17px;letter-spacing:-.025em}.principle-guide-copy{margin-top:3px;color:var(--muted);font-size:11px;line-height:1.35}
+.principle-map-open{white-space:nowrap;color:#fff;background:linear-gradient(90deg,var(--navy),var(--green));border-color:transparent;box-shadow:0 9px 22px rgba(16,120,88,.17)}
+.principle-path{position:relative;display:grid;grid-template-columns:repeat(7,minmax(118px,1fr));gap:8px;padding-top:11px}
+.principle-path::before{content:"";position:absolute;left:7%;right:7%;top:27px;height:4px;border-radius:999px;background:#deebf4}
+.principle-path::after{content:"";position:absolute;left:7%;top:27px;width:86%;height:4px;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--green),#f4b63f);transform-origin:left;animation:guideRouteRun 6.5s ease-in-out infinite;box-shadow:0 0 12px rgba(43,159,214,.32)}
+@keyframes guideRouteRun{0%{transform:scaleX(0);opacity:.5}68%,100%{transform:scaleX(1);opacity:1}}
+.principle-node{position:relative;z-index:1;min-height:58px;display:grid;grid-template-columns:29px 1fr;gap:7px;align-items:center;border:1px solid #e2edf5;border-radius:14px;padding:7px;background:rgba(255,255,255,.95);box-shadow:0 7px 17px rgba(11,42,74,.035)}
+.principle-node .guide-index{width:28px;height:28px;display:grid;place-items:center;border:3px solid #fff;border-radius:50%;color:#fff;background:linear-gradient(135deg,var(--blue),var(--green));box-shadow:0 0 0 1px rgba(43,159,214,.20);font-size:9px;font-weight:950}
+.principle-node strong{display:block;font-size:10.5px;line-height:1.12}.principle-node span{display:block;margin-top:2px;color:var(--muted);font-size:8.8px;line-height:1.15}
+.principle-node:last-child{border-color:rgba(16,156,93,.38);background:linear-gradient(180deg,#fff,#f4fff8)}.principle-node:last-child .guide-index{animation:guideMemoryPulse 2s ease-in-out infinite}
+@keyframes guideMemoryPulse{0%,100%{transform:scale(.92);box-shadow:0 0 0 1px rgba(16,156,93,.22)}50%{transform:scale(1.08);box-shadow:0 0 0 8px rgba(16,156,93,0)}}
 @media(max-width:980px){
   .top{padding:12px;align-items:start}
   .top>div:first-child{padding-left:50px}
   .viewer{height:72vh}
+  .principle-guide-head{align-items:flex-start}.principle-path{overflow-x:auto;grid-template-columns:repeat(7,150px)}
 }
+
+/* Guidance Cell deep-dive modal */
+body.guidance-open{overflow:hidden}
+.guidance-modal{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:18px;background:rgba(7,30,54,.56);backdrop-filter:blur(12px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .24s ease,visibility .24s ease}
+.guidance-modal.open{opacity:1;visibility:visible;pointer-events:auto}
+.guidance-dialog{width:min(1580px,96vw);height:min(960px,94vh);display:grid;grid-template-rows:auto 1fr;overflow:hidden;border:1px solid rgba(255,255,255,.70);border-radius:26px;background:#f7fbff;box-shadow:0 34px 90px rgba(3,23,44,.34);transform:translateY(14px) scale(.985);transition:transform .24s ease}
+.guidance-modal.open .guidance-dialog{transform:none}
+.guidance-dialog-head{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:13px;align-items:center;padding:12px 14px;background:linear-gradient(105deg,#fff,rgba(244,252,248,.96));border-bottom:1px solid var(--line)}
+.guidance-dialog-mark{width:52px;height:52px;animation:guidanceHeaderPulse 2.2s ease-in-out infinite}
+.guidance-dialog-mark svg{width:100%;height:100%;overflow:visible}
+.guidance-dialog-mark .abi-cell-lobe{fill:#aad28f;stroke:#385723;stroke-width:1.5}.guidance-dialog-mark .abi-cell-diamond{fill:none;stroke:#340cfc;stroke-width:2}.guidance-dialog-mark .abi-cell-core-outer{fill:#aad28f;stroke:#385723;stroke-width:1.5}.guidance-dialog-mark .abi-cell-core-inner{fill:#fff;stroke:#385723;stroke-width:1.5}
+.guidance-dialog-kicker{color:var(--green);font-size:9.5px;font-weight:950;letter-spacing:.16em;text-transform:uppercase}.guidance-dialog-title{margin-top:2px;font-size:18px;font-weight:950;letter-spacing:-.02em}.guidance-dialog-source{margin-top:2px;color:var(--muted);font-size:11px}
+.guidance-close{min-width:112px;background:linear-gradient(90deg,var(--navy),var(--green));color:#fff;border-color:transparent}
+.guidance-frame{width:100%;height:100%;background:#f7fbff}
+@keyframes guidanceHeaderPulse{0%,100%{transform:scale(.95);opacity:.84}50%{transform:scale(1.06);opacity:1}}
+@media(max-width:720px){.guidance-modal{padding:6px}.guidance-dialog{width:100%;height:98vh;border-radius:18px}.guidance-dialog-head{grid-template-columns:42px 1fr auto}.guidance-dialog-mark{width:38px;height:38px}.guidance-dialog-title{font-size:14px}.guidance-dialog-source{display:none}.guidance-close{min-width:0;padding:8px 10px}}
+@media(prefers-reduced-motion:reduce){.guidance-modal,.guidance-dialog,.guidance-dialog-mark,.principle-path::after,.principle-node:last-child .guide-index{transition:none;animation:none}}
 </style>
 </head>
 <body>
@@ -176,10 +209,7 @@ button.primary{box-shadow:0 8px 20px rgba(16,120,88,.18)}
       <button id="prevBtn">Previous</button>
       <button id="nextBtn">Next</button>
       <button id="openBtn">Open Screen</button>
-      <select id="modeSel">
-        <option value="presentation">Presentation Mode</option>
-        <option value="explorer">Explorer Mode</option>
-      </select>
+      <div class="mode-badge" aria-label="Current mode">Presentation Mode</div>
     </div>
   </div>
 
@@ -195,24 +225,141 @@ button.primary{box-shadow:0 8px 20px rgba(16,120,88,.18)}
   </section>
 
   <section class="route-strip">
-    <div class="mode-title" id="modeTitle">Presentation route</div>
+    <div class="mode-title">Presentation route / 5 essential screens</div>
     <div class="list" id="list"></div>
+  </section>
+
+  <section class="principle-guide" aria-labelledby="principleGuideTitle">
+    <div class="principle-guide-head">
+      <div>
+        <div class="principle-guide-kicker">Explanations & system movement map</div>
+        <h2 id="principleGuideTitle">How one local root event becomes Living Route Memory</h2>
+        <div class="principle-guide-copy">The five presentation screens show the result. This map explains the physical path underneath them.</div>
+      </div>
+      <button class="principle-map-open" id="principleMapOpen" type="button">Open principle map ↗</button>
+    </div>
+    <div class="principle-path" aria-label="Compact VCT movement map">
+      <div class="principle-node"><div class="guide-index">01</div><div><strong>Wall Geometry</strong><span>direction</span></div></div>
+      <div class="principle-node"><div class="guide-index">02</div><div><strong>Dew Zone</strong><span>signal</span></div></div>
+      <div class="principle-node"><div class="guide-index">03</div><div><strong>Guidance Cell</strong><span>target</span></div></div>
+      <div class="principle-node"><div class="guide-index">04</div><div><strong>Venturi</strong><span>passage</span></div></div>
+      <div class="principle-node"><div class="guide-index">05</div><div><strong>Air Pruning</strong><span>tip stop</span></div></div>
+      <div class="principle-node"><div class="guide-index">06</div><div><strong>3D Architecture</strong><span>branching</span></div></div>
+      <div class="principle-node"><div class="guide-index">07</div><div><strong>Route Memory</strong><span>pattern stored</span></div></div>
+    </div>
   </section>
 </div>
 
+
+<div class="guidance-modal" id="guidanceModal" aria-hidden="true">
+  <section class="guidance-dialog" role="dialog" aria-modal="true" aria-labelledby="guidanceDialogTitle">
+    <div class="guidance-dialog-head">
+      <div class="guidance-dialog-mark"><svg class="abi-cell-svg" viewBox="0 0 108 108" aria-hidden="true"><circle class="abi-cell-lobe" cx="54" cy="18" r="17.5"/><circle class="abi-cell-lobe" cx="18" cy="54" r="17.5"/><circle class="abi-cell-lobe" cx="90" cy="54" r="17.5"/><circle class="abi-cell-lobe" cx="54" cy="90" r="17.5"/><path class="abi-cell-diamond" d="M54 18 L90 54 L54 90 L18 54 Z"/><circle class="abi-cell-core-outer" cx="54" cy="54" r="18"/><circle class="abi-cell-core-inner" cx="54" cy="54" r="11"/></svg>      </div>
+      <div><div class="guidance-dialog-kicker" id="guidanceDialogKicker">Inside the constant matrix program</div><div class="guidance-dialog-title" id="guidanceDialogTitle">Guidance Cell Explorer</div><div class="guidance-dialog-source" id="guidanceDialogSource">Opened from Living Route Memory</div></div>
+      <button class="guidance-close" id="guidanceClose" type="button">Back to Route</button>
+    </div>
+    <iframe class="guidance-frame" id="guidanceFrame" title="Guidance Cell Explorer"></iframe>
+  </section>
+</div>
 <script>
-const routeScreens = [{"id": "01", "title": "Adaptive Growth Reorganization", "source_file": "190626_adaptive_growth_reorganization (1).html", "file": "route_screens/01_adaptive_growth_reorganization.html", "status": "available"}, {"id": "02", "title": "Branching Logic / New Root Architecture", "source_file": "200626_branching_logic_new_root_architecture (1).html", "file": "route_screens/02_branching_logic_new_root_architecture.html", "status": "available"}, {"id": "03", "title": "Root Architecture Stabilization / System Memory", "source_file": "200626_root_architecture_stabilization_system_memory.html", "file": "route_screens/03_root_architecture_stabilization_system_memory.html", "status": "available"}, {"id": "04", "title": "Return to ABI World / Route Memory", "source_file": "200626_return_to_abi_world_route_memory_card_left.html", "file": "route_screens/04_return_to_abi_world_route_memory.html", "status": "available"}, {"id": "05", "title": "ABI World Navigation / Next Route Selector", "source_file": "200626_final_abi_world_navigation_next_route_selector.html", "file": "route_screens/05_abi_world_navigation_next_route_selector.html", "status": "available"}, {"id": "06", "title": "Next Route Activation / New Biological Program", "source_file": "200626_next_route_activation_new_biological_program.html", "file": "route_screens/06_next_route_activation_new_biological_program.html", "status": "available"}, {"id": "07", "title": "Cycle Close / Final ABI World Memory", "source_file": "200626_cycle_close_final_abi_world_memory_cards_tuned.html", "file": "route_screens/07_cycle_close_final_abi_world_memory.html", "status": "available"}, {"id": "08", "title": "ABI World Map Reopened / Closed Loop", "source_file": "200626_abi_world_route_selector_memory_reopened_stable_slots.html", "file": "route_screens/08_abi_world_map_reopened_closed_loop.html", "status": "available"}];
-const archiveScreens = [{"file": "01_html_screens/180626_abi_world_exit_portal_living_plant_v2_circles_text_fixed.html", "title": "ABI World — Exit Portal / Living Plant", "source_file": "180626_abi_world_exit_portal_living_plant_v2_circles_text_fixed.html"}, {"file": "01_html_screens/180626_guided_scale_evolution_preset04_oneline.html", "title": "Guided Scale Evolution", "source_file": "180626_guided_scale_evolution_preset04_oneline.html"}, {"file": "01_html_screens/180626_large_root_system_expansion_ref_raised (2).html", "title": "Large Root-System Expansion", "source_file": "180626_large_root_system_expansion_ref_raised (2).html"}, {"file": "01_html_screens/180626_preset04_r146_activation.html", "title": "Preset 04 / R146 Activation", "source_file": "180626_preset04_r146_activation.html"}, {"file": "01_html_screens/180626_r146_development_field.html", "title": "R146 Development Field", "source_file": "180626_r146_development_field.html"}, {"file": "01_html_screens/190626_adaptive_growth_reorganization (1).html", "title": "Adaptive Growth Reorganization", "source_file": "190626_adaptive_growth_reorganization (1).html"}, {"file": "01_html_screens/190626_begin_new_adaptive_cycle (1).html", "title": "Begin New Adaptive Cycle", "source_file": "190626_begin_new_adaptive_cycle (1).html"}, {"file": "01_html_screens/190626_launch_pad01_primary_root_interface_restart (2).html", "title": "Launch Pad 01 / Primary Root Interface", "source_file": "190626_launch_pad01_primary_root_interface_restart (2).html"}, {"file": "01_html_screens/190626_next_route_selection (1).html", "title": "Next Route Selection", "source_file": "190626_next_route_selection (1).html"}, {"file": "01_html_screens/190626_plant_stability_soil_life_final_clarification (1).html", "title": "Plant Stability / Independent Soil Life", "source_file": "190626_plant_stability_soil_life_final_clarification (1).html"}, {"file": "01_html_screens/190626_root_decision_logic_adaptive_response (1).html", "title": "Root Decision Logic / Adaptive Response", "source_file": "190626_root_decision_logic_adaptive_response (1).html"}, {"file": "01_html_screens/190626_root_reading_signal_architecture (1).html", "title": "Root Reading / Signal Architecture", "source_file": "190626_root_reading_signal_architecture (1).html"}, {"file": "01_html_screens/190626_route02_activation_next_biological_path (2).html", "title": "Route 02 Activation / Next Biological Path", "source_file": "190626_route02_activation_next_biological_path (2).html"}, {"file": "01_html_screens/200626_abi_world_route_selector_memory_reopened_stable_slots.html", "title": "ABI World Map Reopened", "source_file": "200626_abi_world_route_selector_memory_reopened_stable_slots.html"}, {"file": "01_html_screens/200626_branching_logic_new_root_architecture (1).html", "title": "Branching Logic / New Root Architecture", "source_file": "200626_branching_logic_new_root_architecture (1).html"}, {"file": "01_html_screens/200626_cycle_close_final_abi_world_memory_cards_tuned.html", "title": "Cycle Close / Final ABI World Memory", "source_file": "200626_cycle_close_final_abi_world_memory_cards_tuned.html"}, {"file": "01_html_screens/200626_final_abi_world_navigation_next_route_selector.html", "title": "ABI World Navigation / Next Route Selector", "source_file": "200626_final_abi_world_navigation_next_route_selector.html"}, {"file": "01_html_screens/200626_next_route_activation_new_biological_program.html", "title": "Next Route Activation / New Biological Program", "source_file": "200626_next_route_activation_new_biological_program.html"}, {"file": "01_html_screens/200626_return_to_abi_world_route_memory.html", "title": "Return to ABI World", "source_file": "200626_return_to_abi_world_route_memory.html"}, {"file": "01_html_screens/200626_return_to_abi_world_route_memory_card_left.html", "title": "Return to ABI World / Route Memory", "source_file": "200626_return_to_abi_world_route_memory_card_left.html"}, {"file": "01_html_screens/200626_return_to_abi_world_route_memory_cards_fixed.html", "title": "Return to ABI World", "source_file": "200626_return_to_abi_world_route_memory_cards_fixed.html"}, {"file": "01_html_screens/200626_return_to_abi_world_route_memory_point2_map_focus (2).html", "title": "Return to ABI World", "source_file": "200626_return_to_abi_world_route_memory_point2_map_focus (2).html"}, {"file": "01_html_screens/200626_root_architecture_stabilization_system_memory.html", "title": "Root Architecture Stabilization / System Memory", "source_file": "200626_root_architecture_stabilization_system_memory.html"}];
+const routeScreens = [{"id":"01","title":"Adaptive Growth Reorganization","source_file":"190626_adaptive_growth_reorganization (1).html","file":"route_screens/01_adaptive_growth_reorganization.html","status":"available"},{"id":"02","title":"Branching Logic / New Root Architecture","source_file":"200626_branching_logic_new_root_architecture (1).html","file":"route_screens/02_branching_logic_new_root_architecture.html","status":"available"},{"id":"03","title":"Root Architecture Stabilization / System Memory","source_file":"200626_root_architecture_stabilization_system_memory.html","file":"route_screens/03_root_architecture_stabilization_system_memory.html","status":"available"},{"id":"04","title":"Next Route Activation / New Biological Program","source_file":"200626_next_route_activation_new_biological_program.html","file":"route_screens/06_next_route_activation_new_biological_program.html","status":"available"},{"id":"05","title":"ABI World Map Reopened / Closed Loop","source_file":"200626_abi_world_route_selector_memory_reopened_stable_slots.html","file":"route_screens/08_abi_world_map_reopened_closed_loop.html","status":"available"}];
 const portalScreen = {title:'ABI World - Entrance Portal',source_file:'180626_abi_world_exit_portal_living_plant_v2_circles_text_fixed.html',file:'01_html_screens/180626_abi_world_exit_portal_living_plant_v2_circles_text_fixed.html'};
-let mode = 'presentation';
 let screens = routeScreens;
 let current = 0;
 let portalOpen = false;
 
-function normalizeArchive(list){
-  return list.map((x,i)=>({id:String(i+1).padStart(2,'0'),title:x.title||x.source_file,file:x.file,source_file:x.source_file}));
-}
 
+
+const guidanceModal=document.getElementById('guidanceModal');
+const guidanceFrame=document.getElementById('guidanceFrame');
+const guidanceClose=document.getElementById('guidanceClose');
+const guidanceDialogKicker=document.getElementById('guidanceDialogKicker');
+const guidanceDialogTitle=document.getElementById('guidanceDialogTitle');
+const guidanceDialogSource=document.getElementById('guidanceDialogSource');
+let guidanceRouteSource='Living Route Memory';
+let guidanceReturnStep=1;
+let explorerLevel='route'; // Explicit explorer return stack
+function setExplorerHeader(kind,source){
+  const isVenturi=kind==='venturi';
+  const isContainer=kind==='container';
+  const isDew=kind==='dew';
+  const isPrinciple=kind==='principle';
+  explorerLevel=isVenturi?'venturi':(isContainer?'container':(isDew?'dew':(isPrinciple?'principle':'guidance')));
+  guidanceClose.textContent=isVenturi?'Back to Guidance Cell':'Back to Living Route Memory';
+  guidanceClose.setAttribute('aria-label',guidanceClose.textContent);
+  guidanceDialogKicker.textContent=isVenturi?'Inside one primary matrix element':(isContainer?'Preset 02 / 2D field into 3D volume':(isDew?'Principles / local microclimate physics':(isPrinciple?'Explanation layer / physical movement map':'Inside the constant matrix program')));
+  guidanceDialogTitle.textContent=isVenturi?'Venturi Drying Explorer':(isContainer?'Matrix to Container Explorer':(isDew?'Dew Zone Explorer':(isPrinciple?'VCT Principle & Movement Map':'Guidance Cell Explorer')));
+  guidanceDialogSource.textContent='Opened from: '+source;
+  guidanceFrame.title=guidanceDialogTitle.textContent;
+}
+function revealExplorerModal(){
+  guidanceModal.classList.add('open');
+  guidanceModal.setAttribute('aria-hidden','false');
+  document.body.classList.add('guidance-open');
+  window.setTimeout(()=>guidanceClose.focus(),120);
+}
+function openGuidanceCell(source,step=1){
+  guidanceRouteSource=source||guidanceRouteSource||'Living Route Memory';
+  guidanceReturnStep=Math.min(5,Math.max(1,Number(step)||1));
+  setExplorerHeader('guidance',guidanceRouteSource);
+  guidanceFrame.src='modules/guidance-cell/index.html?source='+encodeURIComponent(guidanceRouteSource)+'&step='+guidanceReturnStep;
+  revealExplorerModal();
+}
+function openVenturiCone(source,step){
+  guidanceReturnStep=Math.min(5,Math.max(1,Number(step)||1));
+  const venturiSource=source||'Central base of the outer Venturi cone';
+  setExplorerHeader('venturi',venturiSource);
+  guidanceFrame.src='modules/venturi-drying/index.html?source='+encodeURIComponent(venturiSource)+'&guidanceStep='+guidanceReturnStep;
+  revealExplorerModal();
+}
+function openMatrixContainer(source){
+  const containerSource=source||'Preset 02 / R76 / V 2.8 L';
+  setExplorerHeader('container',containerSource);
+  guidanceFrame.src='modules/matrix-to-container/index.html?source='+encodeURIComponent(containerSource);
+  revealExplorerModal();
+}
+function openDewZone(source){
+  const dewSource=source||'Principles / local dew-point and thermal-gradient physics';
+  setExplorerHeader('dew',dewSource);
+  guidanceFrame.src='modules/dew-zone/index.html?source='+encodeURIComponent(dewSource);
+  revealExplorerModal();
+}
+function openVctPrinciple(source){
+  const principleSource=source||'Explanation panel below the five-screen presentation route';
+  setExplorerHeader('principle',principleSource);
+  guidanceFrame.src='modules/vct-principle/index.html?source='+encodeURIComponent(principleSource);
+  revealExplorerModal();
+}
+function returnToGuidanceCell(step){
+  openGuidanceCell(guidanceRouteSource,step||guidanceReturnStep);
+}
+function closeGuidanceCell(){
+  if(!guidanceModal.classList.contains('open'))return;
+  guidanceModal.classList.remove('open');
+  guidanceModal.setAttribute('aria-hidden','true');
+  document.body.classList.remove('guidance-open');
+  explorerLevel='route';
+  document.getElementById('frame').contentWindow?.postMessage({type:'abi:guidance-closed'},'*');
+  document.getElementById('frame').focus();
+  window.setTimeout(()=>{if(!guidanceModal.classList.contains('open'))guidanceFrame.src='about:blank';},260);
+}
+guidanceClose.addEventListener('click',()=>{
+  if(explorerLevel==='venturi'){returnToGuidanceCell(guidanceReturnStep);return;}
+  closeGuidanceCell();
+});
+guidanceModal.addEventListener('click',event=>{if(event.target===guidanceModal)closeGuidanceCell();});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&guidanceModal.classList.contains('open'))closeGuidanceCell();});
+window.addEventListener('message',event=>{
+  const routeSource=document.getElementById('frame').contentWindow;
+  const explorerSource=guidanceFrame.contentWindow;
+  if(event.source!==routeSource&&event.source!==explorerSource)return;
+  if(event.data&&event.data.type==='abi:open-guidance-cell')openGuidanceCell(event.data.source,1);
+  if(event.data&&event.data.type==='abi:open-venturi')openVenturiCone(event.data.source,event.data.guidanceStep);
+  if(event.data&&event.data.type==='abi:open-container')openMatrixContainer(event.data.source);
+  if(event.data&&event.data.type==='abi:open-dew-zone')openDewZone(event.data.source);
+  if(event.data&&event.data.type==='abi:return-guidance')returnToGuidanceCell(event.data.guidanceStep);
+  if(event.data&&event.data.type==='abi:close-guidance-cell')closeGuidanceCell();
+});
 function renderList(){
   const list = document.getElementById('list');
   list.innerHTML = '';
@@ -258,13 +405,7 @@ document.getElementById('openBtn').onclick = () => {
   if(!screens.length) return;
   window.open(screens[current].file, '_blank');
 };
-document.getElementById('modeSel').onchange = (e) => {
-  mode = e.target.value;
-  screens = mode === 'presentation' ? routeScreens : normalizeArchive(archiveScreens);
-  current = 0;
-  document.getElementById('modeTitle').textContent = mode === 'presentation' ? 'Presentation route' : 'Explorer archive';
-  show(0);
-};
+document.getElementById('principleMapOpen').onclick=()=>openVctPrinciple('Explanation panel below the five-screen presentation route');
 show(0);
 </script>
 </body>

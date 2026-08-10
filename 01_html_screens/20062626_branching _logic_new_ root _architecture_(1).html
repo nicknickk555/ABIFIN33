@@ -1023,140 +1023,46 @@ header{position:absolute;left:40px;right:40px;top:24px;z-index:30;display:grid;g
   50%{opacity:.88}
 }
 
-/* MATRIX114 reference: responsive cell matrices inside the original card slots */
-.cell-matrix{width:82px;height:58px;display:grid;align-content:center;justify-content:center;grid-template-columns:repeat(var(--cols),14px);grid-auto-rows:14px;gap:2px;position:relative}
-.cell-matrix::after{content:"";position:absolute;left:50%;bottom:1px;width:calc(var(--cols) * 16px + 2px);height:3px;transform:translateX(-50%);border:2px solid #245cff;border-top:0;border-radius:0 0 4px 4px;box-shadow:0 0 7px rgba(36,92,255,.25)}
+/* Interactive route layer — 170726 */
+.frame{
+  width:min(100vw,1600px);
+}
+.stage::after{content:none !important}
+.branch-control{
+  position:absolute;z-index:42;left:50%;bottom:118px;transform:translateX(-50%);
+  min-width:272px;min-height:42px;padding:8px 18px;border-radius:999px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  appearance:none;border:1px solid rgba(255,255,255,.56);
+  color:#fff;background:linear-gradient(180deg,#66c946,#2f8d36);
+  box-shadow:0 14px 38px rgba(63,140,68,.28),inset 0 1px 0 rgba(255,255,255,.48);
+  font:950 10.2px/1.05 Inter,Arial,sans-serif;letter-spacing:.105em;text-transform:uppercase;
+  cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,filter .25s ease;
+}
+.branch-control:hover,.branch-control:focus-visible{
+  transform:translateX(-50%) translateY(-2px);
+  box-shadow:0 19px 46px rgba(63,140,68,.38),0 0 0 4px rgba(119,205,101,.14);
+  outline:none;
+}
+.branch-control:active{transform:translateX(-50%) translateY(0) scale(.985)}
+.control-pulse{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#efffd8;box-shadow:0 0 0 0 rgba(237,255,189,.58);animation:controlPulse 1.7s ease-out infinite}
+.branch-control small{font-size:7.8px;letter-spacing:.06em;opacity:.74;text-transform:none;font-weight:800}
+.phase-meter{position:absolute;z-index:43;left:50%;bottom:101px;transform:translateX(-50%);display:flex;gap:6px;pointer-events:none}
+.phase-meter i{width:17px;height:3px;border-radius:999px;background:rgba(63,140,68,.18);transition:background .35s ease,box-shadow .35s ease,transform .35s ease}
+.phase-meter i.on{background:#5abb43;box-shadow:0 0 8px rgba(91,187,67,.42);transform:scaleX(1.12)}
+.info,.scale-row{transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease,background .25s ease}
+.info[tabindex],.scale-row[tabindex]{cursor:pointer}
+.info:hover,.info:focus-visible,.scale-row:hover,.scale-row:focus-visible{
+  outline:none;transform:translateY(-2px);border-color:rgba(63,140,68,.30);
+  background:rgba(249,255,248,.86);box-shadow:0 14px 30px rgba(63,140,68,.10)
+}
+/* Exact MATRIX114 geometry from the refined ABI World cards */
+.cell-matrix{width:82px;height:64px;display:grid;align-content:center;justify-content:center;grid-template-columns:repeat(var(--cols),14px);grid-auto-rows:14px;column-gap:2px;row-gap:2px;position:relative;overflow:visible}
 .cell-matrix i{width:14px;height:14px;box-sizing:border-box;border-radius:50%;border:1.5px solid #4f7f34;background:#a9d28e;position:relative}
-.cell-matrix i:nth-child(3n+1)::after{content:"";position:absolute;inset:3px;border-radius:50%;background:rgba(255,255,255,.9)}
-.scale-row.next .cell-matrix i{border-color:#397a39;background:#9dce87}
-.scale-row.next .cell-matrix::after{border-color:#245cff}
-.matrix-icon.matrix-live{position:relative;display:block;overflow:visible;background:transparent;border:0;padding:0;border-radius:0;animation:matrixFloat 3.2s ease-in-out infinite}
-.matrix-live i{position:absolute;width:20px;height:20px;border-radius:50%;border:1.5px solid #3e7836;background:#a5d283;animation:none}
-.matrix-live i:nth-child(1){left:14px;top:0}.matrix-live i:nth-child(2){right:0;top:14px}.matrix-live i:nth-child(3){left:14px;bottom:0}.matrix-live i:nth-child(4){left:0;top:14px}
-.matrix-live .matrix-diamond{position:absolute;left:11px;top:11px;width:26px;height:26px;border:2px solid #245cff;background:rgba(255,255,255,.38);transform:rotate(45deg);box-shadow:0 0 8px rgba(36,92,255,.55);animation:diamondPulse 1.85s ease-in-out infinite}
-.matrix-live .matrix-core{position:absolute;left:18px;top:18px;width:12px;height:12px;border-radius:50%;border:2px solid white;background:#7fb6ff;box-shadow:0 0 0 2px #245cff,0 0 16px 5px rgba(36,92,255,.55);animation:coreGlow 1.85s ease-in-out infinite}
-@keyframes diamondPulse{0%,100%{transform:rotate(45deg) scale(.9);opacity:.72;box-shadow:0 0 5px rgba(36,92,255,.35)}50%{transform:rotate(45deg) scale(1.12);opacity:1;box-shadow:0 0 15px 4px rgba(36,92,255,.62)}}
-@keyframes coreGlow{0%,100%{transform:scale(.82);filter:brightness(.95)}50%{transform:scale(1.22);filter:brightness(1.3)}}
-@keyframes matrixFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
-@media (prefers-reduced-motion:reduce){.matrix-icon.matrix-live,.matrix-live .matrix-diamond,.matrix-live .matrix-core{animation:none}}
-/* Exact MATRIX114 geometry from the PowerPoint reference */
-.cell-matrix{height:64px;grid-auto-rows:14px;row-gap:2px;overflow:visible}
 .cell-matrix i::after{display:none!important}
-.cell-matrix i.hole{background:#a9d28e}
 .cell-matrix i.hole::after{content:"";display:block!important;position:absolute;inset:3px;border-radius:50%;background:#fff}
-.cell-matrix i.solid{background:#a9d28e}
 .cell-matrix i.solid::after{content:"";display:block!important;position:absolute;left:50%;top:50%;width:2px;height:2px;transform:translate(-50%,-50%);border-radius:50%;background:rgba(60,100,48,.55)}
-.cell-matrix::after{display:none}
+.scale-row.next .cell-matrix i{border-color:#397a39;background:#9dce87}
 .matrix-floor{position:absolute;z-index:3;left:50%;top:45px;width:calc(var(--cols) * 16px + 2px);height:4px;box-sizing:border-box;transform:translateX(-50%);border:2px solid #3029ff;background:#fff;border-radius:0}
-.matrix-icon.matrix-live{animation:matrixExactPulse 2.2s ease-in-out infinite}
-.matrix-live i{background:#a9d28e;border-color:#4f7f34}
-.matrix-live .matrix-diamond{left:9px;top:9px;width:30px;height:30px;border:2px solid #3029ff;background:transparent;box-shadow:none;animation:none}
-.matrix-live .matrix-core{left:15px;top:15px;width:18px;height:18px;box-sizing:border-box;border:4px solid #a9d28e;background:#fff;box-shadow:0 0 0 1.5px #4f7f34;animation:none}
-@keyframes matrixExactPulse{0%,100%{transform:scale(.94);opacity:.82}50%{transform:scale(1.06);opacity:1}}
-@media (prefers-reduced-motion:reduce){.matrix-icon.matrix-live{animation:none}}
-
-/* Left information card: replay on every screen change */
-.left .info .icon{
-  position:relative;
-  isolation:isolate;
-  --icon-delay:0s;
-  animation:abiIconAwake .78s cubic-bezier(.20,.82,.22,1.18) var(--icon-delay) both;
-  transition:transform .24s ease,box-shadow .24s ease,color .24s ease;
-}
-.left .info:nth-child(2) .icon{--icon-delay:.12s}
-.left .info:nth-child(3) .icon{--icon-delay:.24s}
-.left .info:nth-child(4) .icon{--icon-delay:.36s}
-.left .info .icon::after{
-  content:"";
-  position:absolute;
-  z-index:-1;
-  inset:-7px;
-  border-radius:50%;
-  border:2px solid rgba(22,112,214,.42);
-  opacity:0;
-  pointer-events:none;
-  animation:abiIconRing 1.05s ease-out calc(var(--icon-delay) + .18s) both;
-}
-.left .info:nth-child(4) .icon::after{border-color:rgba(63,140,68,.42)}
-.left .info:hover .icon{
-  animation:none;
-  transform:translateY(-3px) scale(1.08);
-  color:#075fbe;
-  box-shadow:0 12px 28px rgba(20,104,188,.17),0 0 0 5px rgba(72,148,224,.08);
-}
-.left .info:hover .icon::after{animation:abiIconHoverRing 1.45s ease-out infinite}
-@keyframes abiIconAwake{
-  0%{opacity:.28;transform:translateX(-9px) scale(.72) rotate(-12deg);filter:saturate(.7)}
-  58%{opacity:1;transform:translateX(2px) scale(1.12) rotate(4deg);filter:saturate(1.25)}
-  100%{opacity:1;transform:translateX(0) scale(1) rotate(0);filter:saturate(1)}
-}
-@keyframes abiIconRing{
-  0%{opacity:0;transform:scale(.48)}
-  24%{opacity:.72}
-  100%{opacity:0;transform:scale(1.32)}
-}
-@keyframes abiIconHoverRing{
-  0%{opacity:.42;transform:scale(.82)}
-  100%{opacity:0;transform:scale(1.28)}
-}
-@media (prefers-reduced-motion:reduce){
-  .left .info .icon,.left .info .icon::after{animation:none!important;transition:none!important}
-}
-
-/* Process card: staged replay on every screen change */
-.process .step-dot{
-  position:relative;
-  isolation:isolate;
-  --step-delay:.08s;
-  animation:abiStepWake .72s cubic-bezier(.20,.82,.22,1.18) var(--step-delay) both;
-  transition:transform .22s ease,box-shadow .22s ease,filter .22s ease;
-}
-.process .step:nth-child(2) .step-dot{--step-delay:.18s}
-.process .step:nth-child(3) .step-dot{--step-delay:.28s}
-.process .step:nth-child(4) .step-dot{--step-delay:.38s}
-.process .step:nth-child(5) .step-dot{--step-delay:.48s}
-.process .step-dot::after{
-  content:"";
-  position:absolute;
-  z-index:-1;
-  inset:-6px;
-  border-radius:50%;
-  border:2px solid rgba(22,112,214,.38);
-  opacity:0;
-  pointer-events:none;
-  animation:abiStepRing .95s ease-out calc(var(--step-delay) + .12s) both;
-}
-.process .final-step .step-dot::after{border-color:rgba(63,140,68,.48)}
-.process .step:hover .step-dot{
-  animation:none;
-  transform:translateY(-2px) scale(1.09);
-  filter:saturate(1.22);
-  box-shadow:0 10px 24px rgba(20,104,188,.16),0 0 0 5px rgba(72,148,224,.07);
-}
-.process .final-step:hover .step-dot{box-shadow:0 10px 24px rgba(63,140,68,.17),0 0 0 5px rgba(94,174,87,.08)}
-.process .step:hover .step-dot::after{animation:abiStepHoverRing 1.4s ease-out infinite}
-@keyframes abiStepWake{
-  0%{opacity:.24;transform:translateY(-9px) scale(.68);filter:saturate(.65)}
-  60%{opacity:1;transform:translateY(2px) scale(1.12);filter:saturate(1.28)}
-  100%{opacity:1;transform:translateY(0) scale(1);filter:saturate(1)}
-}
-@keyframes abiStepRing{
-  0%{opacity:0;transform:scale(.48)}
-  26%{opacity:.68}
-  100%{opacity:0;transform:scale(1.28)}
-}
-@keyframes abiStepHoverRing{
-  0%{opacity:.38;transform:scale(.84)}
-  100%{opacity:0;transform:scale(1.25)}
-}
-@media (prefers-reduced-motion:reduce){
-  .process .step-dot,.process .step-dot::after{animation:none!important;transition:none!important}
-}
-
-/* Presentation screen 02: keep Branching dock below reference labels */
-.ref{bottom:86px !important;}
-
-/* Exact principal matrix cell from the 08.08.26 reference screen */
 .matrix-icon.matrix-live{position:relative;display:block;width:52px;height:52px;overflow:visible;background:transparent;border:0;padding:0;border-radius:0;animation:matrixExactPulse 2.2s ease-in-out infinite}
 .matrix-live .matrix-exact-icon{display:block;width:52px;height:52px;overflow:visible}
 .matrix-exact-icon .matrix-lobe{fill:#aad28f;stroke:#385723;stroke-width:1.5}
@@ -1164,27 +1070,34 @@ header{position:absolute;left:40px;right:40px;top:24px;z-index:30;display:grid;g
 .matrix-exact-icon .matrix-core-outer{fill:#aad28f;stroke:#385723;stroke-width:1.5}
 .matrix-exact-icon .matrix-core-inner{fill:#fff;stroke:#385723;stroke-width:1.5}
 @keyframes matrixExactPulse{0%,100%{transform:scale(.94);opacity:.82}50%{transform:scale(1.06);opacity:1}}
-@media (prefers-reduced-motion:reduce){.matrix-icon.matrix-live{animation:none}}
-/* Five-screen composition repair: keep every label unobstructed */
-.stage::after{bottom:166px!important}
-.ref{bottom:32px!important}
-.n4{right:6px!important}
-.micro-tag{right:78px!important}
-.process{padding-bottom:76px!important}
-
-/* Guidance Cell portal: the constant matrix cell becomes an interactive deep dive */
-.matrix-card.guidance-entry{position:relative;isolation:isolate;cursor:pointer;padding-right:54px!important;transition:border-color .22s ease,box-shadow .22s ease,filter .22s ease;background-image:linear-gradient(135deg,rgba(255,255,255,.76),rgba(247,255,245,.88))}
-.matrix-card.guidance-entry::after{content:"\2197";position:absolute;right:13px;top:50%;width:28px;height:28px;transform:translateY(-50%);display:grid;place-items:center;border-radius:50%;color:#fff;background:linear-gradient(135deg,#126fc3,#109c5d);box-shadow:0 8px 18px rgba(16,120,88,.20);font:900 14px/1 Arial,sans-serif;transition:transform .22s ease,box-shadow .22s ease}
-.matrix-card.guidance-entry::before{content:"Explore Guidance Cell";position:absolute;z-index:6;right:5px;bottom:calc(100% + 7px);padding:7px 10px;border-radius:999px;color:#fff;background:linear-gradient(90deg,#0b2a4a,#109c5d);box-shadow:0 10px 24px rgba(11,42,74,.16);font:900 8.5px/1 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;opacity:0;pointer-events:none;transform:translateY(5px);transition:opacity .2s ease,transform .2s ease}
-.matrix-card.guidance-entry:hover,.matrix-card.guidance-entry:focus-visible{outline:none;border-color:rgba(16,156,93,.54)!important;box-shadow:0 0 0 4px rgba(16,156,93,.08),0 16px 34px rgba(16,120,88,.14)!important;filter:saturate(1.08)}
-.matrix-card.guidance-entry:hover::before,.matrix-card.guidance-entry:focus-visible::before{opacity:1;transform:translateY(0)}
-.matrix-card.guidance-entry:hover::after,.matrix-card.guidance-entry:focus-visible::after{transform:translateY(-50%) scale(1.12);box-shadow:0 10px 24px rgba(16,120,88,.30)}
-@media(prefers-reduced-motion:reduce){.matrix-card.guidance-entry,.matrix-card.guidance-entry::before,.matrix-card.guidance-entry::after{transition:none}}
+.plant .root,.plant .root-glow,.plant .root-node,.plant .light-dot{transition:opacity .65s ease,filter .65s ease,stroke-width .65s ease}
+.frame[data-phase="0"] .root-thin{opacity:.18}
+.frame[data-phase="0"] .root-mini{opacity:.06}
+.frame[data-phase="0"] .root-glow{opacity:.10}
+.frame[data-phase="0"] .root-node{visibility:hidden}
+.frame[data-phase="1"] .root-thin{opacity:.72}
+.frame[data-phase="1"] .root-mini{opacity:.22}
+.frame[data-phase="1"] .root-glow{opacity:.42}
+.frame[data-phase="2"] .root-thin{opacity:1}
+.frame[data-phase="2"] .root-mini{opacity:.72}
+.frame[data-phase="2"] .root-glow{opacity:.78}
+.frame[data-phase="3"] .root-thin,.frame[data-phase="3"] .root-mini,.frame[data-phase="3"] .root-glow{opacity:1}
+.frame[data-phase="3"] .l5{box-shadow:0 20px 48px rgba(63,140,68,.30)}
+.frame[data-phase="0"] .stage::before{opacity:.18;animation-play-state:paused}
+.frame[data-phase="1"] .stage::before{opacity:.48}
+.frame[data-phase="2"] .stage::before{opacity:.68}
+.frame[data-phase="3"] .stage::before{opacity:.90}
+.frame[data-phase="0"] .radar i{animation-play-state:paused;opacity:0}
+@keyframes controlPulse{0%{box-shadow:0 0 0 0 rgba(237,255,189,.58)}70%{box-shadow:0 0 0 9px rgba(237,255,189,0)}100%{box-shadow:0 0 0 0 rgba(237,255,189,0)}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;scroll-behavior:auto !important}
+  .plant .root,.plant .root-glow,.plant .root-node,.plant .light-dot{transition:none}
+}
 </style>
 </head>
 <body>
-<main class="frame">
-<header><div class="brand">ABI World <span>Branching Logic</span></div><div class="title"><h1>Branching Logic / New Root Architecture</h1><p>The reorganized growth pattern opens a new branching logic.<br>Adaptive response becomes visible as a stronger root architecture and a new support geometry.</p></div><div class="status"><i class="dot"></i> Branching Active</div></header>
+<main class="frame" data-phase="0">
+<header><div class="brand">ABI World <span>Branching Logic</span></div><div class="title"><h1>Branching Logic / New Root Architecture</h1><p>The reorganized growth pattern opens a new branching logic.<br>Adaptive response becomes visible as a stronger root architecture and a new support geometry.</p></div><div class="status" aria-live="polite"><i class="dot"></i><span id="routeStatus">Reorganization Complete</span></div></header>
 <section class="layout">
 <aside class="panel left"><div class="info"><div class="icon">◎</div><div><h3>Mission</h3><p>Show how growth reorganization becomes branching logic and a new root architecture.</p></div></div><div class="info"><div class="icon">⌕</div><div><h3>Discovery</h3><p>The root system now branches as a structured architecture: support geometry expands and the plant gains a stronger adaptive base.</p></div></div><div class="info big"><div class="icon">＋</div><div><h3>Principles</h3><ul><li>Matrix program = constant.</li><li>Growth reorganization complete</li><li>Branching logic active</li><li>New root architecture</li><li>Support geometry expands</li></ul></div></div><div class="info big"><div class="icon">⌁</div><div><h3>Evolution Signals</h3><p>Branching becomes the visible memory of the decision: the root system builds a new support architecture.</p></div></div></aside>
 <aside class="panel process"><div class="step"><div class="step-dot seed">🌱</div><div><strong>Seedling</strong><span>Biological origin established.</span></div></div><div class="step"><div class="step-dot active">◉</div><div><strong>Preset 02<br>R76</strong><span>First scale input activated.</span></div></div><div class="step"><div class="step-dot active">◉</div><div><strong>Preset 03<br>R108</strong><span>Scale evolved. Development completed.</span></div></div><div class="step"><div class="step-dot active">◉</div><div><strong>Root Expansion</strong><span>Root network expands.</span></div></div><div class="step final-step"><div class="step-dot final">🌿</div><div><strong>Branching Active</strong><span>Route memory captured.</span></div></div></aside>
@@ -1199,6 +1112,7 @@ header{position:absolute;left:40px;right:40px;top:24px;z-index:30;display:grid;g
 <path class="root" d="M132 250 C132 278 132 314 132 386"/><path class="root root-thin" d="M132 270 C104 285 82 300 58 323"/><path class="root root-thin" d="M132 282 C160 292 186 304 213 327"/><path class="root root-thin" d="M132 310 C108 324 91 338 72 356"/><path class="root root-thin" d="M132 320 C156 335 174 350 193 370"/><path class="root root-thin" d="M132 348 C114 360 105 374 94 394"/><path class="root root-thin" d="M132 352 C147 365 157 378 167 397"/><path class="root root-mini" d="M80 305 C65 306 52 314 42 326"/><path class="root root-mini" d="M62 321 C47 331 37 342 28 356"/><path class="root root-mini" d="M188 308 C201 310 215 320 228 334"/><path class="root root-mini" d="M206 326 C222 335 235 350 245 366"/>
 <path class="root-glow" d="M132 250 C132 278 132 314 132 386"/><path class="root-glow" d="M132 270 C104 285 82 300 58 323"/><path class="root-glow" d="M132 282 C160 292 186 304 213 327"/><path class="root-glow" d="M132 310 C108 324 91 338 72 356"/><path class="root-glow" d="M132 320 C156 335 174 350 193 370"/><circle class="root-node node-a" cx="132" cy="250" r="4.5"/><circle class="root-node node-b" cx="92" cy="302" r="3.4"/><circle class="root-node node-c" cx="186" cy="304" r="3.4"/><circle class="root-node node-d" cx="132" cy="338" r="3.6"/>
 </svg></div>
+<button class="branch-control" id="branchControl" type="button" aria-label="Replay branching sequence"><span class="control-pulse"></span><span id="phaseLabel">Growth Reorganization Complete</span><small>click to replay</small></button><div class="phase-meter" id="phaseMeter" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 <div class="ref"><div class="ref-title">Preset Scale Reference</div><div class="ref-line"></div><div class="ref-item r51"><b>R51 mm</b><span>Smaller scale</span><div class="ref-dot"></div></div><div class="ref-item r76"><b>R76 mm</b><span>Completed</span><div class="ref-dot"></div></div><div class="ref-item r108"><b>R108 mm</b><span>Completed</span><div class="ref-dot"></div></div><div class="ref-item r146"><b style="color:var(--green)">R146 mm</b><span>Active</span><div class="ref-dot final"></div></div></div>
 </section>
 <aside class="panel right"><h2>Branching Architecture Schematic</h2><p>The reorganized response becomes branching architecture.</p><p>The matrix program remains constant while branching geometry expands.</p>
@@ -1206,22 +1120,66 @@ header{position:absolute;left:40px;right:40px;top:24px;z-index:30;display:grid;g
 <div class="scale-row"><div class="scale-name">Preset 02<br>R76</div><div class="cell-matrix" style="--cols:4" aria-label="Matrix preset diagram"><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><b class="matrix-floor" aria-hidden="true"></b></div><div class="scale-data"><div><b>D</b><span>152 mm</span></div><div><b>h</b><span>150 mm</span></div><div><b>V</b><span>2.8 L</span></div></div></div>
 <div class="scale-row"><div class="scale-name">Preset 03<br>R108</div><div class="cell-matrix" style="--cols:5" aria-label="Matrix preset diagram"><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><b class="matrix-floor" aria-hidden="true"></b></div><div class="scale-data"><div><b>D</b><span>216 mm</span></div><div><b>h</b><span>200 mm</span></div><div><b>V</b><span>7.3 L</span></div></div></div>
 <div class="scale-row next"><div class="scale-name">Preset 04<br>R146</div><div class="cell-matrix" style="--cols:6" aria-label="Matrix preset diagram"><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="hole"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><i class="solid"></i><b class="matrix-floor" aria-hidden="true"></b></div><div class="scale-data"><div><b>D</b><span>292 mm</span></div><div><b>h</b><span>250 mm</span></div><div><b>V</b><span>17.0 L</span></div></div></div>
-<div class="matrix-card guidance-entry" role="button" tabindex="0" aria-label="Explore how this matrix guidance cell works"><div class="matrix-icon matrix-live" role="img" aria-label="Active matrix"><svg class="matrix-exact-icon" viewBox="0 0 108 108" aria-hidden="true"><circle class="matrix-lobe" cx="54" cy="18" r="17.5"/><circle class="matrix-lobe" cx="18" cy="54" r="17.5"/><circle class="matrix-lobe" cx="90" cy="54" r="17.5"/><circle class="matrix-lobe" cx="54" cy="90" r="17.5"/><path class="matrix-diamond-line" d="M54 18 L90 54 L54 90 L18 54 Z"/><circle class="matrix-core-outer" cx="54" cy="54" r="18"/><circle class="matrix-core-inner" cx="54" cy="54" r="11"/></svg></div><div><strong>Matrix Program: Constant</strong><span>Branching logic is active. The system builds a stronger root architecture.</span></div></div></aside>
+<div class="matrix-card"><div class="matrix-icon matrix-live" role="img" aria-label="Active matrix"><svg class="matrix-exact-icon" viewBox="0 0 108 108" aria-hidden="true"><circle class="matrix-lobe" cx="54" cy="18" r="17.5"/><circle class="matrix-lobe" cx="18" cy="54" r="17.5"/><circle class="matrix-lobe" cx="90" cy="54" r="17.5"/><circle class="matrix-lobe" cx="54" cy="90" r="17.5"/><path class="matrix-diamond-line" d="M54 18 L90 54 L54 90 L18 54 Z"/><circle class="matrix-core-outer" cx="54" cy="54" r="18"/><circle class="matrix-core-inner" cx="54" cy="54" r="11"/></svg></div><div><strong>Matrix Program: Constant</strong><span>Branching logic is active. The system builds a stronger root architecture.</span></div></div></aside>
 </section>
 <section class="bottom"><div class="chip">🌱 Seedling</div><div class="chip"><span class="small-icon"></span> R76 Active</div><div class="chip">✓ R108 Complete</div><div class="chip active">◎ Branching</div><div class="chip final">✔ Branching Active</div></section><div class="horizon">Next Horizon: <span>Root Architecture Stabilization / System Memory</span></div>
-</main><script>
-/* Guidance Cell portal interaction */
+</main>
+<script>
 (()=>{
-  const entry=document.querySelector('.guidance-entry');
-  if(!entry)return;
-  const openGuidance=()=>{
-    const source=document.title;
-    if(window.parent&&window.parent!==window){window.parent.postMessage({type:'abi:open-guidance-cell',source},'*');return;}
-    window.location.href='../modules/guidance-cell/index.html?source='+encodeURIComponent(source);
-  };
-  entry.addEventListener('click',openGuidance);
-  entry.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openGuidance();}});
-  window.addEventListener('message',event=>{if(event.data&&event.data.type==='abi:guidance-closed')entry.focus();});
+  const frame=document.querySelector('.frame');
+  const control=document.getElementById('branchControl');
+  const label=document.getElementById('phaseLabel');
+  const status=document.getElementById('routeStatus');
+  const meter=[...document.querySelectorAll('#phaseMeter i')];
+  const phases=[
+    {label:'Growth Reorganization Complete',status:'Reorganization Complete'},
+    {label:'Branching Logic Active',status:'Branching Active'},
+    {label:'New Root Architecture',status:'Architecture Opens'},
+    {label:'System Memory Ready',status:'Route Memory Captured'}
+  ];
+  let phase=0,timer=0;
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function show(next,user=false){
+    phase=Math.max(0,Math.min(phases.length-1,next));
+    frame.dataset.phase=String(phase);
+    label.textContent=phases[phase].label;
+    status.textContent=phases[phase].status;
+    meter.forEach((dot,i)=>dot.classList.toggle('on',i<=phase));
+    if(user) frame.dataset.userControlled='true';
+  }
+  function stop(){if(timer){clearTimeout(timer);timer=0}}
+  function autoplay(from=0){
+    stop();show(from);
+    if(reduce){show(phases.length-1);return}
+    const advance=()=>{if(phase<phases.length-1){show(phase+1);timer=setTimeout(advance,1450)}};
+    timer=setTimeout(advance,1100);
+  }
+  control.addEventListener('click',()=>autoplay(phase===phases.length-1?0:phase+1));
+  control.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'){stop();show(phase+1,true)}
+    if(e.key==='ArrowLeft'){stop();show(phase-1,true)}
+  });
+  const focusPhases=[0,1,2,3];
+  document.querySelectorAll('.info').forEach((card,i)=>{
+    card.tabIndex=0;
+    const activate=()=>{stop();show(focusPhases[i]??3,true)};
+    card.addEventListener('mouseenter',activate);
+    card.addEventListener('focus',activate);
+  });
+  document.querySelectorAll('.scale-row').forEach((row,i)=>{
+    row.tabIndex=0;
+    row.setAttribute('aria-label',`Show Preset 0${i+1} stage`);
+    const activate=()=>{stop();show(Math.min(i,3),true)};
+    row.addEventListener('mouseenter',activate);
+    row.addEventListener('focus',activate);
+  });
+  document.addEventListener('visibilitychange',()=>document.hidden?stop():autoplay(phase));
+  window.addEventListener('message',event=>{
+    if(event.data?.type==='abi-world:set-phase'){
+      stop();show(Number(event.data.phase)||0,true);
+    }
+  });
+  autoplay();
 })();
 </script>
 </body></html>
