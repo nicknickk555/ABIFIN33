@@ -148,6 +148,21 @@ iframe{width:100%;height:100%;border:0;background:#fff;display:block;}
   box-shadow:0 0 0 6px rgba(16,156,93,.055);
 }
 .kicker{font-size:10px;letter-spacing:.28em;font-weight:950;color:var(--green)}
+.home-return{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  width:max-content;
+  margin:0 0 5px;
+  color:#126fc3;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  transition:color .2s ease,transform .2s ease;
+}
+.home-return:hover{color:var(--green);transform:translateX(-2px)}
+.home-return:focus-visible{outline:2px solid rgba(16,156,93,.45);outline-offset:4px;border-radius:4px}
 h1{margin:1px 0 0;font-size:clamp(25px,2.1vw,34px);letter-spacing:-.035em;line-height:1;color:#0b2a4a}
 .sub,.current-src,.footer-note{display:none!important}
 .controls{gap:7px}
@@ -213,6 +228,7 @@ body.guidance-open{overflow:hidden}
 <div class="shell">
   <div class="top">
     <div>
+      <a class="home-return" href="https://www.nick555.com/" aria-label="Back to the NICK555 home page">← NICK555 HOME</a>
       <div class="kicker">ABI WORLD</div>
       <h1>Living Route Memory</h1>
     </div>
